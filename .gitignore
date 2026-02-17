@@ -1,0 +1,10 @@
+# Vivado Project Directories
+work_proj
+
+
+# Sigasi Tooling
+.sigasi/
+*.sigasi
+.library_mapping.xml
+.project
+.settings/
