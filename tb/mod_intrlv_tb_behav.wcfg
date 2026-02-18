@@ -14,13 +14,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="79288395fs"></ZoomEndTime>
-      <Cursor1Time time="10000000fs"></Cursor1Time>
+      <ZoomStartTime time="2733346fs"></ZoomStartTime>
+      <ZoomEndTime time="7068347fs"></ZoomEndTime>
+      <Cursor1Time time="4393553fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="295"></NameColumnWidth>
-      <ValueColumnWidth column_width="106"></ValueColumnWidth>
+      <NameColumnWidth column_width="216"></NameColumnWidth>
+      <ValueColumnWidth column_width="104"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="30" />
    <wvobject type="logic" fp_name="/mod_intrlv_tb/mod_intrlv_inst/axis_resetn">
@@ -38,6 +38,7 @@
    <wvobject type="group" fp_name="group100">
       <obj_property name="label">frame intf</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="logic" fp_name="/mod_intrlv_tb/mod_intrlv_inst/frame_tready">
          <obj_property name="ElementShortName">frame_tready</obj_property>
          <obj_property name="ObjectShortName">frame_tready</obj_property>
@@ -53,6 +54,7 @@
       <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/frame_tdata">
          <obj_property name="ElementShortName">frame_tdata[31:0]</obj_property>
          <obj_property name="ObjectShortName">frame_tdata[31:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/frame_tkeep">
          <obj_property name="ElementShortName">frame_tkeep[3:0]</obj_property>
@@ -66,6 +68,7 @@
    <wvobject type="group" fp_name="group101">
       <obj_property name="label">frame_intrlvd intf</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="logic" fp_name="/mod_intrlv_tb/mod_intrlv_inst/frame_intrlvd_tready">
          <obj_property name="ElementShortName">frame_intrlvd_tready</obj_property>
          <obj_property name="ObjectShortName">frame_intrlvd_tready</obj_property>
@@ -81,6 +84,7 @@
       <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/frame_intrlvd_tdata">
          <obj_property name="ElementShortName">frame_intrlvd_tdata[31:0]</obj_property>
          <obj_property name="ObjectShortName">frame_intrlvd_tdata[31:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/frame_intrlvd_tkeep">
          <obj_property name="ElementShortName">frame_intrlvd_tkeep[3:0]</obj_property>
@@ -106,10 +110,12 @@
       <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_wr_inst/avmm_s_address">
          <obj_property name="ElementShortName">avmm_s_address[28:0]</obj_property>
          <obj_property name="ObjectShortName">avmm_s_address[28:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_wr_inst/avmm_s_writedata">
          <obj_property name="ElementShortName">avmm_s_writedata[127:0]</obj_property>
          <obj_property name="ObjectShortName">avmm_s_writedata[127:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_wr_inst/avmm_s_busy">
          <obj_property name="ElementShortName">avmm_s_busy</obj_property>
