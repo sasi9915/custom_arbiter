@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module mod_intrlv_tb;
+module top_loop_back_tb;
 
     // Mod Interleaver Signals
 
@@ -10,14 +10,22 @@ module mod_intrlv_tb;
 
 
     // AXI Stream Slave Interface (frame)
-    reg             frame_tvalid;
-    wire            frame_tready;
-    reg [15:0]      frame_tuser;
-    reg [31:0]      frame_tdata;
-    reg [3:0]       frame_tkeep;
-    reg             frame_tlast;
+    reg             mod_frame_tvalid;
+    wire            mod_frame_tready;
+    reg [15:0]      mod_frame_tuser;
+    reg [31:0]      mod_frame_tdata;
+    reg [3:0]       mod_frame_tkeep;
+    reg             mod_frame_tlast;
 
-    // AXI Stream Master Interface (frame_intrlvd)
+    reg             demod_frame_tvalid;
+    wire            demod_frame_tready;
+    reg [15:0]      demod_frame_tuser;
+    reg [31:0]      demod_frame_tdata;
+    reg [3:0]       demod_frame_tkeep;
+    reg             demod_frame_tlast;
+
+
+    // AXI Stream Master Interface (frame_deintrlvd)
     wire            frame_intrlvd_tvalid;
     reg             frame_intrlvd_tready;
     wire [15:0]     frame_intrlvd_tuser;
@@ -25,49 +33,55 @@ module mod_intrlv_tb;
     wire [3:0]      frame_intrlvd_tkeep;
     wire            frame_intrlvd_tlast;
 
+    wire            frame_deintrlvd_tvalid;
+    reg             frame_deintrlvd_tready;
+    wire [15:0]     frame_deintrlvd_tuser;
+    wire [31:0]     frame_deintrlvd_tdata;
+    wire [3:0]      frame_deintrlvd_tkeep;
+    wire            frame_deintrlvd_tlast;
+
     // AXI4 Master Interface (DDR4)
-    reg [3:0]       ddr4_m_axi_awid;
-    reg [28:0]      ddr4_m_axi_awaddr;
-    reg [7:0]       ddr4_m_axi_awlen;
-    reg [2:0]       ddr4_m_axi_awsize;
-    reg [1:0]       ddr4_m_axi_awburst;
-    reg [0:0]       ddr4_m_axi_awlock;
-    reg [3:0]       ddr4_m_axi_awcache;
-    reg [2:0]       ddr4_m_axi_awprot;
-    reg [3:0]       ddr4_m_axi_awqos;
-    reg             ddr4_m_axi_awvalid;
-    wire            ddr4_m_axi_awready;
+    wire [3:0]      M_AXI_AWID;
+    wire [28:0]     M_AXI_AWADDR;
+    wire [7:0]      M_AXI_AWLEN;
+    wire [2:0]      M_AXI_AWSIZE;
+    wire [1:0]      M_AXI_AWBURST;
+    wire            M_AXI_AWLOCK;
+    wire [3:0]      M_AXI_AWCACHE;
+    wire [2:0]      M_AXI_AWPROT;
+    wire [3:0]      M_AXI_AWQOS;
+    wire            M_AXI_AWVALID;
+    wire            M_AXI_AWREADY;
 
-    reg [127:0]     ddr4_m_axi_wdata;
-    reg [15:0]      ddr4_m_axi_wstrb;
-    reg             ddr4_m_axi_wlast;
-    reg             ddr4_m_axi_wvalid;
-    wire            ddr4_m_axi_wready;
+    wire [127:0]    M_AXI_WDATA;
+    wire [15:0]     M_AXI_WSTRB;
+    wire            M_AXI_WLAST;
+    wire            M_AXI_WVALID;
+    wire            M_AXI_WREADY;
 
-    reg             ddr4_m_axi_bready;
-    wire [3:0]      ddr4_m_axi_bid;
-    wire [1:0]      ddr4_m_axi_bresp;
-    wire            ddr4_m_axi_bvalid;
+    wire [3:0]      M_AXI_BID;
+    wire [1:0]      M_AXI_BRESP;
+    wire            M_AXI_BVALID;
+    wire            M_AXI_BREADY;
 
-    reg [3:0]       ddr4_m_axi_arid;
-    reg [28:0]      ddr4_m_axi_araddr;
-    reg [7:0]       ddr4_m_axi_arlen;
-    reg [2:0]       ddr4_m_axi_arsize;
-    reg [1:0]       ddr4_m_axi_arburst;
-    reg [0:0]       ddr4_m_axi_arlock;
-    reg [3:0]       ddr4_m_axi_arcache;
-    reg [2:0]       ddr4_m_axi_arprot;
-    reg [3:0]       ddr4_m_axi_arqos;
-    reg             ddr4_m_axi_arvalid;
-    wire            ddr4_m_axi_arready;
+    wire [3:0]      M_AXI_ARID;
+    wire [28:0]     M_AXI_ARADDR;
+    wire [7:0]      M_AXI_ARLEN;
+    wire [2:0]      M_AXI_ARSIZE;
+    wire [1:0]      M_AXI_ARBURST;
+    wire            M_AXI_ARLOCK;
+    wire [3:0]      M_AXI_ARCACHE;
+    wire [2:0]      M_AXI_ARPROT;
+    wire [3:0]      M_AXI_ARQOS;
+    wire            M_AXI_ARVALID;
+    wire            M_AXI_ARREADY;
 
-    reg             ddr4_m_axi_rready;
-    wire            ddr4_m_axi_rlast;
-    wire            ddr4_m_axi_rvalid;
-    wire [1:0]      ddr4_m_axi_rresp;
-    wire [3:0]      ddr4_m_axi_rid;
-    wire [127:0]    ddr4_m_axi_rdata;
-
+    wire [3:0]      M_AXI_RID;
+    wire [127:0]    M_AXI_RDATA;
+    wire [1:0]      M_AXI_RRESP;
+    wire            M_AXI_RLAST;
+    wire            M_AXI_RVALID;
+    wire            M_AXI_RREADY;
 
 
     // DDR4 Interface Signals
@@ -114,61 +128,84 @@ module mod_intrlv_tb;
 
 
     // Instantiate the DUT
-    mod_intrlv mod_intrlv_inst (
+    top dut (
         .axis_resetn            (axis_resetn),
         .axis_clk               (axis_clk),
 
-        .frame_tready           (frame_tready),
-        .frame_tvalid           (frame_tvalid),
-        .frame_tuser            (frame_tuser),
-        .frame_tdata            (frame_tdata),
-        .frame_tkeep            (frame_tkeep),
-        .frame_tlast            (frame_tlast),
+        // MOD input stream
+        .mod_frame_tvalid (mod_frame_tvalid),
+        .mod_frame_tready (mod_frame_tready),
+        .mod_frame_tuser  (mod_frame_tuser),
+        .mod_frame_tdata  (mod_frame_tdata),
+        .mod_frame_tkeep  (mod_frame_tkeep),
+        .mod_frame_tlast  (mod_frame_tlast),
 
-        .frame_intrlvd_tready   (frame_intrlvd_tready),
-        .frame_intrlvd_tvalid   (frame_intrlvd_tvalid),
-        .frame_intrlvd_tuser    (frame_intrlvd_tuser),
-        .frame_intrlvd_tdata    (frame_intrlvd_tdata),
-        .frame_intrlvd_tkeep    (frame_intrlvd_tkeep),
-        .frame_intrlvd_tlast    (frame_intrlvd_tlast),
+        // Interleaver output
+        .frame_intrlvd_tvalid (frame_intrlvd_tvalid),
+        .frame_intrlvd_tready (frame_intrlvd_tready),
+        .frame_intrlvd_tuser  (frame_intrlvd_tuser),
+        .frame_intrlvd_tdata  (frame_intrlvd_tdata),
+        .frame_intrlvd_tkeep  (frame_intrlvd_tkeep),
+        .frame_intrlvd_tlast  (frame_intrlvd_tlast),
 
-        .ddr4_m_axi_awid        (ddr4_m_axi_awid),
-        .ddr4_m_axi_awaddr      (ddr4_m_axi_awaddr),
-        .ddr4_m_axi_awlen       (ddr4_m_axi_awlen),
-        .ddr4_m_axi_awsize      (ddr4_m_axi_awsize),
-        .ddr4_m_axi_awburst     (ddr4_m_axi_awburst),
-        .ddr4_m_axi_awlock      (ddr4_m_axi_awlock),
-        .ddr4_m_axi_awcache     (ddr4_m_axi_awcache),
-        .ddr4_m_axi_awprot      (ddr4_m_axi_awprot),
-        .ddr4_m_axi_awqos       (ddr4_m_axi_awqos),
-        .ddr4_m_axi_awvalid     (ddr4_m_axi_awvalid),
-        .ddr4_m_axi_awready     (ddr4_m_axi_awready),
-        .ddr4_m_axi_wdata       (ddr4_m_axi_wdata),
-        .ddr4_m_axi_wstrb       (ddr4_m_axi_wstrb),
-        .ddr4_m_axi_wlast       (ddr4_m_axi_wlast),
-        .ddr4_m_axi_wvalid      (ddr4_m_axi_wvalid),
-        .ddr4_m_axi_wready      (ddr4_m_axi_wready),
-        .ddr4_m_axi_bready      (ddr4_m_axi_bready),
-        .ddr4_m_axi_bid         (ddr4_m_axi_bid),
-        .ddr4_m_axi_bresp       (ddr4_m_axi_bresp),
-        .ddr4_m_axi_bvalid      (ddr4_m_axi_bvalid),
-        .ddr4_m_axi_arid        (ddr4_m_axi_arid),
-        .ddr4_m_axi_araddr      (ddr4_m_axi_araddr),
-        .ddr4_m_axi_arlen       (ddr4_m_axi_arlen),
-        .ddr4_m_axi_arsize      (ddr4_m_axi_arsize),
-        .ddr4_m_axi_arburst     (ddr4_m_axi_arburst),
-        .ddr4_m_axi_arlock      (ddr4_m_axi_arlock),
-        .ddr4_m_axi_arcache     (ddr4_m_axi_arcache),
-        .ddr4_m_axi_arprot      (ddr4_m_axi_arprot),
-        .ddr4_m_axi_arqos       (ddr4_m_axi_arqos),
-        .ddr4_m_axi_arvalid     (ddr4_m_axi_arvalid),
-        .ddr4_m_axi_arready     (ddr4_m_axi_arready),
-        .ddr4_m_axi_rready      (ddr4_m_axi_rready),
-        .ddr4_m_axi_rlast       (ddr4_m_axi_rlast),
-        .ddr4_m_axi_rvalid      (ddr4_m_axi_rvalid),
-        .ddr4_m_axi_rresp       (ddr4_m_axi_rresp),
-        .ddr4_m_axi_rid         (ddr4_m_axi_rid),
-        .ddr4_m_axi_rdata       (ddr4_m_axi_rdata)
+//        // DEMOD input stream
+//        .demod_frame_tvalid (demod_frame_tvalid),
+//        .demod_frame_tready (demod_frame_tready),
+//        .demod_frame_tuser  (demod_frame_tuser),
+//        .demod_frame_tdata  (demod_frame_tdata),
+//        .demod_frame_tkeep  (demod_frame_tkeep),
+//        .demod_frame_tlast  (demod_frame_tlast),
+
+//        // Deintrlv output
+//        .frame_deintrlvd_tvalid (frame_deintrlvd_tvalid),
+//        .frame_deintrlvd_tready (frame_deintrlvd_tready),
+//        .frame_deintrlvd_tuser  (frame_deintrlvd_tuser),
+//        .frame_deintrlvd_tdata  (frame_deintrlvd_tdata),
+//        .frame_deintrlvd_tkeep  (frame_deintrlvd_tkeep),
+//        .frame_deintrlvd_tlast  (frame_deintrlvd_tlast),
+
+        // AXI Master
+        .M_AXI_AWID    (M_AXI_AWID),
+        .M_AXI_AWADDR  (M_AXI_AWADDR),
+        .M_AXI_AWLEN   (M_AXI_AWLEN),
+        .M_AXI_AWSIZE  (M_AXI_AWSIZE),
+        .M_AXI_AWBURST (M_AXI_AWBURST),
+        .M_AXI_AWLOCK  (M_AXI_AWLOCK),
+        .M_AXI_AWCACHE (M_AXI_AWCACHE),
+        .M_AXI_AWPROT  (M_AXI_AWPROT),
+        .M_AXI_AWQOS   (M_AXI_AWQOS),
+        .M_AXI_AWVALID (M_AXI_AWVALID),
+        .M_AXI_AWREADY (M_AXI_AWREADY),
+
+        .M_AXI_WDATA   (M_AXI_WDATA),
+        .M_AXI_WSTRB   (M_AXI_WSTRB),
+        .M_AXI_WLAST   (M_AXI_WLAST),
+        .M_AXI_WVALID  (M_AXI_WVALID),
+        .M_AXI_WREADY  (M_AXI_WREADY),
+
+        .M_AXI_BID     (M_AXI_BID),
+        .M_AXI_BRESP   (M_AXI_BRESP),
+        .M_AXI_BVALID  (M_AXI_BVALID),
+        .M_AXI_BREADY  (M_AXI_BREADY),
+
+        .M_AXI_ARID    (M_AXI_ARID),
+        .M_AXI_ARADDR  (M_AXI_ARADDR),
+        .M_AXI_ARLEN   (M_AXI_ARLEN),
+        .M_AXI_ARSIZE  (M_AXI_ARSIZE),
+        .M_AXI_ARBURST (M_AXI_ARBURST),
+        .M_AXI_ARLOCK  (M_AXI_ARLOCK),
+        .M_AXI_ARCACHE (M_AXI_ARCACHE),
+        .M_AXI_ARPROT  (M_AXI_ARPROT),
+        .M_AXI_ARQOS   (M_AXI_ARQOS),
+        .M_AXI_ARVALID (M_AXI_ARVALID),
+        .M_AXI_ARREADY (M_AXI_ARREADY),
+
+        .M_AXI_RID     (M_AXI_RID),
+        .M_AXI_RDATA   (M_AXI_RDATA),
+        .M_AXI_RRESP   (M_AXI_RRESP),
+        .M_AXI_RLAST   (M_AXI_RLAST),
+        .M_AXI_RVALID  (M_AXI_RVALID),
+        .M_AXI_RREADY  (M_AXI_RREADY)
     );
 
 
@@ -177,7 +214,7 @@ module mod_intrlv_tb;
         // System Reset
         .sys_rst                  (ddr4_intf_sys_rst),
 
-        // Clock and Reset Interface
+        // Clock & Reset Interface
         .c0_init_calib_complete   (ddr4_intf_c0_init_calib_complete),
         .dbg_clk                  (ddr4_intf_dbg_clk),
         .c0_sys_clk_p             (ddr4_intf_c0_sys_clk_p),
@@ -204,44 +241,48 @@ module mod_intrlv_tb;
         .c0_ddr4_ck_c             (ddr4_intf_c0_ddr4_ck_c),
         .c0_ddr4_ck_t             (ddr4_intf_c0_ddr4_ck_t),
 
-        // AXI Slave Interface (Connected to mod_intrlv)
-        .c0_ddr4_s_axi_awid       (ddr4_m_axi_awid),
-        .c0_ddr4_s_axi_awaddr     (ddr4_m_axi_awaddr),
-        .c0_ddr4_s_axi_awlen      (ddr4_m_axi_awlen),
-        .c0_ddr4_s_axi_awsize     (ddr4_m_axi_awsize),
-        .c0_ddr4_s_axi_awburst    (ddr4_m_axi_awburst),
-        .c0_ddr4_s_axi_awlock     (ddr4_m_axi_awlock),
-        .c0_ddr4_s_axi_awcache    (ddr4_m_axi_awcache),
-        .c0_ddr4_s_axi_awprot     (ddr4_m_axi_awprot),
-        .c0_ddr4_s_axi_awqos      (ddr4_m_axi_awqos),
-        .c0_ddr4_s_axi_awvalid    (ddr4_m_axi_awvalid),
-        .c0_ddr4_s_axi_awready    (ddr4_m_axi_awready),
-        .c0_ddr4_s_axi_wdata      (ddr4_m_axi_wdata),
-        .c0_ddr4_s_axi_wstrb      (ddr4_m_axi_wstrb),
-        .c0_ddr4_s_axi_wlast      (ddr4_m_axi_wlast),
-        .c0_ddr4_s_axi_wvalid     (ddr4_m_axi_wvalid),
-        .c0_ddr4_s_axi_wready     (ddr4_m_axi_wready),
-        .c0_ddr4_s_axi_bready     (ddr4_m_axi_bready),
-        .c0_ddr4_s_axi_bid        (ddr4_m_axi_bid),
-        .c0_ddr4_s_axi_bresp      (ddr4_m_axi_bresp),
-        .c0_ddr4_s_axi_bvalid     (ddr4_m_axi_bvalid),
-        .c0_ddr4_s_axi_arid       (ddr4_m_axi_arid),
-        .c0_ddr4_s_axi_araddr     (ddr4_m_axi_araddr),
-        .c0_ddr4_s_axi_arlen      (ddr4_m_axi_arlen),
-        .c0_ddr4_s_axi_arsize     (ddr4_m_axi_arsize),
-        .c0_ddr4_s_axi_arburst    (ddr4_m_axi_arburst),
-        .c0_ddr4_s_axi_arlock     (ddr4_m_axi_arlock),
-        .c0_ddr4_s_axi_arcache    (ddr4_m_axi_arcache),
-        .c0_ddr4_s_axi_arprot     (ddr4_m_axi_arprot),
-        .c0_ddr4_s_axi_arqos      (ddr4_m_axi_arqos),
-        .c0_ddr4_s_axi_arvalid    (ddr4_m_axi_arvalid),
-        .c0_ddr4_s_axi_arready    (ddr4_m_axi_arready),
-        .c0_ddr4_s_axi_rready     (ddr4_m_axi_rready),
-        .c0_ddr4_s_axi_rlast      (ddr4_m_axi_rlast),
-        .c0_ddr4_s_axi_rvalid     (ddr4_m_axi_rvalid),
-        .c0_ddr4_s_axi_rresp      (ddr4_m_axi_rresp),
-        .c0_ddr4_s_axi_rid        (ddr4_m_axi_rid),
-        .c0_ddr4_s_axi_rdata      (ddr4_m_axi_rdata)
+        // AXI Slave Interface (Connected to top_loop_back module)
+        .c0_ddr4_s_axi_awid       (M_AXI_AWID),
+        .c0_ddr4_s_axi_awaddr     (M_AXI_AWADDR),
+        .c0_ddr4_s_axi_awlen      (M_AXI_AWLEN),
+        .c0_ddr4_s_axi_awsize     (M_AXI_AWSIZE),
+        .c0_ddr4_s_axi_awburst    (M_AXI_AWBURST),
+        .c0_ddr4_s_axi_awlock     (M_AXI_AWLOCK),
+        .c0_ddr4_s_axi_awcache    (M_AXI_AWCACHE),
+        .c0_ddr4_s_axi_awprot     (M_AXI_AWPROT),
+        .c0_ddr4_s_axi_awqos      (M_AXI_AWQOS),
+        .c0_ddr4_s_axi_awvalid    (M_AXI_AWVALID),
+        .c0_ddr4_s_axi_awready    (M_AXI_AWREADY),
+
+        .c0_ddr4_s_axi_wdata      (M_AXI_WDATA),
+        .c0_ddr4_s_axi_wstrb      (M_AXI_WSTRB),
+        .c0_ddr4_s_axi_wlast      (M_AXI_WLAST),
+        .c0_ddr4_s_axi_wvalid     (M_AXI_WVALID),
+        .c0_ddr4_s_axi_wready     (M_AXI_WREADY),
+
+        .c0_ddr4_s_axi_bready     (M_AXI_BREADY),
+        .c0_ddr4_s_axi_bid        (M_AXI_BID),
+        .c0_ddr4_s_axi_bresp      (M_AXI_BRESP),
+        .c0_ddr4_s_axi_bvalid     (M_AXI_BVALID),
+
+        .c0_ddr4_s_axi_arid       (M_AXI_ARID),
+        .c0_ddr4_s_axi_araddr     (M_AXI_ARADDR),
+        .c0_ddr4_s_axi_arlen      (M_AXI_ARLEN),
+        .c0_ddr4_s_axi_arsize     (M_AXI_ARSIZE),
+        .c0_ddr4_s_axi_arburst    (M_AXI_ARBURST),
+        .c0_ddr4_s_axi_arlock     (M_AXI_ARLOCK),
+        .c0_ddr4_s_axi_arcache    (M_AXI_ARCACHE),
+        .c0_ddr4_s_axi_arprot     (M_AXI_ARPROT),
+        .c0_ddr4_s_axi_arqos      (M_AXI_ARQOS),
+        .c0_ddr4_s_axi_arvalid    (M_AXI_ARVALID),
+        .c0_ddr4_s_axi_arready    (M_AXI_ARREADY),
+
+        .c0_ddr4_s_axi_rready     (M_AXI_RREADY),
+        .c0_ddr4_s_axi_rlast      (M_AXI_RLAST),
+        .c0_ddr4_s_axi_rvalid     (M_AXI_RVALID),
+        .c0_ddr4_s_axi_rresp      (M_AXI_RRESP),
+        .c0_ddr4_s_axi_rid        (M_AXI_RID),
+        .c0_ddr4_s_axi_rdata      (M_AXI_RDATA)
     );
 
 
@@ -273,11 +314,12 @@ module mod_intrlv_tb;
 
     initial begin
         ddr4_intf_c0_ddr4_aresetn = 0;
-        repeat (100) @(posedge ddr4_intf_c0_sys_clk_p);
+        repeat (300) @(posedge ddr4_intf_c0_sys_clk_p);
         ddr4_intf_c0_ddr4_aresetn = 1;
     end
 
     assign ddr4_intf_sys_rst = 0;
+
 
     // ------------------------------------------------------------------
     // AXI4 Reset & Clock
@@ -287,62 +329,99 @@ module mod_intrlv_tb;
 
 
 
-    // Testbench initial block
+
     initial begin
-
-        assign frame_intrlvd_tready = 1'b1;
-
-
-        // Test AXI Stream interface
-        test_axi_stream();
-
-
-
-        // End simulation
-        //      #1000 $finish;
+        frame_deintrlvd_tready = 1'b1;
+        frame_intrlvd_tready = 1'b1;
+        fork
+            test_axi_stream();
+//            test_axi_stream_demod();
+        join
     end
+
 
     // Test AXI Stream interface
     task test_axi_stream;
         integer i;
         begin
             // Drive valid signals
-            frame_tvalid = 1'b0;
-            frame_tuser = 16'h0000;
-            frame_tdata = 32'h00000000;
-            frame_tkeep = 4'b1111;
-            frame_tlast = 1'b0;
+            mod_frame_tvalid = 1'b0;
+            mod_frame_tuser = 16'h0000;
+            mod_frame_tdata = 32'h00000000;
+            mod_frame_tkeep = 4'b1111;
+            mod_frame_tlast = 1'b0;
 
+            
             // Wait for reset to be asserted
             @(posedge axis_clk);
-
+            
+            repeat (20) @(posedge axis_clk);  // <-- wait 20 clock cycles
+            
             // Send 10-word packet with counter
-            frame_tvalid = 1'b1;
-            for (i = 0; i < 1024; i = i + 1) begin
-                frame_tdata = 32'h00000000 + i;
-                frame_tuser = 16'hABCD;
-                if (i == 1023) begin
-                    frame_tlast = 1'b1;
+            mod_frame_tvalid = 1'b1;
+            for (i = 0; i < 156250; i = i + 1) begin
+                mod_frame_tdata = 32'h00000000 + i;
+                mod_frame_tuser = 16'hABCD;
+                if (i == 156249) begin
+                    mod_frame_tlast = 1'b1;
                 end else begin
-                    frame_tlast = 1'b0;
+                    mod_frame_tlast = 1'b0;
                 end
 
                 @(posedge axis_clk);
-                while (!frame_tready) @(posedge axis_clk);
+                while (!mod_frame_tready) @(posedge axis_clk);
             end
 
-            frame_tvalid = 1'b0;
+            mod_frame_tvalid = 1'b0;
         end
     endtask
 
-    integer outfile_2;
+
+//    task test_axi_stream_demod;
+//        integer j;
+//        begin
+//            // Drive valid signals
+//            demod_frame_tvalid = 1'b0;
+//            demod_frame_tuser = 16'h0000;
+//            demod_frame_tdata = 32'h00000000;
+//            demod_frame_tkeep = 4'b1111;
+//            demod_frame_tlast = 1'b0;
+
+//            // Wait for reset to be asserted
+//            @(posedge axis_clk);
+
+//            repeat (20) @(posedge axis_clk);
+
+//            // Send 10-word packet with counter
+//            demod_frame_tvalid = 1'b1;
+//            for (j = 0; j < 1250000; j = j + 1) begin
+//                demod_frame_tdata = 32'h00000000 + j;
+//                demod_frame_tuser = 16'hDCBA;
+//                if (j == 1249999) begin
+//                    demod_frame_tlast = 1'b1;
+//                end else begin
+//                    demod_frame_tlast = 1'b0;
+//                end
+
+//                @(posedge axis_clk);
+//                while (!demod_frame_tready) @(posedge axis_clk);
+//            end
+
+//            demod_frame_tvalid = 1'b0;
+//        end
+//    endtask
+
+//    / ------------------------------------------------------------------
+//     File handle for output
+//     ------------------------------------------------------------------
+    integer outfile;
 
     // Open the file at the start of simulation
     initial begin
-        outfile_2 = $fopen("/home/sasindu/work/custom_arbitor/custom_arbiter/misc/mod_intrlv_output.txt", "w");
-        if (outfile_2 == 0) begin
+        outfile = $fopen("/home/satanya/Documents/Reading Materials/documents_20260109/ddr_tb_example/src/rtl/demod_deintrlv_output.txt", "w");
+        if (outfile == 0) begin
             $display("ERROR: Could not open file for writing!");
-            //            $finish;
+    //        $finish;
         end
     end
 
@@ -353,28 +432,56 @@ module mod_intrlv_tb;
         if (!axis_resetn) begin
             // nothing
         end else begin
-            if (frame_intrlvd_tvalid && frame_intrlvd_tready) begin
+            if (frame_deintrlvd_tvalid && frame_deintrlvd_tready) begin
                 // Log exactly one transfer
-                $fdisplay(outfile_2, "%h", frame_intrlvd_tdata);
-                $fflush(outfile_2);
+                $fdisplay(outfile, "%h", frame_deintrlvd_tdata);
+                $fflush(outfile);
 
-                if (frame_intrlvd_tlast) begin
+                if (frame_deintrlvd_tlast) begin
                     $display("Packet complete at time %0t ns, last word received: 0x%h",
-                        $time, frame_intrlvd_tdata);
-                    $fclose(outfile_2);
-                    //                    $finish;
+                             $time, frame_deintrlvd_tdata);
+                    $fclose(outfile);
+    //                $finish;
                 end
             end
         end
     end
 
 
+    //integer outfile_2;
 
-    //  // Monitor signals for verification
-    //  initial begin
-    //      $monitor("Time=%0t: frame_tvalid=%b, frame_tready=%b, frame_tdata=0x%h, frame_intrlvd_tvalid=%b, frame_intrlvd_tready=%b, frame_intrlvd_tdata=0x%h",
-    //               $time, frame_tvalid, frame_tready, frame_tdata, 
-    //               frame_intrlvd_tvalid, frame_intrlvd_tready, frame_intrlvd_tdata);
-    //  end
+    //// Open the file at the start of simulation
+    //initial begin
+    //    outfile_2 = $fopen("/home/satanya/Documents/Reading Materials/documents_20260109/ddr_tb_example/src/rtl/mod_intrlv_output.txt", "w");
+    //    if (outfile_2 == 0) begin
+    //        $display("ERROR: Could not open file for writing!");
+    ////        $finish;
+    //    end
+    //end
+
+    //// ------------------------------------------------------------------
+    //// Monitor frame_deintrlvd signals and write to file
+    //// ------------------------------------------------------------------
+    //always @(posedge axis_clk) begin
+    //    if (!axis_resetn) begin
+    //        // nothing
+    //    end else begin
+    //        if (frame_intrlvd_tvalid && frame_intrlvd_tready) begin
+    //            // Log exactly one transfer
+    //            $fdisplay(outfile_2, "%h", frame_intrlvd_tdata);
+    //            $fflush(outfile_2);
+
+    //            if (frame_intrlvd_tlast) begin
+    //                $display("Packet complete at time %0t ns, last word received: 0x%h",
+    //                         $time, frame_intrlvd_tdata);
+    //                $fclose(outfile_2);
+    ////                $finish;
+    //            end
+    //        end
+    //    end
+    //end
+
+
+
 
 endmodule

@@ -65,8 +65,8 @@ end entity;
 architecture arc_mod_intrlv of mod_intrlv is
 
     -- Constants
-    constant C_ROWS         : unsigned(9 downto 0)  := to_unsigned(64, 10);
-    constant C_COLS         : unsigned(9 downto 0)  := to_unsigned(64, 10);
+    constant C_ROWS         : unsigned(9 downto 0)  := to_unsigned(512, 10);
+    constant C_COLS         : unsigned(9 downto 0)  := to_unsigned(512, 10);
     constant C_base_address : unsigned(28 downto 0) := to_unsigned(2000, 29);
     constant C_BURST_LEN    : unsigned(3 downto 0)  := to_unsigned(8, 4);
 
@@ -144,74 +144,7 @@ architecture arc_mod_intrlv of mod_intrlv is
     attribute X_INTERFACE_PARAMETER of ddr4_m_axi_awaddr : signal is "DATA_WIDTH 128, ADDR_WIDTH 29, ID_WIDTH 4, PROTOCOL AXI4, MAX_BURST_LENGTH 256";
 
     -- Component Declarations
-    component avmm_to_axi4_wr is
-        generic(
-            g_ADDR_WIDTH : integer := 29;
-            g_DATA_WIDTH : integer := 128
-        );
-        port(
-            axi_aresetn       : in  std_logic;
-            axi_aclk          : in  std_logic;
-            avmm_s_write      : in  std_logic;
-            avmm_s_address    : in  std_logic_vector(g_ADDR_WIDTH - 1 downto 0);
-            avmm_s_writedata  : in  std_logic_vector(g_DATA_WIDTH - 1 downto 0);
-            avmm_s_busy       : out std_logic;
-            axi_m_axi_awid    : out std_logic_vector(3 downto 0);
-            axi_m_axi_awaddr  : out std_logic_vector(g_ADDR_WIDTH - 1 downto 0);
-            axi_m_axi_awlen   : out std_logic_vector(7 downto 0);
-            axi_m_axi_awsize  : out std_logic_vector(2 downto 0);
-            axi_m_axi_awburst : out std_logic_vector(1 downto 0);
-            axi_m_axi_awlock  : out std_logic_vector(0 downto 0);
-            axi_m_axi_awcache : out std_logic_vector(3 downto 0);
-            axi_m_axi_awprot  : out std_logic_vector(2 downto 0);
-            axi_m_axi_awqos   : out std_logic_vector(3 downto 0);
-            axi_m_axi_awvalid : out std_logic;
-            axi_m_axi_awready : in  std_logic;
-            axi_m_axi_wdata   : out std_logic_vector(g_DATA_WIDTH - 1 downto 0);
-            axi_m_axi_wstrb   : out std_logic_vector(g_DATA_WIDTH / 8 - 1 downto 0);
-            axi_m_axi_wlast   : out std_logic;
-            axi_m_axi_wvalid  : out std_logic;
-            axi_m_axi_wready  : in  std_logic;
-            axi_m_axi_bready  : out std_logic;
-            axi_m_axi_bid     : in  std_logic_vector(3 downto 0);
-            axi_m_axi_bresp   : in  std_logic_vector(1 downto 0);
-            axi_m_axi_bvalid  : in  std_logic
-        );
-    end component;
-
-    component avmm_to_axi4_rd
-        generic(
-            g_ADDR_WIDTH : integer := 29;
-            g_DATA_WIDTH : integer := 128
-        );
-        port(
-            axi_aresetn         : in  std_logic;
-            axi_aclk            : in  std_logic;
-            avmm_s_read         : in  std_logic;
-            avmm_s_address      : in  std_logic_vector(g_ADDR_WIDTH - 1 downto 0);
-            avmm_s_address_val  : in  std_logic;
-            avmm_s_readdata_val : out std_logic;
-            avmm_s_readdata     : out std_logic_vector(g_DATA_WIDTH - 1 downto 0);
-            avmm_s_busy         : out std_logic;
-            axi_m_axi_arid      : out std_logic_vector(3 downto 0);
-            axi_m_axi_araddr    : out std_logic_vector(28 downto 0);
-            axi_m_axi_arlen     : out std_logic_vector(7 downto 0);
-            axi_m_axi_arsize    : out std_logic_vector(2 downto 0);
-            axi_m_axi_arburst   : out std_logic_vector(1 downto 0);
-            axi_m_axi_arlock    : out std_logic_vector(0 downto 0);
-            axi_m_axi_arcache   : out std_logic_vector(3 downto 0);
-            axi_m_axi_arprot    : out std_logic_vector(2 downto 0);
-            axi_m_axi_arqos     : out std_logic_vector(3 downto 0);
-            axi_m_axi_arvalid   : out std_logic;
-            axi_m_axi_arready   : in  std_logic;
-            axi_m_axi_rready    : out std_logic;
-            axi_m_axi_rlast     : in  std_logic;
-            axi_m_axi_rvalid    : in  std_logic;
-            axi_m_axi_rresp     : in  std_logic_vector(1 downto 0);
-            axi_m_axi_rid       : in  std_logic_vector(3 downto 0);
-            axi_m_axi_rdata     : in  std_logic_vector(127 downto 0)
-        );
-    end component;
+    
 
     -- Component IOs
     signal r_avmm_to_axi4_wr_avmm_write     : std_logic;
@@ -227,7 +160,7 @@ architecture arc_mod_intrlv of mod_intrlv is
     signal w_avmm_to_axi4_rd_avmm_busy         : std_logic;
 
     -- Temp Signals
-    signal r_write_limit               : unsigned(28 downto 0)          := (others => '0');
+    signal w_write_limit               : unsigned(28 downto 0)          := (others => '0');
     signal r_rd_address_current_row    : unsigned(9 downto 0)           := (others => '0');
     signal r_rd_address_current_column : unsigned(9 downto 0)           := (others => '0');
     signal r_rd_address_gen            : std_logic                      := '0';
@@ -248,12 +181,18 @@ architecture arc_mod_intrlv of mod_intrlv is
     signal r_frame_intrlvd_tkeep  : std_logic_vector(03 downto 00);
     signal r_frame_intrlvd_tlast  : std_logic;
 
+    signal r_avmm_to_axi4_wr_valid : std_logic;
+    signal r_avmm_to_axi4_wr_last  : std_logic;
+    signal r_avmm_to_axi4_bready : std_logic;
+    signal r_avmm_to_axi4_rready : std_logic;
+    
+
     -- FIFO signals
     signal fifo_din   : std_logic_vector(6 downto 0);
     signal fifo_dout  : std_logic_vector(6 downto 0);
     signal fifo_wr_en : std_logic;
     signal fifo_rd_en : std_logic;
-    signal empty      : std_logic;
+    signal fifo_rst   : std_logic;
 
     signal r_burst_cnt : unsigned(2 downto 0) := (others => '0');
 
@@ -299,10 +238,22 @@ begin
             r_out_last          <= '0';
             r_bit_idx           <= (others => '0');
             r_tkeep             <= (others => '0');
-            r_write_limit       <= (others => '0');
             r_burst_cnt         <= (others => '0');
             buf_burst           <= (others => (others => '0'));
+        
+            r_avmm_to_axi4_bready <= '0';
+            r_avmm_to_axi4_rready <= '0';
 
+            r_rd_address_gen            <= '0';
+            r_rd_address_current_row    <= (others => '0');
+            r_rd_address_current_column <= (others => '0');
+
+            fifo_din   <= (others => '0');
+            fifo_wr_en <= '0';
+
+            r_avmm_to_axi4_wr_valid <= '0';
+            r_avmm_to_axi4_wr_last  <= '0';
+            
         elsif axis_clk'event and axis_clk = '1' then
 
             -- defaults every cycle 
@@ -311,12 +262,6 @@ begin
             r_avmm_to_axi4_wr_avmm_write <= '0';
             r_frame_intrlvd_tlast        <= '0';
             r_frame_intrlvd_tvalid       <= '0';
-
-            if (C_COLS * C_ROWS mod 128 = 0) then
-                r_write_limit <= resize((C_COLS * C_ROWS) / 128 - 1, 29);
-            else
-                r_write_limit <= resize((C_COLS * C_ROWS) / 128, 29);
-            end if;
 
             case current_state is
 
@@ -337,29 +282,7 @@ begin
 
                 -- Once we have 128 bits of data, store it in the burst buffer
                 when wr_store_buffer =>
-                     r_frame_tready <= '1';
-                     if frame_tvalid = '1' then
-                        buf_burst(to_integer(r_burst_cnt)) <= sr_frame_data;
-
-                        if r_burst_cnt = "111" then
-                            r_burst_cnt <= (others => '0');
-                        else
-                            r_burst_cnt <= r_burst_cnt + 1;
-                        end if;
-                    end if;
-
-                -- Start AXI4 write burst to DDR
-                when wr_burst_start =>
-                    if w_avmm_to_axi4_wr_avmm_busy = '0' and r_avmm_to_axi4_wr_avmm_write = '0' then
-                        r_avmm_to_axi4_wr_avmm_address <= std_logic_vector(C_base_address + resize(r_write_ddr_address * 128, 29));
-                        r_avmm_to_axi4_wr_avmm_write   <= '1';
-                        r_burst_cnt                    <= (others => '0');
-                    end if;
-
-                -- Write burst data to DDR - one 128-bit word per cycle for 8 cycles (total burst length of 1024 bits)
-                when wr_burst_data =>
-                    r_avmm_to_axi4_wr_avmm_write     <= '1';
-                    r_avmm_to_axi4_wr_avmm_writedata <= buf_burst(to_integer(r_burst_cnt));
+                    buf_burst(to_integer(r_burst_cnt)) <= sr_frame_data;
 
                     if r_burst_cnt = "111" then
                         r_burst_cnt <= (others => '0');
@@ -367,10 +290,35 @@ begin
                         r_burst_cnt <= r_burst_cnt + 1;
                     end if;
 
+                -- Start AXI4 write burst to DDR
+                when wr_burst_start =>
+                   
+
+                        r_avmm_to_axi4_wr_avmm_address <= std_logic_vector(C_base_address + resize(r_write_ddr_address * 128, 29));
+                        r_avmm_to_axi4_wr_avmm_write   <= '1';
+                        r_burst_cnt                    <= (others => '0');
+
+                -- Write burst data to DDR - one 128-bit word per cycle for 8 cycles (total burst length of 1024 bits)
+                when wr_burst_data =>
+                    if ddr4_m_axi_wready = '1' then
+                        r_avmm_to_axi4_wr_valid     <= '1';
+                        r_avmm_to_axi4_wr_avmm_writedata <= buf_burst(to_integer(r_burst_cnt));
+
+                        if r_burst_cnt = "111" then
+                            r_burst_cnt <= (others => '0');
+                            r_avmm_to_axi4_bready <= '1';
+                            r_avmm_to_axi4_wr_last <= '1';
+                        else
+                            r_burst_cnt <= r_burst_cnt + 1;
+                            r_avmm_to_axi4_bready <= '0';
+                            r_avmm_to_axi4_wr_last <= '0';
+                        end if;
+                    end if;
+
                 -- After writing 8 words, wait for the burst to complete
                 when wr_burst_wait =>
                     if w_avmm_to_axi4_wr_avmm_busy = '0' then
-                        if r_write_ddr_address = ((r_write_limit + 1) / C_BURST_LEN - 1) then
+                        if r_write_ddr_address = ((w_write_limit + 1) / C_BURST_LEN - 1) then
                             r_write_ddr_address <= (others => '0');
                             r_rd_address_gen    <= '1';
                         else
@@ -380,6 +328,8 @@ begin
 
                 -- Start reading a DDR word
                 when rd_phase =>
+
+                    r_avmm_to_axi4_rready <= '1';
 
                     -- Generate read addresses and control signals for reading from DDR
                     if r_rd_address_gen = '1' then
@@ -413,6 +363,7 @@ begin
 
                     else
                         r_avmm_to_axi4_rd_avmm_address_val <= '0';
+                        fifo_wr_en                         <= '0';
                     end if;
 
                     -- Capture read data from DDR and send it out over AXI4-Stream after reordering
@@ -473,7 +424,7 @@ begin
         end if;
     end process;
 
-    process(current_state, r_byte_idx, r_burst_cnt, w_avmm_to_axi4_wr_avmm_busy, frame_intrlvd_tready, r_frame_intrlvd_tvalid, r_write_ddr_address, r_bit_idx, r_write_limit)
+    process(current_state,r_avmm_to_axi4_wr_avmm_write,ddr4_m_axi_awready, r_byte_idx, r_burst_cnt, w_avmm_to_axi4_wr_avmm_busy, frame_intrlvd_tready, r_frame_intrlvd_tvalid, r_write_ddr_address, r_bit_idx, w_write_limit)
     begin
         case current_state is
 
@@ -488,11 +439,11 @@ begin
                 if r_burst_cnt = "111" then
                     next_state <= wr_burst_start;
                 else
-                    next_state <= current_state;
+                    next_state <= wr_idle;
                 end if;
 
             when wr_burst_start =>
-                if w_avmm_to_axi4_wr_avmm_busy = '1' then
+                if r_avmm_to_axi4_wr_avmm_write  = '1' and  ddr4_m_axi_awready = '1'then
                     next_state <= wr_burst_data;
                 else
                     next_state <= current_state;
@@ -507,10 +458,10 @@ begin
 
             when wr_burst_wait =>
                 if w_avmm_to_axi4_wr_avmm_busy = '0' then
-                    if r_write_ddr_address = ((r_write_limit + 1) / C_BURST_LEN - 1) then
+                    if r_write_ddr_address = ((w_write_limit + 1) / C_BURST_LEN - 1) then
                         next_state <= rd_phase;
                     else
-                        next_state <= wr_store_buffer;
+                        next_state <= wr_idle;
                     end if;
                 end if;
 
@@ -518,7 +469,7 @@ begin
 
                 if r_frame_intrlvd_tvalid = '1' and frame_intrlvd_tready = '1' then
                     if r_write_ddr_address = C_COLS * C_ROWS then
-                        next_state <= wr_store_buffer;
+                        next_state <= wr_idle;
                     else
                         next_state <= rd_phase;
                     end if;
@@ -536,14 +487,53 @@ begin
     frame_intrlvd_tuser  <= r_frame_intrlvd_tuser;
     frame_intrlvd_tvalid <= r_frame_intrlvd_tvalid;
 
+    ddr4_m_axi_awaddr <= r_avmm_to_axi4_wr_avmm_address;
+    ddr4_m_axi_awvalid <= r_avmm_to_axi4_wr_avmm_write;
+    ddr4_m_axi_wdata <= r_avmm_to_axi4_wr_avmm_writedata;
+    ddr4_m_axi_wvalid <= r_avmm_to_axi4_wr_valid;
+    ddr4_m_axi_wlast <= r_avmm_to_axi4_wr_last;
+    ddr4_m_axi_bready <= r_avmm_to_axi4_bready;
+
+    ddr4_m_axi_araddr <= r_avmm_to_axi4_rd_avmm_address;
+    ddr4_m_axi_arvalid <= r_avmm_to_axi4_rd_avmm_address_val;
+    ddr4_m_axi_rready <= r_avmm_to_axi4_rready;
+
+    ddr4_m_axi_arburst <= "01"; -- INCR burst
+    ddr4_m_axi_arid <= "0001";
+    ddr4_m_axi_arlen <= "00000000";
+    ddr4_m_axi_arsize <= "100"; -- 128-bit transfers
+    ddr4_m_axi_arlock <= "0";
+    ddr4_m_axi_arcache <= X"3"; -- Bufferable
+    ddr4_m_axi_arprot <= "000"; -- Normal, non-secure, data access
+    ddr4_m_axi_arqos <= X"0"; -- Default QoS  
+
+    ddr4_m_axi_awburst <= "01"; -- INCR burst
+    ddr4_m_axi_awid <= "0000";
+    ddr4_m_axi_awlen <= "00000111"; -- 8 beats per burst (total of 1024 bits since each beat is 128 bits)
+    ddr4_m_axi_awsize <= "100"; -- 128-bit transfers
+    ddr4_m_axi_awlock <= "0";
+    ddr4_m_axi_awcache <= X"3"; -- Bufferable
+    ddr4_m_axi_awprot <= "000"; -- Normal, non-secure, data access
+    ddr4_m_axi_awqos <= X"0"; -- Default QoS          
+    ddr4_m_axi_wstrb <= (others => '1'); -- All bytes are valid in each beat
+
+    w_avmm_to_axi4_wr_avmm_busy <= not(ddr4_m_axi_bvalid and r_avmm_to_axi4_bready );
+    w_avmm_to_axi4_rd_avmm_busy <= (r_avmm_to_axi4_rd_avmm_address_val and  not ddr4_m_axi_arready);
+
+    w_avmm_to_axi4_rd_avmm_readdata <= ddr4_m_axi_rdata;
+    w_avmm_to_axi4_rd_avmm_readdata_val <= ddr4_m_axi_rvalid ;
+
     fifo_rd_en <= w_avmm_to_axi4_rd_avmm_readdata_val;
+    fifo_rst   <= not axis_resetn;
+
+    w_write_limit <= resize((C_COLS * C_ROWS) / 128 - 1, 29);
 
     xpm_fifo_sync_inst : xpm_fifo_sync
         generic map(
             CASCADE_HEIGHT      => 0,   -- DECIMAL
             DOUT_RESET_VALUE    => "0", -- String
             ECC_MODE            => "no_ecc", -- String
-            -- EN_SIM_ASSERT_ERR   => "warning", -- String
+           -- EN_SIM_ASSERT_ERR   => "warning", -- String
             FIFO_MEMORY_TYPE    => "auto", -- String
             FIFO_READ_LATENCY   => 0,   -- DECIMAL
             FIFO_WRITE_DEPTH    => 128, -- DECIMAL
@@ -565,78 +555,13 @@ begin
             rd_en         => fifo_rd_en,
             wr_clk        => axis_clk,
             sleep         => '0',
-            rst           => '0',
+            rst           => fifo_rst,
             wr_en         => fifo_wr_en,
             injectsbiterr => '0',
-            empty         => empty,
+            empty         => open,
             injectdbiterr => '0'
         );
 
-    avmm_to_axi4_wr_inst : avmm_to_axi4_wr
-        generic map(
-            g_ADDR_WIDTH => 29,
-            g_DATA_WIDTH => 128
-        )
-        port map(
-            axi_aresetn       => axis_resetn,
-            axi_aclk          => axis_clk,
-            avmm_s_write      => r_avmm_to_axi4_wr_avmm_write,
-            avmm_s_address    => r_avmm_to_axi4_wr_avmm_address,
-            avmm_s_writedata  => r_avmm_to_axi4_wr_avmm_writedata,
-            avmm_s_busy       => w_avmm_to_axi4_wr_avmm_busy,
-            axi_m_axi_awid    => ddr4_m_axi_awid,
-            axi_m_axi_awaddr  => ddr4_m_axi_awaddr,
-            axi_m_axi_awlen   => ddr4_m_axi_awlen,
-            axi_m_axi_awsize  => ddr4_m_axi_awsize,
-            axi_m_axi_awburst => ddr4_m_axi_awburst,
-            axi_m_axi_awlock  => ddr4_m_axi_awlock,
-            axi_m_axi_awcache => ddr4_m_axi_awcache,
-            axi_m_axi_awprot  => ddr4_m_axi_awprot,
-            axi_m_axi_awqos   => ddr4_m_axi_awqos,
-            axi_m_axi_awvalid => ddr4_m_axi_awvalid,
-            axi_m_axi_awready => ddr4_m_axi_awready,
-            axi_m_axi_wdata   => ddr4_m_axi_wdata,
-            axi_m_axi_wstrb   => ddr4_m_axi_wstrb,
-            axi_m_axi_wlast   => ddr4_m_axi_wlast,
-            axi_m_axi_wvalid  => ddr4_m_axi_wvalid,
-            axi_m_axi_wready  => ddr4_m_axi_wready,
-            axi_m_axi_bready  => ddr4_m_axi_bready,
-            axi_m_axi_bid     => ddr4_m_axi_bid,
-            axi_m_axi_bresp   => ddr4_m_axi_bresp,
-            axi_m_axi_bvalid  => ddr4_m_axi_bvalid
-        );
-
-    avmm_to_axi4_rd_inst : avmm_to_axi4_rd
-        generic map(
-            g_ADDR_WIDTH => 29,         -- keep default or change as needed
-            g_DATA_WIDTH => 128     -- keep default or change as needed
-        )
-        port map(
-            axi_aresetn         => axis_resetn,
-            axi_aclk            => axis_clk,
-            avmm_s_read         => r_avmm_to_axi4_rd_avmm_read,
-            avmm_s_address      => r_avmm_to_axi4_rd_avmm_address,
-            avmm_s_address_val  => r_avmm_to_axi4_rd_avmm_address_val,
-            avmm_s_readdata_val => w_avmm_to_axi4_rd_avmm_readdata_val,
-            avmm_s_readdata     => w_avmm_to_axi4_rd_avmm_readdata,
-            avmm_s_busy         => w_avmm_to_axi4_rd_avmm_busy,
-            axi_m_axi_arid      => ddr4_m_axi_arid,
-            axi_m_axi_araddr    => ddr4_m_axi_araddr,
-            axi_m_axi_arlen     => ddr4_m_axi_arlen,
-            axi_m_axi_arsize    => ddr4_m_axi_arsize,
-            axi_m_axi_arburst   => ddr4_m_axi_arburst,
-            axi_m_axi_arlock    => ddr4_m_axi_arlock,
-            axi_m_axi_arcache   => ddr4_m_axi_arcache,
-            axi_m_axi_arprot    => ddr4_m_axi_arprot,
-            axi_m_axi_arqos     => ddr4_m_axi_arqos,
-            axi_m_axi_arvalid   => ddr4_m_axi_arvalid,
-            axi_m_axi_arready   => ddr4_m_axi_arready,
-            axi_m_axi_rready    => ddr4_m_axi_rready,
-            axi_m_axi_rlast     => ddr4_m_axi_rlast,
-            axi_m_axi_rvalid    => ddr4_m_axi_rvalid,
-            axi_m_axi_rresp     => ddr4_m_axi_rresp,
-            axi_m_axi_rid       => ddr4_m_axi_rid,
-            axi_m_axi_rdata     => ddr4_m_axi_rdata
-        );
+ 
 
 end arc_mod_intrlv;
