@@ -14,15 +14,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="2733346fs"></ZoomStartTime>
-      <ZoomEndTime time="7068347fs"></ZoomEndTime>
-      <Cursor1Time time="4393553fs"></Cursor1Time>
+      <ZoomStartTime time="870000fs"></ZoomStartTime>
+      <ZoomEndTime time="1026001fs"></ZoomEndTime>
+      <Cursor1Time time="1000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="216"></NameColumnWidth>
-      <ValueColumnWidth column_width="104"></ValueColumnWidth>
+      <ValueColumnWidth column_width="96"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="30" />
+   <WVObjectSize size="47" />
    <wvobject type="logic" fp_name="/mod_intrlv_tb/mod_intrlv_inst/axis_resetn">
       <obj_property name="ElementShortName">axis_resetn</obj_property>
       <obj_property name="ObjectShortName">axis_resetn</obj_property>
@@ -77,18 +77,10 @@
          <obj_property name="ElementShortName">frame_intrlvd_tvalid</obj_property>
          <obj_property name="ObjectShortName">frame_intrlvd_tvalid</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/frame_intrlvd_tuser">
-         <obj_property name="ElementShortName">frame_intrlvd_tuser[15:0]</obj_property>
-         <obj_property name="ObjectShortName">frame_intrlvd_tuser[15:0]</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/frame_intrlvd_tdata">
          <obj_property name="ElementShortName">frame_intrlvd_tdata[31:0]</obj_property>
          <obj_property name="ObjectShortName">frame_intrlvd_tdata[31:0]</obj_property>
          <obj_property name="Radix">HEXRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/frame_intrlvd_tkeep">
-         <obj_property name="ElementShortName">frame_intrlvd_tkeep[3:0]</obj_property>
-         <obj_property name="ObjectShortName">frame_intrlvd_tkeep[3:0]</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/mod_intrlv_tb/mod_intrlv_inst/frame_intrlvd_tlast">
          <obj_property name="ElementShortName">frame_intrlvd_tlast</obj_property>
@@ -99,53 +91,91 @@
       <obj_property name="label">------------------------</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
-   <wvobject type="group" fp_name="group190">
-      <obj_property name="label">avmm_wr</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject type="logic" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_wr_inst/avmm_s_write">
-         <obj_property name="ElementShortName">avmm_s_write</obj_property>
-         <obj_property name="ObjectShortName">avmm_s_write</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_wr_inst/avmm_s_address">
-         <obj_property name="ElementShortName">avmm_s_address[28:0]</obj_property>
-         <obj_property name="ObjectShortName">avmm_s_address[28:0]</obj_property>
-         <obj_property name="Radix">HEXRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_wr_inst/avmm_s_writedata">
-         <obj_property name="ElementShortName">avmm_s_writedata[127:0]</obj_property>
-         <obj_property name="ObjectShortName">avmm_s_writedata[127:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_wr_inst/avmm_s_busy">
-         <obj_property name="ElementShortName">avmm_s_busy</obj_property>
-         <obj_property name="ObjectShortName">avmm_s_busy</obj_property>
-      </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_wr_inst/avmm_s_write">
+      <obj_property name="ElementShortName">avmm_s_write</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_write</obj_property>
    </wvobject>
-   <wvobject type="group" fp_name="group191">
-      <obj_property name="label">avmm_rd</obj_property>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_wr_inst/avmm_s_address">
+      <obj_property name="ElementShortName">avmm_s_address[28:0]</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_address[28:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_wr_inst/avmm_s_writedata">
+      <obj_property name="ElementShortName">avmm_s_writedata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_writedata[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_wr_inst/avmm_s_busy">
+      <obj_property name="ElementShortName">avmm_s_busy</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_busy</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider77" type="divider">
+      <obj_property name="label">------------------------</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject type="logic" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_rd_inst/avmm_s_read">
-         <obj_property name="ElementShortName">avmm_s_read</obj_property>
-         <obj_property name="ObjectShortName">avmm_s_read</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_rd_inst/avmm_s_address">
-         <obj_property name="ElementShortName">avmm_s_address[28:0]</obj_property>
-         <obj_property name="ObjectShortName">avmm_s_address[28:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_rd_inst/avmm_s_readdata_val">
-         <obj_property name="ElementShortName">avmm_s_readdata_val</obj_property>
-         <obj_property name="ObjectShortName">avmm_s_readdata_val</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_rd_inst/avmm_s_readdata">
-         <obj_property name="ElementShortName">avmm_s_readdata[127:0]</obj_property>
-         <obj_property name="ObjectShortName">avmm_s_readdata[127:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_rd_inst/avmm_s_busy">
-         <obj_property name="ElementShortName">avmm_s_busy</obj_property>
-         <obj_property name="ObjectShortName">avmm_s_busy</obj_property>
-      </wvobject>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_rd_inst/avmm_s_read">
+      <obj_property name="ElementShortName">avmm_s_read</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_read</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_rd_inst/avmm_s_address">
+      <obj_property name="ElementShortName">avmm_s_address[28:0]</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_address[28:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_rd_inst/avmm_s_readdata_val">
+      <obj_property name="ElementShortName">avmm_s_readdata_val</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_readdata_val</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_rd_inst/avmm_s_readdata">
+      <obj_property name="ElementShortName">avmm_s_readdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_readdata[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/mod_intrlv_inst/avmm_to_axi4_rd_inst/avmm_s_busy">
+      <obj_property name="ElementShortName">avmm_s_busy</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_busy</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/r_out_data">
+      <obj_property name="ElementShortName">r_out_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">r_out_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider77" type="divider">
+      <obj_property name="label">------------------------</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/r_rd_address_current_row">
+      <obj_property name="ElementShortName">r_rd_address_current_row[9:0]</obj_property>
+      <obj_property name="ObjectShortName">r_rd_address_current_row[9:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/r_rd_address_current_column">
+      <obj_property name="ElementShortName">r_rd_address_current_column[9:0]</obj_property>
+      <obj_property name="ObjectShortName">r_rd_address_current_column[9:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/r_ddr_offset">
+      <obj_property name="ElementShortName">r_ddr_offset[28:0]</obj_property>
+      <obj_property name="ObjectShortName">r_ddr_offset[28:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/fifo_dout">
+      <obj_property name="ElementShortName">fifo_dout[4:0]</obj_property>
+      <obj_property name="ObjectShortName">fifo_dout[4:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/r_write_ddr_address">
+      <obj_property name="ElementShortName">r_write_ddr_address[28:0]</obj_property>
+      <obj_property name="ObjectShortName">r_write_ddr_address[28:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/r_write_limit">
+      <obj_property name="ElementShortName">r_write_limit[28:0]</obj_property>
+      <obj_property name="ObjectShortName">r_write_limit[28:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/mod_intrlv_tb/mod_intrlv_inst/current_state">
+      <obj_property name="ElementShortName">current_state</obj_property>
+      <obj_property name="ObjectShortName">current_state</obj_property>
    </wvobject>
    <wvobject fp_name="divider77" type="divider">
       <obj_property name="label">------------------------</obj_property>
@@ -154,6 +184,7 @@
    <wvobject type="group" fp_name="group139">
       <obj_property name="label">ddr4_m intf</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/ddr4_m_axi_awid">
          <obj_property name="ElementShortName">ddr4_m_axi_awid[3:0]</obj_property>
          <obj_property name="ObjectShortName">ddr4_m_axi_awid[3:0]</obj_property>
@@ -199,12 +230,12 @@
          <obj_property name="ObjectShortName">ddr4_m_axi_awready</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/ddr4_m_axi_wdata">
-         <obj_property name="ElementShortName">ddr4_m_axi_wdata[127:0]</obj_property>
-         <obj_property name="ObjectShortName">ddr4_m_axi_wdata[127:0]</obj_property>
+         <obj_property name="ElementShortName">ddr4_m_axi_wdata[31:0]</obj_property>
+         <obj_property name="ObjectShortName">ddr4_m_axi_wdata[31:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/ddr4_m_axi_wstrb">
-         <obj_property name="ElementShortName">ddr4_m_axi_wstrb[15:0]</obj_property>
-         <obj_property name="ObjectShortName">ddr4_m_axi_wstrb[15:0]</obj_property>
+         <obj_property name="ElementShortName">ddr4_m_axi_wstrb[3:0]</obj_property>
+         <obj_property name="ObjectShortName">ddr4_m_axi_wstrb[3:0]</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/mod_intrlv_tb/mod_intrlv_inst/ddr4_m_axi_wlast">
          <obj_property name="ElementShortName">ddr4_m_axi_wlast</obj_property>
@@ -299,8 +330,8 @@
          <obj_property name="ObjectShortName">ddr4_m_axi_rid[3:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/ddr4_m_axi_rdata">
-         <obj_property name="ElementShortName">ddr4_m_axi_rdata[127:0]</obj_property>
-         <obj_property name="ObjectShortName">ddr4_m_axi_rdata[127:0]</obj_property>
+         <obj_property name="ElementShortName">ddr4_m_axi_rdata[31:0]</obj_property>
+         <obj_property name="ObjectShortName">ddr4_m_axi_rdata[31:0]</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="divider77" type="divider">

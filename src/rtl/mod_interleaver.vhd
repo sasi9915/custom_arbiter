@@ -33,8 +33,8 @@ entity mod_intrlv is
         ddr4_m_axi_awqos     : out std_logic_vector(3 downto 0);
         ddr4_m_axi_awvalid   : out std_logic;
         ddr4_m_axi_awready   : in  std_logic;
-        ddr4_m_axi_wdata     : out std_logic_vector(127 downto 0);
-        ddr4_m_axi_wstrb     : out std_logic_vector(15 downto 0);
+        ddr4_m_axi_wdata     : out std_logic_vector(31 downto 0);
+        ddr4_m_axi_wstrb     : out std_logic_vector(3 downto 0);
         ddr4_m_axi_wlast     : out std_logic;
         ddr4_m_axi_wvalid    : out std_logic;
         ddr4_m_axi_wready    : in  std_logic;
@@ -58,7 +58,7 @@ entity mod_intrlv is
         ddr4_m_axi_rvalid    : in  std_logic;
         ddr4_m_axi_rresp     : in  std_logic_vector(1 downto 0);
         ddr4_m_axi_rid       : in  std_logic_vector(3 downto 0);
-        ddr4_m_axi_rdata     : in  std_logic_vector(127 downto 0)
+        ddr4_m_axi_rdata     : in  std_logic_vector(31 downto 0)
     );
 end entity;
 
@@ -67,7 +67,7 @@ architecture arc_mod_intrlv of mod_intrlv is
     -- Constants
     constant C_ROWS         : unsigned(9 downto 0)  := to_unsigned(64, 10);
     constant C_COLS         : unsigned(9 downto 0)  := to_unsigned(64, 10);
-    constant C_base_address : unsigned(28 downto 0) := to_unsigned(2000000, 29);
+    constant C_base_address : unsigned(28 downto 0) := to_unsigned(2000, 29);
     constant C_BURST_LEN    : unsigned(3 downto 0)  := to_unsigned(8, 4);
 
     -- Clocks & Resets
@@ -141,13 +141,13 @@ architecture arc_mod_intrlv of mod_intrlv is
     attribute X_INTERFACE_INFO of ddr4_m_axi_rvalid : signal is "xilinx.com:interface:aximm:1.0 ddr4_m_axi RVALID";
     attribute X_INTERFACE_INFO of ddr4_m_axi_rready : signal is "xilinx.com:interface:aximm:1.0 ddr4_m_axi RREADY";
 
-    attribute X_INTERFACE_PARAMETER of ddr4_m_axi_awaddr : signal is "DATA_WIDTH 128, ADDR_WIDTH 29, ID_WIDTH 4, PROTOCOL AXI4, MAX_BURST_LENGTH 256";
+    attribute X_INTERFACE_PARAMETER of ddr4_m_axi_awaddr : signal is "DATA_WIDTH 32, ADDR_WIDTH 29, ID_WIDTH 4, PROTOCOL AXI4, MAX_BURST_LENGTH 256";
 
     -- Component Declarations
     component avmm_to_axi4_wr is
         generic(
             g_ADDR_WIDTH : integer := 29;
-            g_DATA_WIDTH : integer := 128
+            g_DATA_WIDTH : integer := 32
         );
         port(
             axi_aresetn       : in  std_logic;
@@ -168,7 +168,7 @@ architecture arc_mod_intrlv of mod_intrlv is
             axi_m_axi_awvalid : out std_logic;
             axi_m_axi_awready : in  std_logic;
             axi_m_axi_wdata   : out std_logic_vector(g_DATA_WIDTH - 1 downto 0);
-            axi_m_axi_wstrb   : out std_logic_vector(15 downto 0);
+            axi_m_axi_wstrb   : out std_logic_vector(g_DATA_WIDTH / 8 - 1 downto 0);
             axi_m_axi_wlast   : out std_logic;
             axi_m_axi_wvalid  : out std_logic;
             axi_m_axi_wready  : in  std_logic;
@@ -182,7 +182,7 @@ architecture arc_mod_intrlv of mod_intrlv is
     component avmm_to_axi4_rd
         generic(
             g_ADDR_WIDTH : integer := 29;
-            g_DATA_WIDTH : integer := 128
+            g_DATA_WIDTH : integer := 32
         );
         port(
             axi_aresetn         : in  std_logic;
@@ -209,21 +209,21 @@ architecture arc_mod_intrlv of mod_intrlv is
             axi_m_axi_rvalid    : in  std_logic;
             axi_m_axi_rresp     : in  std_logic_vector(1 downto 0);
             axi_m_axi_rid       : in  std_logic_vector(3 downto 0);
-            axi_m_axi_rdata     : in  std_logic_vector(127 downto 0)
+            axi_m_axi_rdata     : in  std_logic_vector(31 downto 0)
         );
     end component;
 
     -- Component IOs
     signal r_avmm_to_axi4_wr_avmm_write     : std_logic;
     signal r_avmm_to_axi4_wr_avmm_address   : std_logic_vector(28 downto 0);
-    signal r_avmm_to_axi4_wr_avmm_writedata : std_logic_vector(127 downto 0);
+    signal r_avmm_to_axi4_wr_avmm_writedata : std_logic_vector(31 downto 0);
     signal w_avmm_to_axi4_wr_avmm_busy      : std_logic;
 
     signal r_avmm_to_axi4_rd_avmm_read         : std_logic;
     signal r_avmm_to_axi4_rd_avmm_address      : std_logic_vector(28 downto 0);
     signal r_avmm_to_axi4_rd_avmm_address_val  : std_logic;
     signal w_avmm_to_axi4_rd_avmm_readdata_val : std_logic;
-    signal w_avmm_to_axi4_rd_avmm_readdata     : std_logic_vector(127 downto 0);
+    signal w_avmm_to_axi4_rd_avmm_readdata     : std_logic_vector(31 downto 0);
     signal w_avmm_to_axi4_rd_avmm_busy         : std_logic;
 
     -- Temp Signals
@@ -249,15 +249,15 @@ architecture arc_mod_intrlv of mod_intrlv is
     signal r_frame_intrlvd_tlast  : std_logic;
 
     -- FIFO signals
-    signal fifo_din   : std_logic_vector(6 downto 0);
-    signal fifo_dout  : std_logic_vector(6 downto 0);
+    signal fifo_din   : std_logic_vector(4 downto 0);
+    signal fifo_dout  : std_logic_vector(4 downto 0);
     signal fifo_wr_en : std_logic;
     signal fifo_rd_en : std_logic;
     signal empty      : std_logic;
 
     signal r_burst_cnt : unsigned(2 downto 0) := (others => '0');
 
-    type buf_burst_t is array (0 to to_integer(C_BURST_LEN) - 1) of std_logic_vector(127 downto 0);
+    type buf_burst_t is array (0 to to_integer(C_BURST_LEN) - 1) of std_logic_vector(31 downto 0);
 
     signal buf_burst : buf_burst_t;
 
@@ -288,7 +288,7 @@ begin
             r_avmm_to_axi4_rd_avmm_address     <= (others => '0');
             r_avmm_to_axi4_rd_avmm_address_val <= '0';
 
-            current_state <= wr_idle;
+            current_state <= wr_store_buffer;
 
             -- Registers
             r_byte_idx          <= (others => '0');
@@ -312,10 +312,10 @@ begin
             r_frame_intrlvd_tlast        <= '0';
             r_frame_intrlvd_tvalid       <= '0';
 
-            if (C_COLS * C_ROWS mod 128 = 0) then
-                r_write_limit <= resize((C_COLS * C_ROWS) / 128 - 1, 29);
+            if (C_COLS * C_ROWS mod 32 = 0) then
+                r_write_limit <= resize((C_COLS * C_ROWS) / 32 - 1, 29);
             else
-                r_write_limit <= resize((C_COLS * C_ROWS) / 128, 29);
+                r_write_limit <= resize((C_COLS * C_ROWS) / 32, 29);
             end if;
 
             case current_state is
@@ -323,32 +323,35 @@ begin
                 -- idle - latch axis word
                 when wr_idle =>
 
-                    r_frame_tready <= '1';
+                    -- r_frame_tready <= '1';
 
-                    if frame_tvalid = '1' then
-                        sr_frame_data(to_integer(r_byte_idx) * 32 + 31 downto to_integer(r_byte_idx) * 32) <= frame_tdata;
+                    -- if frame_tvalid = '1' then
+                    --     sr_frame_data(to_integer(r_byte_idx) * 32 + 31 downto to_integer(r_byte_idx) * 32) <= frame_tdata;
 
-                        if r_byte_idx = "11" then
-                            r_byte_idx <= (others => '0');
-                        else
-                            r_byte_idx <= r_byte_idx + 1;
-                        end if;
-                    end if;
+                    --     if r_byte_idx = "11" then
+                    --         r_byte_idx <= (others => '0');
+                    --     else
+                    --         r_byte_idx <= r_byte_idx + 1;
+                    --     end if;
+                    -- end if;
 
                 -- Once we have 128 bits of data, store it in the burst buffer
                 when wr_store_buffer =>
-                    buf_burst(to_integer(r_burst_cnt)) <= sr_frame_data;
+                     r_frame_tready <= '1';
+                     if frame_tvalid = '1' then
+                        buf_burst(to_integer(r_burst_cnt)) <= frame_tdata;
 
-                    if r_burst_cnt = "111" then
-                        r_burst_cnt <= (others => '0');
-                    else
-                        r_burst_cnt <= r_burst_cnt + 1;
+                        if r_burst_cnt = "111" then
+                            r_burst_cnt <= (others => '0');
+                        else
+                            r_burst_cnt <= r_burst_cnt + 1;
+                        end if;
                     end if;
 
                 -- Start AXI4 write burst to DDR
                 when wr_burst_start =>
                     if w_avmm_to_axi4_wr_avmm_busy = '0' and r_avmm_to_axi4_wr_avmm_write = '0' then
-                        r_avmm_to_axi4_wr_avmm_address <= std_logic_vector(C_base_address + resize(r_write_ddr_address * 128, 29));
+                        r_avmm_to_axi4_wr_avmm_address <= std_logic_vector(C_base_address + resize(r_write_ddr_address * 32, 29));
                         r_avmm_to_axi4_wr_avmm_write   <= '1';
                         r_burst_cnt                    <= (others => '0');
                     end if;
@@ -381,11 +384,11 @@ begin
                     -- Generate read addresses and control signals for reading from DDR
                     if r_rd_address_gen = '1' then
 
-                        r_ddr_offset <= resize(resize(r_rd_address_current_row * C_COLS + r_rd_address_current_column, 29)(28 downto 7), 29);
-                        fifo_din     <= std_logic_vector(resize(r_rd_address_current_row * C_COLS + r_rd_address_current_column, 7));
+                        r_ddr_offset <= resize(resize(r_rd_address_current_row * C_COLS + r_rd_address_current_column, 29)(28 downto 5), 29);
+                        fifo_din     <= std_logic_vector(resize(r_rd_address_current_row * C_COLS + r_rd_address_current_column, 5));
 
                         if w_avmm_to_axi4_rd_avmm_busy = '0' and r_avmm_to_axi4_rd_avmm_address_val = '0' then
-                            r_avmm_to_axi4_rd_avmm_address     <= std_logic_vector(resize(C_base_address + r_ddr_offset * 16, 29));
+                            r_avmm_to_axi4_rd_avmm_address     <= std_logic_vector(resize(C_base_address + (r_ddr_offset+1) * 4, 29));
                             r_avmm_to_axi4_rd_avmm_address_val <= '1';
                             fifo_wr_en                         <= '1';
 
@@ -475,17 +478,17 @@ begin
         case current_state is
 
             when wr_idle =>
-                if r_byte_idx = "11" then
-                    next_state <= wr_store_buffer;
-                else
-                    next_state <= current_state;
-                end if;
+                -- if r_byte_idx = "11" then
+                --     next_state <= wr_store_buffer;
+                -- else
+                --     next_state <= current_state;
+                -- end if;
 
             when wr_store_buffer =>
                 if r_burst_cnt = "111" then
                     next_state <= wr_burst_start;
                 else
-                    next_state <= wr_idle;
+                    next_state <= current_state;
                 end if;
 
             when wr_burst_start =>
@@ -507,7 +510,7 @@ begin
                     if r_write_ddr_address = ((r_write_limit + 1) / C_BURST_LEN - 1) then
                         next_state <= rd_phase;
                     else
-                        next_state <= wr_idle;
+                        next_state <= wr_store_buffer;
                     end if;
                 end if;
 
@@ -515,7 +518,7 @@ begin
 
                 if r_frame_intrlvd_tvalid = '1' and frame_intrlvd_tready = '1' then
                     if r_write_ddr_address = C_COLS * C_ROWS then
-                        next_state <= wr_idle;
+                        next_state <= wr_store_buffer;
                     else
                         next_state <= rd_phase;
                     end if;
@@ -548,12 +551,12 @@ begin
             PROG_EMPTY_THRESH   => 10,  -- DECIMAL
             PROG_FULL_THRESH    => 10,  -- DECIMAL
             RD_DATA_COUNT_WIDTH => 1,   -- DECIMAL
-            READ_DATA_WIDTH     => 7,   -- DECIMAL
+            READ_DATA_WIDTH     => 5,   -- DECIMAL
             READ_MODE           => "std", -- String
             SIM_ASSERT_CHK      => 0,   -- DECIMAL; 0=disable simulation messages, 1=enable simulation messages
             USE_ADV_FEATURES    => "1707", -- String
             WAKEUP_TIME         => 0,   -- DECIMAL
-            WRITE_DATA_WIDTH    => 7,   -- DECIMAL
+            WRITE_DATA_WIDTH    => 5,   -- DECIMAL
             WR_DATA_COUNT_WIDTH => 1
         )
         port map(
@@ -572,7 +575,7 @@ begin
     avmm_to_axi4_wr_inst : avmm_to_axi4_wr
         generic map(
             g_ADDR_WIDTH => 29,
-            g_DATA_WIDTH => 128
+            g_DATA_WIDTH => 32
         )
         port map(
             axi_aresetn       => axis_resetn,
@@ -606,7 +609,7 @@ begin
     avmm_to_axi4_rd_inst : avmm_to_axi4_rd
         generic map(
             g_ADDR_WIDTH => 29,         -- keep default or change as needed
-            g_DATA_WIDTH => 128         -- keep default or change as needed
+            g_DATA_WIDTH => 32         -- keep default or change as needed
         )
         port map(
             axi_aresetn         => axis_resetn,

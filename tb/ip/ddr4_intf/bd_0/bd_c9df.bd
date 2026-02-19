@@ -343,12 +343,6 @@
       }
     },
     "interface_nets": {
-      "iomodule_0_IO": {
-        "interface_ports": [
-          "IO",
-          "iomodule_0/IO_BUS"
-        ]
-      },
       "ilmb": {
         "interface_ports": [
           "microblaze_I/ILMB",
@@ -419,6 +413,12 @@
         "interface_ports": [
           "TRACE",
           "microblaze_I/TRACE"
+        ]
+      },
+      "iomodule_0_IO": {
+        "interface_ports": [
+          "IO",
+          "iomodule_0/IO_BUS"
         ]
       }
     },
