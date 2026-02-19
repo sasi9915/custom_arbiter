@@ -38,8 +38,8 @@ module mod_intrlv_tb;
     reg             ddr4_m_axi_awvalid;
     wire            ddr4_m_axi_awready;
 
-    reg [31:0]     ddr4_m_axi_wdata;
-    reg [3:0]      ddr4_m_axi_wstrb;
+    reg [127:0]     ddr4_m_axi_wdata;
+    reg [15:0]      ddr4_m_axi_wstrb;
     reg             ddr4_m_axi_wlast;
     reg             ddr4_m_axi_wvalid;
     wire            ddr4_m_axi_wready;
@@ -66,7 +66,7 @@ module mod_intrlv_tb;
     wire            ddr4_m_axi_rvalid;
     wire [1:0]      ddr4_m_axi_rresp;
     wire [3:0]      ddr4_m_axi_rid;
-    wire [31:0]    ddr4_m_axi_rdata;
+    wire [127:0]    ddr4_m_axi_rdata;
 
 
 

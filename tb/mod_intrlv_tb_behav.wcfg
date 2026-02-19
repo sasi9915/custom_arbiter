@@ -14,9 +14,9 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="870000fs"></ZoomStartTime>
-      <ZoomEndTime time="1026001fs"></ZoomEndTime>
-      <Cursor1Time time="1000000fs"></Cursor1Time>
+      <ZoomStartTime time="11678600fs"></ZoomStartTime>
+      <ZoomEndTime time="12898601fs"></ZoomEndTime>
+      <Cursor1Time time="11993933fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="216"></NameColumnWidth>
@@ -192,6 +192,7 @@
       <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/ddr4_m_axi_awaddr">
          <obj_property name="ElementShortName">ddr4_m_axi_awaddr[28:0]</obj_property>
          <obj_property name="ObjectShortName">ddr4_m_axi_awaddr[28:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/mod_intrlv_tb/mod_intrlv_inst/ddr4_m_axi_awlen">
          <obj_property name="ElementShortName">ddr4_m_axi_awlen[7:0]</obj_property>

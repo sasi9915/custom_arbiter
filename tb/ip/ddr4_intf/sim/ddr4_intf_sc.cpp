@@ -96,7 +96,7 @@ ddr4_intf_sc::ddr4_intf_sc(const sc_core::sc_module_name& nm) : sc_core::sc_modu
     model_param_props.addLong("C0.DDR4_DCI_CASCADE_CUTOFF", "938");
     model_param_props.addLong("C0.DDR4_AXI_ID_WIDTH", "4");
     model_param_props.addLong("C0.DDR4_AXI_ADDR_WIDTH", "29");
-    model_param_props.addLong("C0.DDR4_AXI_DATA_WIDTH", "32");
+    model_param_props.addLong("C0.DDR4_AXI_DATA_WIDTH", "128");
     model_param_props.addLong("C0.DDR4_MEM_SIZE", "536870912");
     model_param_props.addLong("C0.DDR4_Slot", "1");
     model_param_props.addLong("C0.APP_DATA_WIDTH", "128");

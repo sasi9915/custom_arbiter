@@ -343,6 +343,12 @@
       }
     },
     "interface_nets": {
+      "dlmb_sl_0": {
+        "interface_ports": [
+          "dlmb/LMB_Sl_0",
+          "dlmb_cntlr/SLMB"
+        ]
+      },
       "ilmb": {
         "interface_ports": [
           "microblaze_I/ILMB",
@@ -359,12 +365,6 @@
         "interface_ports": [
           "ilmb/LMB_Sl_0",
           "ilmb_cntlr/SLMB"
-        ]
-      },
-      "dlmb_sl_0": {
-        "interface_ports": [
-          "dlmb/LMB_Sl_0",
-          "dlmb_cntlr/SLMB"
         ]
       },
       "dlmb_sl_1": {

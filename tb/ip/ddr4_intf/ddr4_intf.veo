@@ -88,8 +88,8 @@ ddr4_intf your_instance_name (
   .c0_ddr4_s_axi_awqos(c0_ddr4_s_axi_awqos),          // input wire [3 : 0] c0_ddr4_s_axi_awqos
   .c0_ddr4_s_axi_awvalid(c0_ddr4_s_axi_awvalid),      // input wire c0_ddr4_s_axi_awvalid
   .c0_ddr4_s_axi_awready(c0_ddr4_s_axi_awready),      // output wire c0_ddr4_s_axi_awready
-  .c0_ddr4_s_axi_wdata(c0_ddr4_s_axi_wdata),          // input wire [31 : 0] c0_ddr4_s_axi_wdata
-  .c0_ddr4_s_axi_wstrb(c0_ddr4_s_axi_wstrb),          // input wire [3 : 0] c0_ddr4_s_axi_wstrb
+  .c0_ddr4_s_axi_wdata(c0_ddr4_s_axi_wdata),          // input wire [127 : 0] c0_ddr4_s_axi_wdata
+  .c0_ddr4_s_axi_wstrb(c0_ddr4_s_axi_wstrb),          // input wire [15 : 0] c0_ddr4_s_axi_wstrb
   .c0_ddr4_s_axi_wlast(c0_ddr4_s_axi_wlast),          // input wire c0_ddr4_s_axi_wlast
   .c0_ddr4_s_axi_wvalid(c0_ddr4_s_axi_wvalid),        // input wire c0_ddr4_s_axi_wvalid
   .c0_ddr4_s_axi_wready(c0_ddr4_s_axi_wready),        // output wire c0_ddr4_s_axi_wready
@@ -113,7 +113,7 @@ ddr4_intf your_instance_name (
   .c0_ddr4_s_axi_rvalid(c0_ddr4_s_axi_rvalid),        // output wire c0_ddr4_s_axi_rvalid
   .c0_ddr4_s_axi_rresp(c0_ddr4_s_axi_rresp),          // output wire [1 : 0] c0_ddr4_s_axi_rresp
   .c0_ddr4_s_axi_rid(c0_ddr4_s_axi_rid),              // output wire [3 : 0] c0_ddr4_s_axi_rid
-  .c0_ddr4_s_axi_rdata(c0_ddr4_s_axi_rdata),          // output wire [31 : 0] c0_ddr4_s_axi_rdata
+  .c0_ddr4_s_axi_rdata(c0_ddr4_s_axi_rdata),          // output wire [127 : 0] c0_ddr4_s_axi_rdata
   .sys_rst(sys_rst)                                  // input wire sys_rst
 );
 // INST_TAG_END ------ End INSTANTIATION Template ---------

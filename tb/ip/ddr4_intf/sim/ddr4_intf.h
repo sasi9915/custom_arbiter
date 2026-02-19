@@ -113,8 +113,8 @@ public:
   sc_core::sc_in< sc_dt::sc_bv<4> > c0_ddr4_s_axi_awqos;
   sc_core::sc_in< bool > c0_ddr4_s_axi_awvalid;
   sc_core::sc_out< bool > c0_ddr4_s_axi_awready;
-  sc_core::sc_in< sc_dt::sc_bv<32> > c0_ddr4_s_axi_wdata;
-  sc_core::sc_in< sc_dt::sc_bv<4> > c0_ddr4_s_axi_wstrb;
+  sc_core::sc_in< sc_dt::sc_bv<128> > c0_ddr4_s_axi_wdata;
+  sc_core::sc_in< sc_dt::sc_bv<16> > c0_ddr4_s_axi_wstrb;
   sc_core::sc_in< bool > c0_ddr4_s_axi_wlast;
   sc_core::sc_in< bool > c0_ddr4_s_axi_wvalid;
   sc_core::sc_out< bool > c0_ddr4_s_axi_wready;
@@ -138,7 +138,7 @@ public:
   sc_core::sc_out< bool > c0_ddr4_s_axi_rvalid;
   sc_core::sc_out< sc_dt::sc_bv<2> > c0_ddr4_s_axi_rresp;
   sc_core::sc_out< sc_dt::sc_bv<4> > c0_ddr4_s_axi_rid;
-  sc_core::sc_out< sc_dt::sc_bv<32> > c0_ddr4_s_axi_rdata;
+  sc_core::sc_out< sc_dt::sc_bv<128> > c0_ddr4_s_axi_rdata;
   sc_core::sc_in< bool > sys_rst;
 
 protected:
@@ -147,7 +147,7 @@ protected:
 
 private:
 
-  xtlm::xaximm_pin2xtlm_t<32,29,4,1,1,1,1,1>* mp_C0_DDR4_S_AXI_transactor;
+  xtlm::xaximm_pin2xtlm_t<128,29,4,1,1,1,1,1>* mp_C0_DDR4_S_AXI_transactor;
   xsc::common::vectorN2scalar_converter<1>* mp_c0_ddr4_s_axi_arlock_converter;
   sc_signal< bool > m_c0_ddr4_s_axi_arlock_converter_signal;
   xsc::common::vectorN2scalar_converter<1>* mp_c0_ddr4_s_axi_awlock_converter;
@@ -202,8 +202,8 @@ public:
   sc_core::sc_in< sc_dt::sc_bv<4> > c0_ddr4_s_axi_awqos;
   sc_core::sc_in< bool > c0_ddr4_s_axi_awvalid;
   sc_core::sc_out< bool > c0_ddr4_s_axi_awready;
-  sc_core::sc_in< sc_dt::sc_bv<32> > c0_ddr4_s_axi_wdata;
-  sc_core::sc_in< sc_dt::sc_bv<4> > c0_ddr4_s_axi_wstrb;
+  sc_core::sc_in< sc_dt::sc_bv<128> > c0_ddr4_s_axi_wdata;
+  sc_core::sc_in< sc_dt::sc_bv<16> > c0_ddr4_s_axi_wstrb;
   sc_core::sc_in< bool > c0_ddr4_s_axi_wlast;
   sc_core::sc_in< bool > c0_ddr4_s_axi_wvalid;
   sc_core::sc_out< bool > c0_ddr4_s_axi_wready;
@@ -227,7 +227,7 @@ public:
   sc_core::sc_out< bool > c0_ddr4_s_axi_rvalid;
   sc_core::sc_out< sc_dt::sc_bv<2> > c0_ddr4_s_axi_rresp;
   sc_core::sc_out< sc_dt::sc_bv<4> > c0_ddr4_s_axi_rid;
-  sc_core::sc_out< sc_dt::sc_bv<32> > c0_ddr4_s_axi_rdata;
+  sc_core::sc_out< sc_dt::sc_bv<128> > c0_ddr4_s_axi_rdata;
   sc_core::sc_in< bool > sys_rst;
 
 protected:
@@ -236,7 +236,7 @@ protected:
 
 private:
 
-  xtlm::xaximm_pin2xtlm_t<32,29,4,1,1,1,1,1>* mp_C0_DDR4_S_AXI_transactor;
+  xtlm::xaximm_pin2xtlm_t<128,29,4,1,1,1,1,1>* mp_C0_DDR4_S_AXI_transactor;
   xsc::common::vectorN2scalar_converter<1>* mp_c0_ddr4_s_axi_arlock_converter;
   sc_signal< bool > m_c0_ddr4_s_axi_arlock_converter_signal;
   xsc::common::vectorN2scalar_converter<1>* mp_c0_ddr4_s_axi_awlock_converter;
@@ -291,8 +291,8 @@ public:
   sc_core::sc_in< sc_dt::sc_bv<4> > c0_ddr4_s_axi_awqos;
   sc_core::sc_in< bool > c0_ddr4_s_axi_awvalid;
   sc_core::sc_out< bool > c0_ddr4_s_axi_awready;
-  sc_core::sc_in< sc_dt::sc_bv<32> > c0_ddr4_s_axi_wdata;
-  sc_core::sc_in< sc_dt::sc_bv<4> > c0_ddr4_s_axi_wstrb;
+  sc_core::sc_in< sc_dt::sc_bv<128> > c0_ddr4_s_axi_wdata;
+  sc_core::sc_in< sc_dt::sc_bv<16> > c0_ddr4_s_axi_wstrb;
   sc_core::sc_in< bool > c0_ddr4_s_axi_wlast;
   sc_core::sc_in< bool > c0_ddr4_s_axi_wvalid;
   sc_core::sc_out< bool > c0_ddr4_s_axi_wready;
@@ -316,7 +316,7 @@ public:
   sc_core::sc_out< bool > c0_ddr4_s_axi_rvalid;
   sc_core::sc_out< sc_dt::sc_bv<2> > c0_ddr4_s_axi_rresp;
   sc_core::sc_out< sc_dt::sc_bv<4> > c0_ddr4_s_axi_rid;
-  sc_core::sc_out< sc_dt::sc_bv<32> > c0_ddr4_s_axi_rdata;
+  sc_core::sc_out< sc_dt::sc_bv<128> > c0_ddr4_s_axi_rdata;
   sc_core::sc_in< bool > sys_rst;
 
 protected:
@@ -325,7 +325,7 @@ protected:
 
 private:
 
-  xtlm::xaximm_pin2xtlm_t<32,29,4,1,1,1,1,1>* mp_C0_DDR4_S_AXI_transactor;
+  xtlm::xaximm_pin2xtlm_t<128,29,4,1,1,1,1,1>* mp_C0_DDR4_S_AXI_transactor;
   xsc::common::vectorN2scalar_converter<1>* mp_c0_ddr4_s_axi_arlock_converter;
   sc_signal< bool > m_c0_ddr4_s_axi_arlock_converter_signal;
   xsc::common::vectorN2scalar_converter<1>* mp_c0_ddr4_s_axi_awlock_converter;
@@ -382,8 +382,8 @@ public:
   sc_core::sc_in< sc_dt::sc_bv<4> > c0_ddr4_s_axi_awqos;
   sc_core::sc_in< bool > c0_ddr4_s_axi_awvalid;
   sc_core::sc_out< bool > c0_ddr4_s_axi_awready;
-  sc_core::sc_in< sc_dt::sc_bv<32> > c0_ddr4_s_axi_wdata;
-  sc_core::sc_in< sc_dt::sc_bv<4> > c0_ddr4_s_axi_wstrb;
+  sc_core::sc_in< sc_dt::sc_bv<128> > c0_ddr4_s_axi_wdata;
+  sc_core::sc_in< sc_dt::sc_bv<16> > c0_ddr4_s_axi_wstrb;
   sc_core::sc_in< bool > c0_ddr4_s_axi_wlast;
   sc_core::sc_in< bool > c0_ddr4_s_axi_wvalid;
   sc_core::sc_out< bool > c0_ddr4_s_axi_wready;
@@ -407,7 +407,7 @@ public:
   sc_core::sc_out< bool > c0_ddr4_s_axi_rvalid;
   sc_core::sc_out< sc_dt::sc_bv<2> > c0_ddr4_s_axi_rresp;
   sc_core::sc_out< sc_dt::sc_bv<4> > c0_ddr4_s_axi_rid;
-  sc_core::sc_out< sc_dt::sc_bv<32> > c0_ddr4_s_axi_rdata;
+  sc_core::sc_out< sc_dt::sc_bv<128> > c0_ddr4_s_axi_rdata;
   sc_core::sc_in< bool > sys_rst;
 
 protected:
@@ -416,7 +416,7 @@ protected:
 
 private:
 
-  xtlm::xaximm_pin2xtlm_t<32,29,4,1,1,1,1,1>* mp_C0_DDR4_S_AXI_transactor;
+  xtlm::xaximm_pin2xtlm_t<128,29,4,1,1,1,1,1>* mp_C0_DDR4_S_AXI_transactor;
   xsc::common::vectorN2scalar_converter<1>* mp_c0_ddr4_s_axi_arlock_converter;
   sc_signal< bool > m_c0_ddr4_s_axi_arlock_converter_signal;
   xsc::common::vectorN2scalar_converter<1>* mp_c0_ddr4_s_axi_awlock_converter;
@@ -479,8 +479,8 @@ public:
   sc_core::sc_in< sc_dt::sc_bv<4> > c0_ddr4_s_axi_awqos;
   sc_core::sc_in< bool > c0_ddr4_s_axi_awvalid;
   sc_core::sc_out< bool > c0_ddr4_s_axi_awready;
-  sc_core::sc_in< sc_dt::sc_bv<32> > c0_ddr4_s_axi_wdata;
-  sc_core::sc_in< sc_dt::sc_bv<4> > c0_ddr4_s_axi_wstrb;
+  sc_core::sc_in< sc_dt::sc_bv<128> > c0_ddr4_s_axi_wdata;
+  sc_core::sc_in< sc_dt::sc_bv<16> > c0_ddr4_s_axi_wstrb;
   sc_core::sc_in< bool > c0_ddr4_s_axi_wlast;
   sc_core::sc_in< bool > c0_ddr4_s_axi_wvalid;
   sc_core::sc_out< bool > c0_ddr4_s_axi_wready;
@@ -504,7 +504,7 @@ public:
   sc_core::sc_out< bool > c0_ddr4_s_axi_rvalid;
   sc_core::sc_out< sc_dt::sc_bv<2> > c0_ddr4_s_axi_rresp;
   sc_core::sc_out< sc_dt::sc_bv<4> > c0_ddr4_s_axi_rid;
-  sc_core::sc_out< sc_dt::sc_bv<32> > c0_ddr4_s_axi_rdata;
+  sc_core::sc_out< sc_dt::sc_bv<128> > c0_ddr4_s_axi_rdata;
   sc_core::sc_in< bool > sys_rst;
 
 protected:
@@ -513,7 +513,7 @@ protected:
 
 private:
 
-  xtlm::xaximm_pin2xtlm_t<32,29,4,1,1,1,1,1>* mp_C0_DDR4_S_AXI_transactor;
+  xtlm::xaximm_pin2xtlm_t<128,29,4,1,1,1,1,1>* mp_C0_DDR4_S_AXI_transactor;
   xsc::common::vectorN2scalar_converter<1>* mp_c0_ddr4_s_axi_arlock_converter;
   sc_signal< bool > m_c0_ddr4_s_axi_arlock_converter_signal;
   xsc::common::vectorN2scalar_converter<1>* mp_c0_ddr4_s_axi_awlock_converter;

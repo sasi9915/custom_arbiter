@@ -6,7 +6,7 @@ entity avmm_to_axi4_rd is
 
     generic(
         g_ADDR_WIDTH : integer := 29;
-        g_DATA_WIDTH : integer := 32
+        g_DATA_WIDTH : integer := 128
     );
     port(
         axi_aresetn         : in  std_logic;
@@ -33,7 +33,7 @@ entity avmm_to_axi4_rd is
         axi_m_axi_rvalid    : in  std_logic;
         axi_m_axi_rresp     : in  std_logic_vector(1 downto 0);
         axi_m_axi_rid       : in  std_logic_vector(3 downto 0);
-        axi_m_axi_rdata     : in  std_logic_vector(31 downto 0)
+        axi_m_axi_rdata     : in  std_logic_vector(127 downto 0)
     );
 end entity;
 
@@ -61,7 +61,7 @@ architecture arc_avmm_to_axi4_rd of avmm_to_axi4_rd is
     signal w_axi_m_axi_rvalid  : std_logic;
     signal w_axi_m_axi_rresp   : std_logic_vector(1 downto 0);
     signal w_axi_m_axi_rid     : std_logic_vector(3 downto 0);
-    signal w_axi_m_axi_rdata   : std_logic_vector(31 downto 0);
+    signal w_axi_m_axi_rdata   : std_logic_vector(127 downto 0);
 
 begin
 
@@ -99,7 +99,7 @@ begin
             r_axi_m_axi_arid    <= X"0";
             r_axi_m_axi_araddr  <= (others => '0');
             r_axi_m_axi_arlen   <= (others => '0');
-            r_axi_m_axi_arsize  <= "010"; -- 16 bytes
+            r_axi_m_axi_arsize  <= "100"; -- 16 bytes
             r_axi_m_axi_arburst <= "01"; -- INCR
             r_axi_m_axi_arvalid <= '0';
             r_axi_m_axi_rready  <= '0';

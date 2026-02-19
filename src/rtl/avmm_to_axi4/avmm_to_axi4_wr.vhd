@@ -6,7 +6,7 @@ entity avmm_to_axi4_wr is
 
     generic(
         g_ADDR_WIDTH : integer := 29;
-        g_DATA_WIDTH : integer := 31
+        g_DATA_WIDTH : integer := 128
     );
     port(
         axi_aresetn       : in  std_logic;
@@ -154,7 +154,7 @@ begin
             r_axi_m_axi_awid    <= X"0";
             r_axi_m_axi_awaddr  <= (others => '0');
             r_axi_m_axi_awlen   <= "00000111";
-            r_axi_m_axi_awsize  <= "010";
+            r_axi_m_axi_awsize  <= "100";
             r_axi_m_axi_awburst <= "01";
             r_axi_m_axi_awlock  <= "0";
             r_axi_m_axi_awcache <= X"3"; -- Normal, non-cacheable
