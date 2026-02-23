@@ -2067,7 +2067,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:2ee750fe</spirit:value>
+            <spirit:value>9:262d2a1e</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -2081,11 +2081,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Wed Feb 18 07:46:59 UTC 2026</spirit:value>
+            <spirit:value>Fri Feb 20 05:56:03 UTC 2026</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:3c1d49e2</spirit:value>
+            <spirit:value>9:65382d11</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -2100,11 +2100,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Thu Feb 19 08:16:41 UTC 2026</spirit:value>
+            <spirit:value>Fri Feb 20 06:31:51 UTC 2026</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:7d667ded</spirit:value>
+            <spirit:value>9:26d55216</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -2119,11 +2119,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Thu Feb 19 08:16:44 UTC 2026</spirit:value>
+            <spirit:value>Fri Feb 20 06:31:58 UTC 2026</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:7d667ded</spirit:value>
+            <spirit:value>9:26d55216</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -2134,7 +2134,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:7d667ded</spirit:value>
+            <spirit:value>9:26d55216</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -2149,11 +2149,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Thu Feb 19 08:16:44 UTC 2026</spirit:value>
+            <spirit:value>Fri Feb 20 06:31:59 UTC 2026</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:7d667ded</spirit:value>
+            <spirit:value>9:26d55216</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -2166,7 +2166,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:4f042d26</spirit:value>
+            <spirit:value>9:d56fac57</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -2182,11 +2182,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Thu Feb 19 08:16:44 UTC 2026</spirit:value>
+            <spirit:value>Fri Feb 20 06:31:59 UTC 2026</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:58853e6e</spirit:value>
+            <spirit:value>9:8dfd6aec</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>sim_type</spirit:name>
@@ -2210,11 +2210,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Thu Feb 19 08:16:45 UTC 2026</spirit:value>
+            <spirit:value>Fri Feb 20 06:32:01 UTC 2026</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:4f042d26</spirit:value>
+            <spirit:value>9:d56fac57</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -2230,11 +2230,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Thu Feb 19 08:16:45 UTC 2026</spirit:value>
+            <spirit:value>Fri Feb 20 06:32:01 UTC 2026</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:58853e6e</spirit:value>
+            <spirit:value>9:8dfd6aec</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>sim_type</spirit:name>
@@ -2252,11 +2252,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Thu Feb 19 08:16:45 UTC 2026</spirit:value>
+            <spirit:value>Fri Feb 20 06:32:01 UTC 2026</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:7d667ded</spirit:value>
+            <spirit:value>9:26d55216</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -2270,11 +2270,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Thu Feb 19 08:16:45 UTC 2026</spirit:value>
+            <spirit:value>Fri Feb 20 06:32:01 UTC 2026</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:7d667ded</spirit:value>
+            <spirit:value>9:26d55216</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -6316,7 +6316,7 @@
     <spirit:modelParameters>
       <spirit:modelParameter xsi:type="spirit:nameValueTypeType">
         <spirit:name>C0.DDR4_Mem_Add_Map</spirit:name>
-        <spirit:value spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C0.DDR4_Mem_Add_Map">ROW_COLUMN_BANK</spirit:value>
+        <spirit:value spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C0.DDR4_Mem_Add_Map">BANK_ROW_COLUMN</spirit:value>
         <spirit:vendorExtensions>
           <xilinx:parameterInfo>
             <xilinx:parameterUsage>simulation.tlm</xilinx:parameterUsage>
@@ -9048,7 +9048,7 @@
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>C0.DDR4_Mem_Add_Map</spirit:name>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.C0.DDR4_Mem_Add_Map" spirit:choiceRef="choice_list_c89503c8" spirit:order="52">ROW_COLUMN_BANK</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.C0.DDR4_Mem_Add_Map" spirit:choiceRef="choice_list_c89503c8" spirit:order="52">BANK_ROW_COLUMN</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>C0.DDR4_MemoryName</spirit:name>
@@ -9475,6 +9475,7 @@
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.C0.DDR4_AxiSelection" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.C0.DDR4_CasLatency" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.C0.DDR4_DataWidth" xilinx:valueSource="user"/>
+        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.C0.DDR4_Mem_Add_Map" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.C0.DDR4_MemoryPart" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.C0.DDR4_MemoryType" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.C0.LR_WIDTH" xilinx:valueSource="user"/>
