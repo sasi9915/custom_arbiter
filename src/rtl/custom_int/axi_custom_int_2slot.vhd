@@ -6,7 +6,8 @@ entity axi_custom_int_2slot is
     generic (
         G_ADDR_WIDTH     : positive := 29;
         G_DATA_WIDTH     : positive := 128;
-        G_S_ID_WIDTH     : positive := 4;
+        G_S_ID_WIDTH     : positive := 1;
+        G_M_ID_WIDTH     : positive := 4;
         G_CMD_FIFO_DEPTH : positive := 16
     );
     port (
@@ -92,7 +93,7 @@ entity axi_custom_int_2slot is
         s1_rready  : in  std_logic;
 
         -- DDR-side AXI master output
-        m_awid    : out std_logic_vector(G_S_ID_WIDTH downto 0);
+        m_awid    : out std_logic_vector(G_M_ID_WIDTH - 1 downto 0);
         m_awaddr  : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0);
         m_awlen   : out std_logic_vector(7 downto 0);
         m_awsize  : out std_logic_vector(2 downto 0);
@@ -108,11 +109,11 @@ entity axi_custom_int_2slot is
         m_wlast   : out std_logic;
         m_wvalid  : out std_logic;
         m_wready  : in  std_logic;
-        m_bid     : in  std_logic_vector(G_S_ID_WIDTH downto 0);
+        m_bid     : in  std_logic_vector(G_M_ID_WIDTH - 1 downto 0);
         m_bresp   : in  std_logic_vector(1 downto 0);
         m_bvalid  : in  std_logic;
         m_bready  : out std_logic;
-        m_arid    : out std_logic_vector(G_S_ID_WIDTH downto 0);
+        m_arid    : out std_logic_vector(G_M_ID_WIDTH - 1 downto 0);
         m_araddr  : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0);
         m_arlen   : out std_logic_vector(7 downto 0);
         m_arsize  : out std_logic_vector(2 downto 0);
@@ -123,7 +124,7 @@ entity axi_custom_int_2slot is
         m_arqos   : out std_logic_vector(3 downto 0);
         m_arvalid : out std_logic;
         m_arready : in  std_logic;
-        m_rid     : in  std_logic_vector(G_S_ID_WIDTH downto 0);
+        m_rid     : in  std_logic_vector(G_M_ID_WIDTH - 1 downto 0);
         m_rdata   : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);
         m_rresp   : in  std_logic_vector(1 downto 0);
         m_rlast   : in  std_logic;
@@ -221,8 +222,8 @@ architecture rtl of axi_custom_int_2slot is
     signal bid_slot : std_logic;
     signal rid_slot : std_logic;
 
-    signal m_bready_i : std_logic;
-    signal m_rready_i : std_logic;
+    signal w_bready_sel : std_logic;
+    signal w_rready_sel : std_logic;
 
 begin
 
@@ -232,6 +233,10 @@ begin
 
     assert G_CMD_FIFO_DEPTH > 1
     report "G_CMD_FIFO_DEPTH must be > 1."
+    severity failure;
+
+    assert G_M_ID_WIDTH >= (G_S_ID_WIDTH + 1)
+    report "G_M_ID_WIDTH must be >= G_S_ID_WIDTH + 1 for 2-slot remap."
     severity failure;
 
     -- Pack incoming AW/AR metadata (ID + attributes) before enqueue.
@@ -314,7 +319,7 @@ begin
                     end if;
 
                 when WR_WAIT_B =>
-                    if (m_bvalid = '1') and (m_bready_i = '1') then
+                    if (m_bvalid = '1') and (w_bready_sel = '1') then
                         wr_state <= WR_IDLE;
                     end if;
             end case;
@@ -351,7 +356,7 @@ begin
                     end if;
 
                 when RD_WAIT_R =>
-                    if (m_rvalid = '1') and (m_rready_i = '1') and (m_rlast = '1') then
+                    if (m_rvalid = '1') and (w_rready_sel = '1') and (m_rlast = '1') then
                         rd_state <= RD_IDLE;
                     end if;
             end case;
@@ -362,7 +367,13 @@ begin
     process (wr_state, wr_slot_sel, wr_cmd_reg)
     begin
         m_awvalid <= '0';
-        m_awid    <= wr_slot_sel & wr_cmd_reg(C_ID_MSB downto C_ID_LSB);
+        -- ID remap format for 2 slots:
+        --   M_ID[MSB] = slot index bit
+        --   M_ID[LSB +: G_S_ID_WIDTH] = original slave ID
+        --   Middle bits (if any) = 0
+        m_awid    <= (others => '0');
+        m_awid(G_M_ID_WIDTH - 1) <= wr_slot_sel;
+        m_awid(G_S_ID_WIDTH - 1 downto 0) <= wr_cmd_reg(C_ID_MSB downto C_ID_LSB);
         m_awaddr  <= wr_cmd_reg(C_ADDR_MSB downto C_ADDR_LSB);
         m_awlen   <= wr_cmd_reg(C_LEN_MSB downto C_LEN_LSB);
         m_awsize  <= wr_cmd_reg(C_SIZE_MSB downto C_SIZE_LSB);
@@ -405,28 +416,37 @@ begin
     end process;
 
     -- Write response channel (B): decode BID MSB to return slot.
-    bid_slot <= m_bid(G_S_ID_WIDTH);
+    bid_slot <= m_bid(G_M_ID_WIDTH - 1);
     s0_bid   <= m_bid(G_S_ID_WIDTH - 1 downto 0);
     s1_bid   <= m_bid(G_S_ID_WIDTH - 1 downto 0);
     s0_bresp <= m_bresp;
     s1_bresp <= m_bresp;
-    process (bid_slot, m_bvalid, s0_bready, s1_bready, wr_state , m_bready_i)
+    process (bid_slot, s0_bready, s1_bready)
+    begin
+        w_bready_sel <= '0';
+        if bid_slot = '0' then
+            w_bready_sel <= s0_bready;
+        else
+            w_bready_sel <= s1_bready;
+        end if;
+    end process;
+
+    process (bid_slot, m_bvalid, s0_bready, s1_bready, wr_state)
     begin
         s0_bvalid  <= '0';
         s1_bvalid  <= '0';
-        m_bready_i <= '0';
         m_bready   <= '0';
 
         if bid_slot = '0' then
             s0_bvalid  <= m_bvalid;
-            m_bready_i <= s0_bready;
+            if wr_state = WR_WAIT_B then
+                m_bready <= s0_bready;
+            end if;
         else
             s1_bvalid  <= m_bvalid;
-            m_bready_i <= s1_bready;
-        end if;
-
-        if wr_state = WR_WAIT_B then
-            m_bready <= m_bready_i;
+            if wr_state = WR_WAIT_B then
+                m_bready <= s1_bready;
+            end if;
         end if;
     end process;
 
@@ -434,7 +454,9 @@ begin
     process (rd_state, rd_slot_sel, rd_cmd_reg)
     begin
         m_arvalid <= '0';
-        m_arid    <= rd_slot_sel & rd_cmd_reg(C_ID_MSB downto C_ID_LSB);
+        m_arid    <= (others => '0');
+        m_arid(G_M_ID_WIDTH - 1) <= rd_slot_sel;
+        m_arid(G_S_ID_WIDTH - 1 downto 0) <= rd_cmd_reg(C_ID_MSB downto C_ID_LSB);
         m_araddr  <= rd_cmd_reg(C_ADDR_MSB downto C_ADDR_LSB);
         m_arlen   <= rd_cmd_reg(C_LEN_MSB downto C_LEN_LSB);
         m_arsize  <= rd_cmd_reg(C_SIZE_MSB downto C_SIZE_LSB);
@@ -450,7 +472,7 @@ begin
     end process;
 
     -- Read response channel (R): decode RID MSB to return slot.
-    rid_slot <= m_rid(G_S_ID_WIDTH);
+    rid_slot <= m_rid(G_M_ID_WIDTH - 1);
     s0_rid   <= m_rid(G_S_ID_WIDTH - 1 downto 0);
     s1_rid   <= m_rid(G_S_ID_WIDTH - 1 downto 0);
     s0_rdata <= m_rdata;
@@ -460,23 +482,32 @@ begin
     s0_rlast <= m_rlast;
     s1_rlast <= m_rlast;
 
-    process (rid_slot, m_rvalid, s0_rready, s1_rready, rd_state, m_rready_i)
+    process (rid_slot, s0_rready, s1_rready)
+    begin
+        w_rready_sel <= '0';
+        if rid_slot = '0' then
+            w_rready_sel <= s0_rready;
+        else
+            w_rready_sel <= s1_rready;
+        end if;
+    end process;
+
+    process (rid_slot, m_rvalid, s0_rready, s1_rready, rd_state)
     begin
         s0_rvalid  <= '0';
         s1_rvalid  <= '0';
-        m_rready_i <= '0';
         m_rready   <= '0';
 
         if rid_slot = '0' then
             s0_rvalid  <= m_rvalid;
-            m_rready_i <= s0_rready;
+            if rd_state = RD_WAIT_R then
+                m_rready <= s0_rready;
+            end if;
         else
             s1_rvalid  <= m_rvalid;
-            m_rready_i <= s1_rready;
-        end if;
-
-        if rd_state = RD_WAIT_R then
-            m_rready <= m_rready_i;
+            if rd_state = RD_WAIT_R then
+                m_rready <= s1_rready;
+            end if;
         end if;
     end process;
 
