@@ -8,3 +8,12 @@ work_proj
 .library_mapping.xml
 .project
 .settings/
+
+# Simulation work library
+work-obj*.cf
+work/
+transcript
+vsim.wlf
+*.wlf
+*.log
+

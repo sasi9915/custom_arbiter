@@ -224,6 +224,10 @@ architecture rtl of axi_custom_int_2slot is
 
     signal w_bready_sel : std_logic;
     signal w_rready_sel : std_logic;
+    signal s0_awready_i : std_logic;
+    signal s1_awready_i : std_logic;
+    signal s0_arready_i : std_logic;
+    signal s1_arready_i : std_logic;
 
 begin
 
@@ -245,15 +249,20 @@ begin
     ar0_fifo_din <= s0_arid & s0_araddr & s0_arlen & s0_arsize & s0_arburst & s0_arlock & s0_arcache & s0_arprot & s0_arqos;
     ar1_fifo_din <= s1_arid & s1_araddr & s1_arlen & s1_arsize & s1_arburst & s1_arlock & s1_arcache & s1_arprot & s1_arqos;
 
-    aw0_fifo_wrreq <= s0_awvalid and s0_awready;
-    aw1_fifo_wrreq <= s1_awvalid and s1_awready;
-    ar0_fifo_wrreq <= s0_arvalid and s0_arready;
-    ar1_fifo_wrreq <= s1_arvalid and s1_arready;
+    s0_awready_i <= not aw0_fifo_full;
+    s1_awready_i <= not aw1_fifo_full;
+    s0_arready_i <= not ar0_fifo_full;
+    s1_arready_i <= not ar1_fifo_full;
 
-    s0_awready <= not aw0_fifo_full;
-    s1_awready <= not aw1_fifo_full;
-    s0_arready <= not ar0_fifo_full;
-    s1_arready <= not ar1_fifo_full;
+    aw0_fifo_wrreq <= s0_awvalid and s0_awready_i;
+    aw1_fifo_wrreq <= s1_awvalid and s1_awready_i;
+    ar0_fifo_wrreq <= s0_arvalid and s0_arready_i;
+    ar1_fifo_wrreq <= s1_arvalid and s1_arready_i;
+
+    s0_awready <= s0_awready_i;
+    s1_awready <= s1_awready_i;
+    s0_arready <= s0_arready_i;
+    s1_arready <= s1_arready_i;
 
     process (aclk, aresetn)
     begin

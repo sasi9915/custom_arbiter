@@ -501,7 +501,7 @@ begin
     ddr4_m_axi_arsize  <= "100";        -- 128-bit transfers
     ddr4_m_axi_arlock  <= "0";
     ddr4_m_axi_arcache <= X"3";         -- Bufferable
-    ddr4_m_axi_arprot  <= "000";        -- Normal, non-secure, data access
+    ddr4_m_axi_arprot  <= "000";        -- Normal, non-secure, dat access
     ddr4_m_axi_arqos   <= X"0";         -- Default QoS  
 
     ddr4_m_axi_awburst <= "01";         -- INCR burst
