@@ -258,6 +258,9 @@ architecture sim of axi_custom_int_2slot_tb is
     constant WR1_ADDR : std_logic_vector(G_ADDR_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#0200#, G_ADDR_WIDTH));
     constant WR0_DATA : std_logic_vector(G_DATA_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#1A2A3A4#, G_DATA_WIDTH));
     constant WR1_DATA : std_logic_vector(G_DATA_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#1B2B3B4#, G_DATA_WIDTH));
+    constant WRB_ID   : std_logic_vector(G_S_ID_WIDTH - 1 downto 0) := "0";
+    constant WRB_ADDR : std_logic_vector(G_ADDR_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#0500#, G_ADDR_WIDTH));
+    constant WRB_LEN  : std_logic_vector(7 downto 0) := x"07"; -- 8 beats
 
     constant RD0_ID   : std_logic_vector(G_S_ID_WIDTH - 1 downto 0) := "1";
     constant RD1_ID   : std_logic_vector(G_S_ID_WIDTH - 1 downto 0) := "0";
@@ -342,7 +345,7 @@ begin
             s1_arsize  => s1_arsize,
             s1_arburst => s1_arburst,
             s1_arlock  => s1_arlock,
-            s1_arcache => WR0_IDs1_arcache,
+            s1_arcache => s1_arcache,
             s1_arprot  => s1_arprot,
             s1_arqos   => s1_arqos,
             s1_arvalid => s1_arvalid,
@@ -447,6 +450,8 @@ begin
     end process;
 
     stim_proc : process
+        variable exp_data : std_logic_vector(G_DATA_WIDTH - 1 downto 0);
+        variable exp_last : std_logic;
     begin
         s0_awlen   <= (others => '0');
         s1_awlen   <= (others => '0');
@@ -467,7 +472,7 @@ begin
         s1_arcache <= "0011";
 
         aresetn <= '0';
-        wait for 6 * CLK_PERIOD;
+        wait for 10000* CLK_PERIOD;
         wait until rising_edge(aclk);
         aresetn <= '1';
         wait until rising_edge(aclk);
@@ -597,6 +602,83 @@ begin
             severity failure;
         assert s1_bresp = "00"
             report "Slot 1 BRESP mismatch."
+            severity failure;
+
+        -- Burst write from slot 0: one AW then 8 W beats (AWLEN = 7).
+        s0_awid    <= WRB_ID;
+        s0_awaddr  <= WRB_ADDR;
+        s0_awlen   <= WRB_LEN;
+        s0_awvalid <= '1';
+        wait until rising_edge(aclk);
+        assert s0_awready = '1'
+            report "Burst AW enqueue failed for slot 0."
+            severity failure;
+        s0_awvalid <= '0';
+
+        for i in 0 to 100 loop
+            wait until rising_edge(aclk);
+            exit when (m_awvalid = '1') and (m_awready = '1');
+        end loop;
+        assert (m_awvalid = '1') and (m_awready = '1')
+            report "Timeout waiting for burst AW handshake."
+            severity failure;
+        assert m_awid(G_M_ID_WIDTH - 1) = '0'
+            report "Burst AW should come from slot 0."
+            severity failure;
+        assert m_awid(G_S_ID_WIDTH - 1 downto 0) = WRB_ID
+            report "Burst AW low ID bits mismatch."
+            severity failure;
+        assert m_awaddr = WRB_ADDR
+            report "Burst AW address mismatch."
+            severity failure;
+        assert m_awlen = WRB_LEN
+            report "Burst AWLEN mismatch (expected 7)."
+            severity failure;
+
+        for beat in 0 to 7 loop
+            exp_data := std_logic_vector(to_unsigned(16#5000# + beat, G_DATA_WIDTH));
+            if beat = 7 then
+                exp_last := '1';
+            else
+                exp_last := '0';
+            end if;
+
+            s0_wdata  <= exp_data;
+            s0_wstrb  <= (others => '1');
+            s0_wlast  <= exp_last;
+            s0_wvalid <= '1';
+
+            for i in 0 to 100 loop
+                wait until rising_edge(aclk);
+                exit when (s0_wvalid = '1') and (s0_wready = '1');
+            end loop;
+            assert (s0_wvalid = '1') and (s0_wready = '1')
+                report "Timeout waiting for burst W handshake."
+                severity failure;
+            assert (m_wvalid = '1') and (m_wdata = exp_data) and (m_wlast = exp_last)
+                report "Burst W forwarding mismatch."
+                severity failure;
+            assert s1_wready = '0'
+                report "Slot 1 WREADY should stay low during slot 0 burst."
+                severity failure;
+        end loop;
+
+        s0_wvalid <= '0';
+        s0_wlast  <= '0';
+        s0_awlen  <= (others => '0');
+
+        for i in 0 to 100 loop
+            wait until rising_edge(aclk);
+            exit when (s0_bvalid = '1') or (s1_bvalid = '1');
+        end loop;
+        assert (s0_bvalid = '1') and (s1_bvalid = '0')
+            report "Burst write response was not routed to slot 0."
+            severity failure;
+        assert s0_bid = WRB_ID
+            report "Burst slot 0 BID mismatch."
+            severity failure;
+        assert s0_bresp = "00"
+            report "Burst slot 0 BRESP mismatch."
             severity failure;
 
 

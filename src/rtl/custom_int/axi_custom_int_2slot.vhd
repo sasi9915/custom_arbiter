@@ -312,7 +312,7 @@ begin
 
                 when WR_SEND_AW =>
                     if m_awready = '1' then
-                        wr_rr_sel <= not wr_slot_sel;
+                        wr_rr_sel <= not wr_slot_sel;  --* chnage the grant access for next round after address accepted
                         wr_state  <= WR_SEND_W;
                     end if;
 
