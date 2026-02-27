@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module demod_deintrlv_tb;
+module mod_intrlv_tb;
     
     // Mod Interleaver Signals
 
@@ -18,12 +18,12 @@ module demod_deintrlv_tb;
     reg             frame_tlast;
     
     // AXI Stream Master Interface (frame_intrlvd)
-    wire            frame_deintrlvd_tvalid;
-    reg             frame_deintrlvd_tready;
-    wire [15:0]     frame_deintrlvd_tuser;
-    wire [31:0]     frame_deintrlvd_tdata;
-    wire [3:0]      frame_deintrlvd_tkeep;
-    wire            frame_deintrlvd_tlast;
+    wire            frame_intrlvd_tvalid;
+    reg             frame_intrlvd_tready;
+    wire [15:0]     frame_intrlvd_tuser;
+    wire [31:0]     frame_intrlvd_tdata;
+    wire [3:0]      frame_intrlvd_tkeep;
+    wire            frame_intrlvd_tlast;
     
     // AXI4 Master Interface (DDR4)
     reg [3:0]       ddr4_m_axi_awid;
@@ -114,7 +114,7 @@ module demod_deintrlv_tb;
 
     
     // Instantiate the DUT
-    demod_deintrlv demod_deintrlv_inst (
+    mod_intrlv mod_intrlv_inst (
         .axis_resetn            (axis_resetn),
         .axis_clk               (axis_clk),
 
@@ -125,12 +125,12 @@ module demod_deintrlv_tb;
         .frame_tkeep            (frame_tkeep),
         .frame_tlast            (frame_tlast),
 
-        .frame_deintrlvd_tready   (frame_deintrlvd_tready),
-        .frame_deintrlvd_tvalid   (frame_deintrlvd_tvalid),
-        .frame_deintrlvd_tuser    (frame_deintrlvd_tuser),
-        .frame_deintrlvd_tdata    (frame_deintrlvd_tdata),
-        .frame_deintrlvd_tkeep    (frame_deintrlvd_tkeep),
-        .frame_deintrlvd_tlast    (frame_deintrlvd_tlast),
+        .frame_intrlvd_tready   (frame_intrlvd_tready),
+        .frame_intrlvd_tvalid   (frame_intrlvd_tvalid),
+        .frame_intrlvd_tuser    (frame_intrlvd_tuser),
+        .frame_intrlvd_tdata    (frame_intrlvd_tdata),
+        .frame_intrlvd_tkeep    (frame_intrlvd_tkeep),
+        .frame_intrlvd_tlast    (frame_intrlvd_tlast),
 
         .ddr4_m_axi_awid        (ddr4_m_axi_awid),
         .ddr4_m_axi_awaddr      (ddr4_m_axi_awaddr),
@@ -204,7 +204,7 @@ module demod_deintrlv_tb;
         .c0_ddr4_ck_c             (ddr4_intf_c0_ddr4_ck_c),
         .c0_ddr4_ck_t             (ddr4_intf_c0_ddr4_ck_t),
         
-        // AXI Slave Interface (Connected to demod_deintrlv)
+        // AXI Slave Interface (Connected to mod_intrlv)
         .c0_ddr4_s_axi_awid       (ddr4_m_axi_awid),
         .c0_ddr4_s_axi_awaddr     (ddr4_m_axi_awaddr),
         .c0_ddr4_s_axi_awlen      (ddr4_m_axi_awlen),
@@ -291,7 +291,7 @@ module demod_deintrlv_tb;
     // Testbench initial block
     initial begin
         
-        assign frame_deintrlvd_tready = 1'b1;
+        assign frame_intrlvd_tready = 1'b1;
 
         
         // Test AXI Stream interface
@@ -319,10 +319,10 @@ module demod_deintrlv_tb;
             
             // Send 10-word packet with counter
             frame_tvalid = 1'b1;
-            for (i = 0; i < 6144; i = i + 1) begin
+            for (i = 0; i < 131072; i = i + 1) begin
                 frame_tdata = 32'h00000000 + i;
                 frame_tuser = 16'hABCD;
-                if (i == 6143) begin
+                if (i == 999999) begin
                     frame_tlast = 1'b1;
                 end else begin
                     frame_tlast = 1'b0;
@@ -336,13 +336,47 @@ module demod_deintrlv_tb;
         end
     endtask
 
+integer outfile_2;
+
+    // Open the file at the start of simulation
+    initial begin
+        outfile_2 = $fopen("/home/satanya/Documents/Reading Materials/documents_20260109/ddr_tb_example/src/rtl/mod_intrlv_output.txt", "w");
+        if (outfile_2 == 0) begin
+            $display("ERROR: Could not open file for writing!");
+//            $finish;
+        end
+    end
+
+    // ------------------------------------------------------------------
+    // Monitor frame_deintrlvd signals and write to file
+    // ------------------------------------------------------------------
+    always @(posedge axis_clk) begin
+        if (!axis_resetn) begin
+            // nothing
+        end else begin
+            if (frame_intrlvd_tvalid && frame_intrlvd_tready) begin
+                // Log exactly one transfer
+                $fdisplay(outfile_2, "%h", frame_intrlvd_tdata);
+                $fflush(outfile_2);
+
+                if (frame_intrlvd_tlast) begin
+                    $display("Packet complete at time %0t ns, last word received: 0x%h",
+                             $time, frame_intrlvd_tdata);
+                    $fclose(outfile_2);
+//                    $finish;
+                end
+            end
+        end
+    end
+
+
 
     
 //  // Monitor signals for verification
 //  initial begin
-//      $monitor("Time=%0t: frame_tvalid=%b, frame_tready=%b, frame_tdata=0x%h, frame_deintrlvd_tvalid=%b, frame_deintrlvd_tready=%b, frame_deintrlvd_tdata=0x%h",
+//      $monitor("Time=%0t: frame_tvalid=%b, frame_tready=%b, frame_tdata=0x%h, frame_intrlvd_tvalid=%b, frame_intrlvd_tready=%b, frame_intrlvd_tdata=0x%h",
 //               $time, frame_tvalid, frame_tready, frame_tdata, 
-//               frame_deintrlvd_tvalid, frame_deintrlvd_tready, frame_deintrlvd_tdata);
+//               frame_intrlvd_tvalid, frame_intrlvd_tready, frame_intrlvd_tdata);
 //  end
 
 endmodule

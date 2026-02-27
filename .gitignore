@@ -17,3 +17,5 @@ vsim.wlf
 *.wlf
 *.log
 
+
+tb/ip
