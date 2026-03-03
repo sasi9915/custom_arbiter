@@ -1,6 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use ieee.math_real.all;
 
 entity tb_xpm_fifo_sync_wrap is
     generic (
@@ -114,6 +115,7 @@ end configuration axi_custom_int_2slot_with_tb_fifo_cfg;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use ieee.math_real.all;
 
 entity axi_custom_int_2slot_tb is
 end entity axi_custom_int_2slot_tb;
@@ -220,7 +222,7 @@ architecture sim of axi_custom_int_2slot_tb is
     signal m_wstrb   : std_logic_vector(G_DATA_WIDTH / 8 - 1 downto 0);
     signal m_wlast   : std_logic;
     signal m_wvalid  : std_logic;
-    signal m_wready  : std_logic := '1';
+    signal m_wready  : std_logic;
     signal m_bid     : std_logic_vector(G_M_ID_WIDTH - 1 downto 0) := (others => '0');
     signal m_bresp   : std_logic_vector(1 downto 0) := (others => '0');
     signal m_bvalid  : std_logic := '0';
@@ -248,6 +250,9 @@ architecture sim of axi_custom_int_2slot_tb is
     signal wr_id_hold     : std_logic_vector(G_M_ID_WIDTH - 1 downto 0) := (others => '0');
     signal rd_id_hold     : std_logic_vector(G_M_ID_WIDTH - 1 downto 0) := (others => '0');
     signal rd_addr_hold   : std_logic_vector(G_ADDR_WIDTH - 1 downto 0) := (others => '0');
+    signal m_wready_base  : std_logic := '1';
+    signal rand_wready_en : std_logic := '0';
+    signal rand_wready_ok : std_logic := '1';
 
     constant AW_SIZE_128B : std_logic_vector(2 downto 0) := "100";
     constant INCR_BURST   : std_logic_vector(1 downto 0) := "01";
@@ -266,8 +271,14 @@ architecture sim of axi_custom_int_2slot_tb is
     constant RD1_ID   : std_logic_vector(G_S_ID_WIDTH - 1 downto 0) := "0";
     constant RD0_ADDR : std_logic_vector(G_ADDR_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#0300#, G_ADDR_WIDTH));
     constant RD1_ADDR : std_logic_vector(G_ADDR_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#0400#, G_ADDR_WIDTH));
+    constant BP_WR_ID   : std_logic_vector(G_S_ID_WIDTH - 1 downto 0) := "1";
+    constant BP_WR_ADDR : std_logic_vector(G_ADDR_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#0600#, G_ADDR_WIDTH));
+    constant BP_WR_DATA : std_logic_vector(G_DATA_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#6BAD#, G_DATA_WIDTH));
+    constant BP_RD_ID   : std_logic_vector(G_S_ID_WIDTH - 1 downto 0) := "0";
+    constant BP_RD_ADDR : std_logic_vector(G_ADDR_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#0700#, G_ADDR_WIDTH));
 begin
     aclk <= not aclk after CLK_PERIOD / 2;
+    m_wready <= m_wready_base and rand_wready_ok;
 
     dut_i : configuration work.axi_custom_int_2slot_with_tb_fifo_cfg
         generic map (
@@ -449,6 +460,27 @@ begin
         end if;
     end process;
 
+    rand_wready_proc : process (aclk, aresetn)
+        variable seed1 : positive := 101;
+        variable seed2 : positive := 203;
+        variable rv    : real;
+    begin
+        if aresetn = '0' then
+            rand_wready_ok <= '1';
+        elsif rising_edge(aclk) then
+            if rand_wready_en = '1' then
+                uniform(seed1, seed2, rv);
+                if rv < 0.35 then
+                    rand_wready_ok <= '0';
+                else
+                    rand_wready_ok <= '1';
+                end if;
+            else
+                rand_wready_ok <= '1';
+            end if;
+        end if;
+    end process;
+
     stim_proc : process
         variable exp_data : std_logic_vector(G_DATA_WIDTH - 1 downto 0);
         variable exp_last : std_logic;
@@ -472,7 +504,7 @@ begin
         s1_arcache <= "0011";
 
         aresetn <= '0';
-        wait for 10000* CLK_PERIOD;
+        wait for 6 * CLK_PERIOD;
         wait until rising_edge(aclk);
         aresetn <= '1';
         wait until rising_edge(aclk);
@@ -635,6 +667,7 @@ begin
             report "Burst AWLEN mismatch (expected 7)."
             severity failure;
 
+        rand_wready_en <= '1';
         for beat in 0 to 7 loop
             exp_data := std_logic_vector(to_unsigned(16#5000# + beat, G_DATA_WIDTH));
             if beat = 7 then
@@ -662,6 +695,7 @@ begin
                 report "Slot 1 WREADY should stay low during slot 0 burst."
                 severity failure;
         end loop;
+        rand_wready_en <= '0';
 
         s0_wvalid <= '0';
         s0_wlast  <= '0';
@@ -774,6 +808,169 @@ begin
             severity failure;
         assert s1_rdata = std_logic_vector(resize(unsigned(RD1_ADDR), G_DATA_WIDTH))
             report "Slot 1 RDATA mismatch."
+            severity failure;
+
+        -- * BACKPRESSURE PHASE * --
+        -- 11) Master AWREADY backpressure.
+        m_awready  <= '0';
+        s0_awid    <= BP_WR_ID;
+        s0_awaddr  <= BP_WR_ADDR;
+        s0_awvalid <= '1';
+        wait until rising_edge(aclk);
+        assert s0_awready = '1'
+            report "Slot 0 should still enqueue AW while master AWREADY is low."
+            severity failure;
+        s0_awvalid <= '0';
+
+        for i in 0 to 100 loop
+            wait until rising_edge(aclk);
+            exit when m_awvalid = '1';
+        end loop;
+        assert m_awvalid = '1'
+            report "Timeout waiting for AWVALID during AWREADY backpressure."
+            severity failure;
+        for i in 0 to 2 loop
+            wait until rising_edge(aclk);
+            assert m_awvalid = '1'
+                report "AWVALID dropped while master AWREADY was low."
+                severity failure;
+            assert m_awaddr = BP_WR_ADDR
+                report "AWADDR changed while AW channel was backpressured."
+                severity failure;
+            assert m_awid(G_S_ID_WIDTH - 1 downto 0) = BP_WR_ID
+                report "AWID changed while AW channel was backpressured."
+                severity failure;
+        end loop;
+        m_awready <= '1';
+        for i in 0 to 20 loop
+            wait until rising_edge(aclk);
+            exit when (m_awvalid = '1') and (m_awready = '1');
+        end loop;
+        assert (m_awvalid = '1') and (m_awready = '1')
+            report "AW handshake did not complete after releasing AWREADY."
+            severity failure;
+
+        -- 12) Master WREADY backpressure.
+        m_wready_base  <= '0';
+        s0_wdata  <= BP_WR_DATA;
+        s0_wstrb  <= (others => '1');
+        s0_wlast  <= '1';
+        s0_wvalid <= '1';
+        for i in 0 to 2 loop
+            wait until rising_edge(aclk);
+            assert m_wvalid = '1'
+                report "WVALID should remain high while waiting for WREADY."
+                severity failure;
+            assert s0_wready = '0'
+                report "Slot 0 WREADY must be low while master WREADY is low."
+                severity failure;
+            assert m_wdata = BP_WR_DATA
+                report "WDATA changed while W channel was backpressured."
+                severity failure;
+        end loop;
+        m_wready_base <= '1';
+        for i in 0 to 100 loop
+            wait until rising_edge(aclk);
+            exit when (s0_wvalid = '1') and (s0_wready = '1');
+        end loop;
+        assert (s0_wvalid = '1') and (s0_wready = '1')
+            report "W handshake did not complete after releasing WREADY."
+            severity failure;
+        s0_wvalid <= '0';
+        s0_wlast  <= '0';
+        m_wready_base  <= '1';
+
+        -- 13) Slave-side BREADY backpressure.
+        s0_bready <= '0';
+        for i in 0 to 100 loop
+            wait until rising_edge(aclk);
+            exit when s0_bvalid = '1';
+        end loop;
+        assert (s0_bvalid = '1') and (s1_bvalid = '0')
+            report "Expected B response for slot 0 during BREADY backpressure test."
+            severity failure;
+        for i in 0 to 2 loop
+            wait until rising_edge(aclk);
+            assert s0_bvalid = '1'
+                report "BVALID dropped while slot 0 BREADY was low."
+                severity failure;
+            assert m_bready = '0'
+                report "Master BREADY should be low when selected slot BREADY is low."
+                severity failure;
+        end loop;
+        s0_bready <= '1';
+        for i in 0 to 20 loop
+            wait until rising_edge(aclk);
+            exit when s0_bvalid = '0';
+        end loop;
+        assert s0_bvalid = '0'
+            report "B channel did not drain after releasing slot 0 BREADY."
+            severity failure;
+
+        -- 14) Master ARREADY backpressure.
+        m_arready  <= '0';
+        s0_arid    <= BP_RD_ID;
+        s0_araddr  <= BP_RD_ADDR;
+        s0_arvalid <= '1';
+        wait until rising_edge(aclk);
+        assert s0_arready = '1'
+            report "Slot 0 should still enqueue AR while master ARREADY is low."
+            severity failure;
+        s0_arvalid <= '0';
+
+        for i in 0 to 100 loop
+            wait until rising_edge(aclk);
+            exit when m_arvalid = '1';
+        end loop;
+        assert m_arvalid = '1'
+            report "Timeout waiting for ARVALID during ARREADY backpressure."
+            severity failure;
+        for i in 0 to 2 loop
+            wait until rising_edge(aclk);
+            assert m_arvalid = '1'
+                report "ARVALID dropped while master ARREADY was low."
+                severity failure;
+            assert m_araddr = BP_RD_ADDR
+                report "ARADDR changed while AR channel was backpressured."
+                severity failure;
+            assert m_arid(G_S_ID_WIDTH - 1 downto 0) = BP_RD_ID
+                report "ARID changed while AR channel was backpressured."
+                severity failure;
+        end loop;
+        m_arready <= '1';
+        for i in 0 to 20 loop
+            wait until rising_edge(aclk);
+            exit when (m_arvalid = '1') and (m_arready = '1');
+        end loop;
+        assert (m_arvalid = '1') and (m_arready = '1')
+            report "AR handshake did not complete after releasing ARREADY."
+            severity failure;
+
+        -- 15) Slave-side RREADY backpressure.
+        s0_rready <= '0';
+        for i in 0 to 100 loop
+            wait until rising_edge(aclk);
+            exit when s0_rvalid = '1';
+        end loop;
+        assert (s0_rvalid = '1') and (s1_rvalid = '0')
+            report "Expected R response for slot 0 during RREADY backpressure test."
+            severity failure;
+        for i in 0 to 2 loop
+            wait until rising_edge(aclk);
+            assert s0_rvalid = '1'
+                report "RVALID dropped while slot 0 RREADY was low."
+                severity failure;
+            assert m_rready = '0'
+                report "Master RREADY should be low when selected slot RREADY is low."
+                severity failure;
+        end loop;
+        s0_rready <= '1';
+        for i in 0 to 20 loop
+            wait until rising_edge(aclk);
+            exit when s0_rvalid = '0';
+        end loop;
+        assert s0_rvalid = '0'
+            report "R channel did not drain after releasing slot 0 RREADY."
             severity failure;
 
         assert false report "axi_custom_int_2slot_tb PASSED" severity note;

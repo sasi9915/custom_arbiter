@@ -19,3 +19,10 @@ vsim.wlf
 
 
 tb/ip
+
+# GHDL / VHDL build files
+*.o
+*.cf
+e~*
+axi_custom_int_2slot_tb
+work-obj*.cf
