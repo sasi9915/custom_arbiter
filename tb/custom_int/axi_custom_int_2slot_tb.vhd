@@ -280,6 +280,14 @@ architecture sim of axi_custom_int_2slot_tb is
     constant BP_WR_DATA : std_logic_vector(G_DATA_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#6BAD#, G_DATA_WIDTH));
     constant BP_RD_ID   : std_logic_vector(G_S_ID_WIDTH - 1 downto 0) := "0";
     constant BP_RD_ADDR : std_logic_vector(G_ADDR_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#0700#, G_ADDR_WIDTH));
+    constant SS_WR_ID         : std_logic_vector(G_S_ID_WIDTH - 1 downto 0) := "0";
+    constant SS_WR_ADDR       : std_logic_vector(G_ADDR_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#0900#, G_ADDR_WIDTH));
+    constant SS_WR_DATA       : std_logic_vector(G_DATA_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#1234ABCD#, G_DATA_WIDTH));
+    constant SS_WR_BURST_ID   : std_logic_vector(G_S_ID_WIDTH - 1 downto 0) := "1";
+    constant SS_WR_BURST_ADDR : std_logic_vector(G_ADDR_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#0A00#, G_ADDR_WIDTH));
+    constant SS_RD_ID         : std_logic_vector(G_S_ID_WIDTH - 1 downto 0) := "0";
+    constant SS_RD_ADDR0      : std_logic_vector(G_ADDR_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#0B00#, G_ADDR_WIDTH));
+    constant SS_RD_ADDR1      : std_logic_vector(G_ADDR_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#0B40#, G_ADDR_WIDTH));
 begin
     aclk <= not aclk after CLK_PERIOD / 2;
     m_wready <= m_wready_base and rand_wready_ok;
@@ -882,8 +890,231 @@ begin
                 severity failure;
         end loop;
 
+        -- * SOURCE STALL PHASE * --
+        -- 12) Write source stall before first W beat (AW already accepted).
+        s0_awid    <= SS_WR_ID;
+        s0_awaddr  <= SS_WR_ADDR;
+        s0_awvalid <= '1';
+        wait until rising_edge(aclk);
+        assert s0_awready = '1'
+            report "Source stall write AW enqueue failed for slot 0."
+            severity failure;
+        s0_awvalid <= '0';
+
+        for i in 0 to 100 loop
+            wait until rising_edge(aclk);
+            exit when (m_awvalid = '1') and (m_awready = '1');
+        end loop;
+        assert (m_awvalid = '1') and (m_awready = '1')
+            report "Timeout waiting for source stall AW handshake."
+            severity failure;
+        assert m_awaddr = SS_WR_ADDR
+            report "Source stall AWADDR mismatch."
+            severity failure;
+
+        s0_wdata  <= SS_WR_DATA;
+        s0_wstrb  <= (others => '1');
+        s0_wlast  <= '1';
+        s0_wvalid <= '0';
+        for i in 0 to 2 loop
+            wait until rising_edge(aclk);
+            assert m_wvalid = '0'
+                report "Master WVALID should stay low while write source is stalled."
+                severity failure;
+            assert s1_wready = '0'
+                report "Slot 1 WREADY should remain low while slot 0 owns stalled write."
+                severity failure;
+        end loop;
+
+        s0_wvalid <= '1';
+        for i in 0 to 100 loop
+            wait until rising_edge(aclk);
+            exit when (s0_wvalid = '1') and (s0_wready = '1');
+        end loop;
+        assert (s0_wvalid = '1') and (s0_wready = '1')
+            report "Source stall write data handshake did not complete."
+            severity failure;
+        assert (m_wvalid = '1') and (m_wdata = SS_WR_DATA) and (m_wlast = '1')
+            report "Source stall write data was not forwarded correctly."
+            severity failure;
+        s0_wvalid <= '0';
+        s0_wlast  <= '0';
+
+        for i in 0 to 100 loop
+            wait until rising_edge(aclk);
+            exit when s0_bvalid = '1';
+        end loop;
+        assert (s0_bvalid = '1') and (s1_bvalid = '0')
+            report "Source stall write response was not routed to slot 0."
+            severity failure;
+        assert s0_bid = SS_WR_ID
+            report "Source stall write BID mismatch."
+            severity failure;
+        assert s0_bresp = "00"
+            report "Source stall write BRESP mismatch."
+            severity failure;
+
+        -- 13) Burst write source stalls between beats.
+        s1_awid    <= SS_WR_BURST_ID;
+        s1_awaddr  <= SS_WR_BURST_ADDR;
+        s1_awlen   <= x"03"; -- 4 beats
+        s1_awvalid <= '1';
+        wait until rising_edge(aclk);
+        assert s1_awready = '1'
+            report "Source stall burst AW enqueue failed for slot 1."
+            severity failure;
+        s1_awvalid <= '0';
+
+        for i in 0 to 100 loop
+            wait until rising_edge(aclk);
+            exit when (m_awvalid = '1') and (m_awready = '1');
+        end loop;
+        assert (m_awvalid = '1') and (m_awready = '1')
+            report "Timeout waiting for source stall burst AW handshake."
+            severity failure;
+        assert m_awid(G_M_ID_WIDTH - 1) = '1'
+            report "Source stall burst AW should come from slot 1."
+            severity failure;
+        assert m_awaddr = SS_WR_BURST_ADDR
+            report "Source stall burst AWADDR mismatch."
+            severity failure;
+        assert m_awlen = x"03"
+            report "Source stall burst AWLEN mismatch."
+            severity failure;
+
+        for beat in 0 to 3 loop
+            exp_data := std_logic_vector(to_unsigned(16#A500# + beat, G_DATA_WIDTH));
+            if beat = 3 then
+                exp_last := '1';
+            else
+                exp_last := '0';
+            end if;
+
+            if (beat = 1) or (beat = 2) then
+                s1_wvalid <= '0';
+                for i in 0 to 1 loop
+                    wait until rising_edge(aclk);
+                    assert m_wvalid = '0'
+                        report "Master WVALID should be low during mid-burst source stall."
+                        severity failure;
+                    assert s0_wready = '0'
+                        report "Slot 0 WREADY should remain low while slot 1 owns stalled burst."
+                        severity failure;
+                end loop;
+            end if;
+
+            s1_wdata  <= exp_data;
+            s1_wstrb  <= (others => '1');
+            s1_wlast  <= exp_last;
+            s1_wvalid <= '1';
+            for i in 0 to 100 loop
+                wait until rising_edge(aclk);
+                exit when (s1_wvalid = '1') and (s1_wready = '1');
+            end loop;
+            assert (s1_wvalid = '1') and (s1_wready = '1')
+                report "Source stall burst write handshake timeout."
+                severity failure;
+            assert (m_wvalid = '1') and (m_wdata = exp_data) and (m_wlast = exp_last)
+                report "Source stall burst beat forwarding mismatch."
+                severity failure;
+        end loop;
+        s1_wvalid <= '0';
+        s1_wlast  <= '0';
+        s1_awlen  <= (others => '0');
+
+        for i in 0 to 100 loop
+            wait until rising_edge(aclk);
+            exit when s1_bvalid = '1';
+        end loop;
+        assert (s1_bvalid = '1') and (s0_bvalid = '0')
+            report "Source stall burst write response was not routed to slot 1."
+            severity failure;
+        assert s1_bid = SS_WR_BURST_ID
+            report "Source stall burst write BID mismatch."
+            severity failure;
+        assert s1_bresp = "00"
+            report "Source stall burst write BRESP mismatch."
+            severity failure;
+
+        -- 14) Read source stall (gapped AR issuance).
+        s0_rready <= '0';
+        s0_arid    <= SS_RD_ID;
+        s0_araddr  <= SS_RD_ADDR0;
+        s0_arvalid <= '1';
+        wait until rising_edge(aclk);
+        assert s0_arready = '1'
+            report "Source stall first read enqueue failed."
+            severity failure;
+        s0_arvalid <= '0';
+
+        for i in 0 to 100 loop
+            wait until rising_edge(aclk);
+            exit when (m_arvalid = '1') and (m_arready = '1');
+        end loop;
+        assert (m_arvalid = '1') and (m_arready = '1')
+            report "Timeout waiting for first source stall AR handshake."
+            severity failure;
+        assert m_araddr = SS_RD_ADDR0
+            report "First source stall ARADDR mismatch."
+            severity failure;
+
+        for i in 0 to 2 loop
+            wait until rising_edge(aclk);
+            assert s0_arvalid = '0'
+                report "Read source should remain stalled (ARVALID low)."
+                severity failure;
+        end loop;
+
+        s0_arid    <= SS_RD_ID;
+        s0_araddr  <= SS_RD_ADDR1;
+        s0_arvalid <= '1';
+        wait until rising_edge(aclk);
+        assert s0_arready = '1'
+            report "Source stall second read enqueue failed."
+            severity failure;
+        s0_arvalid <= '0';
+
+        for i in 0 to 100 loop
+            wait until rising_edge(aclk);
+            exit when (m_arvalid = '1') and (m_arready = '1');
+        end loop;
+        assert (m_arvalid = '1') and (m_arready = '1')
+            report "Timeout waiting for second source stall AR handshake."
+            severity failure;
+        assert m_araddr = SS_RD_ADDR1
+            report "Second source stall ARADDR mismatch."
+            severity failure;
+
+        s0_rready <= '1';
+        for req in 0 to 1 loop
+            if req = 0 then
+                exp_addr := SS_RD_ADDR0;
+            else
+                exp_addr := SS_RD_ADDR1;
+            end if;
+            for i in 0 to 100 loop
+                wait until rising_edge(aclk);
+                exit when (s0_rvalid = '1') or (s1_rvalid = '1');
+            end loop;
+            assert (s0_rvalid = '1') and (s1_rvalid = '0')
+                report "Source stall read response was not routed to slot 0."
+                severity failure;
+            assert s0_rid = SS_RD_ID
+                report "Source stall read RID mismatch."
+                severity failure;
+            assert s0_rresp = "00"
+                report "Source stall read RRESP mismatch."
+                severity failure;
+            assert s0_rlast = '1'
+                report "Source stall read RLAST mismatch."
+                severity failure;
+            assert s0_rdata = std_logic_vector(resize(unsigned(exp_addr), G_DATA_WIDTH))
+                report "Source stall read RDATA mismatch."
+                severity failure;
+        end loop;
+
         -- * BACKPRESSURE PHASE * --
-        -- 12) Master AWREADY backpressure.
+        -- 15) Master AWREADY backpressure.
         m_awready  <= '0';
         s0_awid    <= BP_WR_ID;
         s0_awaddr  <= BP_WR_ADDR;
@@ -922,7 +1153,7 @@ begin
             report "AW handshake did not complete after releasing AWREADY."
             severity failure;
 
-        -- 13) Master WREADY backpressure.
+        -- 16) Master WREADY backpressure.
         m_wready_base  <= '0';
         s0_wdata  <= BP_WR_DATA;
         s0_wstrb  <= (others => '1');
@@ -952,7 +1183,7 @@ begin
         s0_wlast  <= '0';
         m_wready_base  <= '1';
 
-        -- 14) Slave-side BREADY backpressure.
+        -- 17) Slave-side BREADY backpressure.
         s0_bready <= '0';
         for i in 0 to 100 loop
             wait until rising_edge(aclk);
@@ -979,7 +1210,7 @@ begin
             report "B channel did not drain after releasing slot 0 BREADY."
             severity failure;
 
-        -- 15) Master ARREADY backpressure.
+        -- 18) Master ARREADY backpressure.
         m_arready  <= '0';
         s0_arid    <= BP_RD_ID;
         s0_araddr  <= BP_RD_ADDR;
@@ -1018,7 +1249,7 @@ begin
             report "AR handshake did not complete after releasing ARREADY."
             severity failure;
 
-        -- 16) Slave-side RREADY backpressure.
+        -- 19) Slave-side RREADY backpressure.
         s0_rready <= '0';
         for i in 0 to 100 loop
             wait until rising_edge(aclk);

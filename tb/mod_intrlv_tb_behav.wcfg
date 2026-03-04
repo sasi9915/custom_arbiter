@@ -11,34 +11,50 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="637501fs"></ZoomEndTime>
-      <Cursor1Time time="0fs"></Cursor1Time>
+      <ZoomStartTime time="704166fs"></ZoomStartTime>
+      <ZoomEndTime time="1059167fs"></ZoomEndTime>
+      <Cursor1Time time="1000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="226"></NameColumnWidth>
-      <ValueColumnWidth column_width="93"></ValueColumnWidth>
+      <ValueColumnWidth column_width="89"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="21" />
    <wvobject type="group" fp_name="group1589">
       <obj_property name="label">so_write</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
+      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_awid">
+         <obj_property name="ElementShortName">s0_awid[0:0]</obj_property>
+         <obj_property name="ObjectShortName">s0_awid[0:0]</obj_property>
+      </wvobject>
       <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_awaddr">
          <obj_property name="ElementShortName">s0_awaddr[28:0]</obj_property>
          <obj_property name="ObjectShortName">s0_awaddr[28:0]</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_awid">
-         <obj_property name="ElementShortName">s0_awid[0:0]</obj_property>
-         <obj_property name="ObjectShortName">s0_awid[0:0]</obj_property>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_awvalid">
+         <obj_property name="ElementShortName">s0_awvalid</obj_property>
+         <obj_property name="ObjectShortName">s0_awvalid</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_awready">
          <obj_property name="ElementShortName">s0_awready</obj_property>
          <obj_property name="ObjectShortName">s0_awready</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_awvalid">
-         <obj_property name="ElementShortName">s0_awvalid</obj_property>
-         <obj_property name="ObjectShortName">s0_awvalid</obj_property>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_wvalid">
+         <obj_property name="ElementShortName">s0_wvalid</obj_property>
+         <obj_property name="ObjectShortName">s0_wvalid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_wready">
+         <obj_property name="ElementShortName">s0_wready</obj_property>
+         <obj_property name="ObjectShortName">s0_wready</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_wdata">
+         <obj_property name="ElementShortName">s0_wdata[127:0]</obj_property>
+         <obj_property name="ObjectShortName">s0_wdata[127:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_wlast">
+         <obj_property name="ElementShortName">s0_wlast</obj_property>
+         <obj_property name="ObjectShortName">s0_wlast</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_bid">
          <obj_property name="ElementShortName">s0_bid[0:0]</obj_property>
@@ -48,13 +64,13 @@
          <obj_property name="ElementShortName">s0_bready</obj_property>
          <obj_property name="ObjectShortName">s0_bready</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_bresp">
-         <obj_property name="ElementShortName">s0_bresp[1:0]</obj_property>
-         <obj_property name="ObjectShortName">s0_bresp[1:0]</obj_property>
-      </wvobject>
       <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_bvalid">
          <obj_property name="ElementShortName">s0_bvalid</obj_property>
          <obj_property name="ObjectShortName">s0_bvalid</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_bresp">
+         <obj_property name="ElementShortName">s0_bresp[1:0]</obj_property>
+         <obj_property name="ObjectShortName">s0_bresp[1:0]</obj_property>
       </wvobject>
    </wvobject>
    <wvobject type="group" fp_name="group1677">
@@ -125,12 +141,6 @@
       <obj_property name="label">DDR_WRITE</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_awaddr">
-         <obj_property name="ElementShortName">m_awaddr[28:0]</obj_property>
-         <obj_property name="ObjectShortName">m_awaddr[28:0]</obj_property>
-         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_awid">
          <obj_property name="ElementShortName">m_awid[3:0]</obj_property>
          <obj_property name="ObjectShortName">m_awid[3:0]</obj_property>
@@ -138,9 +148,9 @@
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="Radix">BINARYRADIX</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_awready">
-         <obj_property name="ElementShortName">m_awready</obj_property>
-         <obj_property name="ObjectShortName">m_awready</obj_property>
+      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_awaddr">
+         <obj_property name="ElementShortName">m_awaddr[28:0]</obj_property>
+         <obj_property name="ObjectShortName">m_awaddr[28:0]</obj_property>
          <obj_property name="CustomSignalColor">#FF00FF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
@@ -150,9 +160,27 @@
          <obj_property name="CustomSignalColor">#FF00FF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_awready">
+         <obj_property name="ElementShortName">m_awready</obj_property>
+         <obj_property name="ObjectShortName">m_awready</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_wvalid">
+         <obj_property name="ElementShortName">m_wvalid</obj_property>
+         <obj_property name="ObjectShortName">m_wvalid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_wready">
+         <obj_property name="ElementShortName">m_wready</obj_property>
+         <obj_property name="ObjectShortName">m_wready</obj_property>
+      </wvobject>
       <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_wdata">
          <obj_property name="ElementShortName">m_wdata[127:0]</obj_property>
          <obj_property name="ObjectShortName">m_wdata[127:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_wlast">
+         <obj_property name="ElementShortName">m_wlast</obj_property>
+         <obj_property name="ObjectShortName">m_wlast</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_bid">
          <obj_property name="ElementShortName">m_bid[3:0]</obj_property>
@@ -160,6 +188,12 @@
          <obj_property name="CustomSignalColor">#FF00FF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="Radix">BINARYRADIX</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_bvalid">
+         <obj_property name="ElementShortName">m_bvalid</obj_property>
+         <obj_property name="ObjectShortName">m_bvalid</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_bready">
          <obj_property name="ElementShortName">m_bready</obj_property>
@@ -170,12 +204,6 @@
       <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_bresp">
          <obj_property name="ElementShortName">m_bresp[1:0]</obj_property>
          <obj_property name="ObjectShortName">m_bresp[1:0]</obj_property>
-         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_bvalid">
-         <obj_property name="ElementShortName">m_bvalid</obj_property>
-         <obj_property name="ObjectShortName">m_bvalid</obj_property>
          <obj_property name="CustomSignalColor">#FF00FF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
@@ -192,25 +220,45 @@
       <obj_property name="label">s1_write</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_awaddr">
-         <obj_property name="ElementShortName">s1_awaddr[28:0]</obj_property>
-         <obj_property name="ObjectShortName">s1_awaddr[28:0]</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_awid">
          <obj_property name="ElementShortName">s1_awid[0:0]</obj_property>
          <obj_property name="ObjectShortName">s1_awid[0:0]</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_awready">
-         <obj_property name="ElementShortName">s1_awready</obj_property>
-         <obj_property name="ObjectShortName">s1_awready</obj_property>
+      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_awaddr">
+         <obj_property name="ElementShortName">s1_awaddr[28:0]</obj_property>
+         <obj_property name="ObjectShortName">s1_awaddr[28:0]</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_awvalid">
          <obj_property name="ElementShortName">s1_awvalid</obj_property>
          <obj_property name="ObjectShortName">s1_awvalid</obj_property>
       </wvobject>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_awready">
+         <obj_property name="ElementShortName">s1_awready</obj_property>
+         <obj_property name="ObjectShortName">s1_awready</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_wvalid">
+         <obj_property name="ElementShortName">s1_wvalid</obj_property>
+         <obj_property name="ObjectShortName">s1_wvalid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_wready">
+         <obj_property name="ElementShortName">s1_wready</obj_property>
+         <obj_property name="ObjectShortName">s1_wready</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_wdata">
+         <obj_property name="ElementShortName">s1_wdata[127:0]</obj_property>
+         <obj_property name="ObjectShortName">s1_wdata[127:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_wlast">
+         <obj_property name="ElementShortName">s1_wlast</obj_property>
+         <obj_property name="ObjectShortName">s1_wlast</obj_property>
+      </wvobject>
       <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_bid">
          <obj_property name="ElementShortName">s1_bid[0:0]</obj_property>
          <obj_property name="ObjectShortName">s1_bid[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_bvalid">
+         <obj_property name="ElementShortName">s1_bvalid</obj_property>
+         <obj_property name="ObjectShortName">s1_bvalid</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_bready">
          <obj_property name="ElementShortName">s1_bready</obj_property>
@@ -220,10 +268,6 @@
          <obj_property name="ElementShortName">s1_bresp[1:0]</obj_property>
          <obj_property name="ObjectShortName">s1_bresp[1:0]</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_bvalid">
-         <obj_property name="ElementShortName">s1_bvalid</obj_property>
-         <obj_property name="ObjectShortName">s1_bvalid</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject fp_name="divider1846" type="divider">
       <obj_property name="label">----------------------------</obj_property>
@@ -232,7 +276,6 @@
    <wvobject type="group" fp_name="group1800">
       <obj_property name="label">s1_fifo_write</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot1_fifo_inst/i_data">
          <obj_property name="ElementShortName">i_data[54:0]</obj_property>
          <obj_property name="ObjectShortName">i_data[54:0]</obj_property>
@@ -294,45 +337,45 @@
       <obj_property name="label">s1_read</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_araddr">
-         <obj_property name="ElementShortName">s1_araddr[28:0]</obj_property>
-         <obj_property name="ObjectShortName">s1_araddr[28:0]</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_arid">
          <obj_property name="ElementShortName">s1_arid[0:0]</obj_property>
          <obj_property name="ObjectShortName">s1_arid[0:0]</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_arready">
-         <obj_property name="ElementShortName">s1_arready</obj_property>
-         <obj_property name="ObjectShortName">s1_arready</obj_property>
+      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_araddr">
+         <obj_property name="ElementShortName">s1_araddr[28:0]</obj_property>
+         <obj_property name="ObjectShortName">s1_araddr[28:0]</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_arvalid">
          <obj_property name="ElementShortName">s1_arvalid</obj_property>
          <obj_property name="ObjectShortName">s1_arvalid</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_rdata">
-         <obj_property name="ElementShortName">s1_rdata[127:0]</obj_property>
-         <obj_property name="ObjectShortName">s1_rdata[127:0]</obj_property>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_arready">
+         <obj_property name="ElementShortName">s1_arready</obj_property>
+         <obj_property name="ObjectShortName">s1_arready</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_rid">
          <obj_property name="ElementShortName">s1_rid[0:0]</obj_property>
          <obj_property name="ObjectShortName">s1_rid[0:0]</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_rlast">
-         <obj_property name="ElementShortName">s1_rlast</obj_property>
-         <obj_property name="ObjectShortName">s1_rlast</obj_property>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_rvalid">
+         <obj_property name="ElementShortName">s1_rvalid</obj_property>
+         <obj_property name="ObjectShortName">s1_rvalid</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_rready">
          <obj_property name="ElementShortName">s1_rready</obj_property>
          <obj_property name="ObjectShortName">s1_rready</obj_property>
       </wvobject>
+      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_rdata">
+         <obj_property name="ElementShortName">s1_rdata[127:0]</obj_property>
+         <obj_property name="ObjectShortName">s1_rdata[127:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_rlast">
+         <obj_property name="ElementShortName">s1_rlast</obj_property>
+         <obj_property name="ObjectShortName">s1_rlast</obj_property>
+      </wvobject>
       <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_rresp">
          <obj_property name="ElementShortName">s1_rresp[1:0]</obj_property>
          <obj_property name="ObjectShortName">s1_rresp[1:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_rvalid">
-         <obj_property name="ElementShortName">s1_rvalid</obj_property>
-         <obj_property name="ObjectShortName">s1_rvalid</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="divider1846" type="divider">
@@ -403,24 +446,6 @@
       <obj_property name="label">DDR_READ</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_araddr">
-         <obj_property name="ElementShortName">m_araddr[28:0]</obj_property>
-         <obj_property name="ObjectShortName">m_araddr[28:0]</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_arburst">
-         <obj_property name="ElementShortName">m_arburst[1:0]</obj_property>
-         <obj_property name="ObjectShortName">m_arburst[1:0]</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_arcache">
-         <obj_property name="ElementShortName">m_arcache[3:0]</obj_property>
-         <obj_property name="ObjectShortName">m_arcache[3:0]</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_arid">
          <obj_property name="ElementShortName">m_arid[3:0]</obj_property>
          <obj_property name="ObjectShortName">m_arid[3:0]</obj_property>
@@ -428,27 +453,15 @@
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="Radix">BINARYRADIX</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_arlen">
-         <obj_property name="ElementShortName">m_arlen[7:0]</obj_property>
-         <obj_property name="ObjectShortName">m_arlen[7:0]</obj_property>
+      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_araddr">
+         <obj_property name="ElementShortName">m_araddr[28:0]</obj_property>
+         <obj_property name="ObjectShortName">m_araddr[28:0]</obj_property>
          <obj_property name="CustomSignalColor">#00FFFF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_arlock">
-         <obj_property name="ElementShortName">m_arlock</obj_property>
-         <obj_property name="ObjectShortName">m_arlock</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_arprot">
-         <obj_property name="ElementShortName">m_arprot[2:0]</obj_property>
-         <obj_property name="ObjectShortName">m_arprot[2:0]</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_arqos">
-         <obj_property name="ElementShortName">m_arqos[3:0]</obj_property>
-         <obj_property name="ObjectShortName">m_arqos[3:0]</obj_property>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_arvalid">
+         <obj_property name="ElementShortName">m_arvalid</obj_property>
+         <obj_property name="ObjectShortName">m_arvalid</obj_property>
          <obj_property name="CustomSignalColor">#00FFFF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
@@ -458,15 +471,15 @@
          <obj_property name="CustomSignalColor">#00FFFF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_arsize">
-         <obj_property name="ElementShortName">m_arsize[2:0]</obj_property>
-         <obj_property name="ObjectShortName">m_arsize[2:0]</obj_property>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_rvalid">
+         <obj_property name="ElementShortName">m_rvalid</obj_property>
+         <obj_property name="ObjectShortName">m_rvalid</obj_property>
          <obj_property name="CustomSignalColor">#00FFFF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_arvalid">
-         <obj_property name="ElementShortName">m_arvalid</obj_property>
-         <obj_property name="ObjectShortName">m_arvalid</obj_property>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_rready">
+         <obj_property name="ElementShortName">m_rready</obj_property>
+         <obj_property name="ObjectShortName">m_rready</obj_property>
          <obj_property name="CustomSignalColor">#00FFFF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
@@ -489,21 +502,9 @@
          <obj_property name="CustomSignalColor">#00FFFF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_rready">
-         <obj_property name="ElementShortName">m_rready</obj_property>
-         <obj_property name="ObjectShortName">m_rready</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_rresp">
          <obj_property name="ElementShortName">m_rresp[1:0]</obj_property>
          <obj_property name="ObjectShortName">m_rresp[1:0]</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_rvalid">
-         <obj_property name="ElementShortName">m_rvalid</obj_property>
-         <obj_property name="ObjectShortName">m_rvalid</obj_property>
          <obj_property name="CustomSignalColor">#00FFFF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
@@ -516,45 +517,45 @@
       <obj_property name="label">s0_read</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
+      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_rid">
+         <obj_property name="ElementShortName">s0_rid[0:0]</obj_property>
+         <obj_property name="ObjectShortName">s0_rid[0:0]</obj_property>
+      </wvobject>
       <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_araddr">
          <obj_property name="ElementShortName">s0_araddr[28:0]</obj_property>
          <obj_property name="ObjectShortName">s0_araddr[28:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_arid">
-         <obj_property name="ElementShortName">s0_arid[0:0]</obj_property>
-         <obj_property name="ObjectShortName">s0_arid[0:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_arready">
-         <obj_property name="ElementShortName">s0_arready</obj_property>
-         <obj_property name="ObjectShortName">s0_arready</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_arvalid">
          <obj_property name="ElementShortName">s0_arvalid</obj_property>
          <obj_property name="ObjectShortName">s0_arvalid</obj_property>
       </wvobject>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_arready">
+         <obj_property name="ElementShortName">s0_arready</obj_property>
+         <obj_property name="ObjectShortName">s0_arready</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_arid">
+         <obj_property name="ElementShortName">s0_arid[0:0]</obj_property>
+         <obj_property name="ObjectShortName">s0_arid[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_rvalid">
+         <obj_property name="ElementShortName">s0_rvalid</obj_property>
+         <obj_property name="ObjectShortName">s0_rvalid</obj_property>
+      </wvobject>
       <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_rdata">
          <obj_property name="ElementShortName">s0_rdata[127:0]</obj_property>
          <obj_property name="ObjectShortName">s0_rdata[127:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_rid">
-         <obj_property name="ElementShortName">s0_rid[0:0]</obj_property>
-         <obj_property name="ObjectShortName">s0_rid[0:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_rlast">
-         <obj_property name="ElementShortName">s0_rlast</obj_property>
-         <obj_property name="ObjectShortName">s0_rlast</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_rready">
          <obj_property name="ElementShortName">s0_rready</obj_property>
          <obj_property name="ObjectShortName">s0_rready</obj_property>
       </wvobject>
+      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_rlast">
+         <obj_property name="ElementShortName">s0_rlast</obj_property>
+         <obj_property name="ObjectShortName">s0_rlast</obj_property>
+      </wvobject>
       <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_rresp">
          <obj_property name="ElementShortName">s0_rresp[1:0]</obj_property>
          <obj_property name="ObjectShortName">s0_rresp[1:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_rvalid">
-         <obj_property name="ElementShortName">s0_rvalid</obj_property>
-         <obj_property name="ObjectShortName">s0_rvalid</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="divider1846" type="divider">
