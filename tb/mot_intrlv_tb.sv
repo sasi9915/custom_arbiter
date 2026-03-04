@@ -319,10 +319,10 @@ module mod_intrlv_tb;
             
             // Send 10-word packet with counter
             frame_tvalid = 1'b1;
-            for (i = 0; i < 10; i = i + 1) begin
+            for (i = 0; i < 131072; i = i + 1) begin
                 frame_tdata = 32'h00000000 + i;
                 frame_tuser = 16'hABCD;
-                if (i == 9) begin
+                if (i == 999999) begin
                     frame_tlast = 1'b1;
                 end else begin
                     frame_tlast = 1'b0;
@@ -335,6 +335,40 @@ module mod_intrlv_tb;
             frame_tvalid = 1'b0;
         end
     endtask
+
+integer outfile_2;
+
+    // Open the file at the start of simulation
+    initial begin
+        outfile_2 = $fopen("/home/satanya/Documents/Reading Materials/documents_20260109/ddr_tb_example/src/rtl/mod_intrlv_output.txt", "w");
+        if (outfile_2 == 0) begin
+            $display("ERROR: Could not open file for writing!");
+//            $finish;
+        end
+    end
+
+    // ------------------------------------------------------------------
+    // Monitor frame_deintrlvd signals and write to file
+    // ------------------------------------------------------------------
+    always @(posedge axis_clk) begin
+        if (!axis_resetn) begin
+            // nothing
+        end else begin
+            if (frame_intrlvd_tvalid && frame_intrlvd_tready) begin
+                // Log exactly one transfer
+                $fdisplay(outfile_2, "%h", frame_intrlvd_tdata);
+                $fflush(outfile_2);
+
+                if (frame_intrlvd_tlast) begin
+                    $display("Packet complete at time %0t ns, last word received: 0x%h",
+                             $time, frame_intrlvd_tdata);
+                    $fclose(outfile_2);
+//                    $finish;
+                end
+            end
+        end
+    end
+
 
 
     

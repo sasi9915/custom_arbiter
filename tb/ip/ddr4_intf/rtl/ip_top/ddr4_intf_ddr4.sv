@@ -180,7 +180,7 @@
     parameter integer DM_WIDTH                = 2,
 
     parameter         DRAM_TYPE               = "DDR4",
-    parameter         MEM_ADDR_ORDER          = "ROW_COLUMN_BANK",
+    parameter         MEM_ADDR_ORDER          = "ROW_COLUMN_BANK_INTLV",
 
     parameter DM_DBI                          = "DM_NODBI",
 

@@ -65,9 +65,9 @@ end entity;
 architecture arc_mod_intrlv of mod_intrlv is
 
     -- Constants
-    constant C_ROWS         : unsigned(9 downto 0)  := to_unsigned(64, 10);
-    constant C_COLS         : unsigned(9 downto 0)  := to_unsigned(64, 10);
-    constant C_base_address : unsigned(28 downto 0) := to_unsigned(2000000, 29);
+    constant C_ROWS         : unsigned(11 downto 0)  := to_unsigned(2048, 12);
+    constant C_COLS         : unsigned(11 downto 0)  := to_unsigned(2048, 12);
+    constant C_base_address : unsigned(28 downto 0) := to_unsigned(1000, 29);
     constant C_BURST_LEN    : unsigned(3 downto 0)  := to_unsigned(8, 4);
 
     -- Clocks & Resets
@@ -227,9 +227,9 @@ architecture arc_mod_intrlv of mod_intrlv is
     signal w_avmm_to_axi4_rd_avmm_busy         : std_logic;
 
     -- Temp Signals
-    signal r_write_limit               : unsigned(28 downto 0)          := (others => '0');
-    signal r_rd_address_current_row    : unsigned(9 downto 0)           := (others => '0');
-    signal r_rd_address_current_column : unsigned(9 downto 0)           := (others => '0');
+    signal w_write_limit               : unsigned(28 downto 0)          := (others => '0');
+    signal r_rd_address_current_row    : unsigned(11 downto 0)           := (others => '0');
+    signal r_rd_address_current_column : unsigned(11 downto 0)           := (others => '0');
     signal r_rd_address_gen            : std_logic                      := '0';
     signal sr_frame_data               : std_logic_vector(127 downto 0) := (others => '0');
     signal r_out_data                  : std_logic_vector(31 downto 0)  := (others => '0');
@@ -253,7 +253,7 @@ architecture arc_mod_intrlv of mod_intrlv is
     signal fifo_dout  : std_logic_vector(6 downto 0);
     signal fifo_wr_en : std_logic;
     signal fifo_rd_en : std_logic;
-    signal empty      : std_logic;
+    signal fifo_rst   : std_logic;
 
     signal r_burst_cnt : unsigned(2 downto 0) := (others => '0');
 
@@ -299,7 +299,6 @@ begin
             r_out_last          <= '0';
             r_bit_idx           <= (others => '0');
             r_tkeep             <= (others => '0');
-            r_write_limit       <= (others => '0');
             r_burst_cnt         <= (others => '0');
             buf_burst           <= (others => (others => '0'));
 
@@ -311,12 +310,6 @@ begin
             r_avmm_to_axi4_wr_avmm_write <= '0';
             r_frame_intrlvd_tlast        <= '0';
             r_frame_intrlvd_tvalid       <= '0';
-
-            if (C_COLS * C_ROWS mod 128 = 0) then
-                r_write_limit <= resize((C_COLS * C_ROWS) / 128 - 1, 29);
-            else
-                r_write_limit <= resize((C_COLS * C_ROWS) / 128, 29);
-            end if;
 
             case current_state is
 
@@ -367,7 +360,7 @@ begin
                 -- After writing 8 words, wait for the burst to complete
                 when wr_burst_wait =>
                     if w_avmm_to_axi4_wr_avmm_busy = '0' then
-                        if r_write_ddr_address = ((r_write_limit + 1) / C_BURST_LEN - 1) then
+                        if r_write_ddr_address = ((w_write_limit + 1) / C_BURST_LEN - 1) then
                             r_write_ddr_address <= (others => '0');
                             r_rd_address_gen    <= '1';
                         else
@@ -410,6 +403,7 @@ begin
 
                     else
                         r_avmm_to_axi4_rd_avmm_address_val <= '0';
+                        fifo_wr_en                         <= '0';
                     end if;
 
                     -- Capture read data from DDR and send it out over AXI4-Stream after reordering
@@ -470,7 +464,7 @@ begin
         end if;
     end process;
 
-    process(current_state, r_byte_idx, r_burst_cnt, w_avmm_to_axi4_wr_avmm_busy, frame_intrlvd_tready, r_frame_intrlvd_tvalid, r_write_ddr_address, r_bit_idx, r_write_limit)
+    process(current_state, r_byte_idx, r_burst_cnt, w_avmm_to_axi4_wr_avmm_busy, frame_intrlvd_tready, r_frame_intrlvd_tvalid, r_write_ddr_address, r_bit_idx, w_write_limit)
     begin
         case current_state is
 
@@ -504,7 +498,7 @@ begin
 
             when wr_burst_wait =>
                 if w_avmm_to_axi4_wr_avmm_busy = '0' then
-                    if r_write_ddr_address = ((r_write_limit + 1) / C_BURST_LEN - 1) then
+                    if r_write_ddr_address = ((w_write_limit + 1) / C_BURST_LEN - 1) then
                         next_state <= rd_phase;
                     else
                         next_state <= wr_idle;
@@ -534,13 +528,16 @@ begin
     frame_intrlvd_tvalid <= r_frame_intrlvd_tvalid;
 
     fifo_rd_en <= w_avmm_to_axi4_rd_avmm_readdata_val;
+    fifo_rst   <= not axis_resetn;
+
+    w_write_limit <= resize((C_COLS * C_ROWS) / 128 - 1, 29);
 
     xpm_fifo_sync_inst : xpm_fifo_sync
         generic map(
             CASCADE_HEIGHT      => 0,   -- DECIMAL
             DOUT_RESET_VALUE    => "0", -- String
             ECC_MODE            => "no_ecc", -- String
-            EN_SIM_ASSERT_ERR   => "warning", -- String
+          --  EN_SIM_ASSERT_ERR   => "warning", -- String
             FIFO_MEMORY_TYPE    => "auto", -- String
             FIFO_READ_LATENCY   => 0,   -- DECIMAL
             FIFO_WRITE_DEPTH    => 128, -- DECIMAL
@@ -562,10 +559,10 @@ begin
             rd_en         => fifo_rd_en,
             wr_clk        => axis_clk,
             sleep         => '0',
-            rst           => '0',
+            rst           => fifo_rst,
             wr_en         => fifo_wr_en,
             injectsbiterr => '0',
-            empty         => empty,
+            empty         => open,
             injectdbiterr => '0'
         );
 

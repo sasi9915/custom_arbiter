@@ -8,3 +8,21 @@ work_proj
 .library_mapping.xml
 .project
 .settings/
+
+# Simulation work library
+work-obj*.cf
+work/
+transcript
+vsim.wlf
+*.wlf
+*.log
+
+
+tb/ip
+
+# GHDL / VHDL build files
+*.o
+*.cf
+e~*
+axi_custom_int_2slot_tb
+work-obj*.cf
