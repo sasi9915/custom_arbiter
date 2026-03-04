@@ -246,13 +246,14 @@ architecture sim of axi_custom_int_2slot_tb is
     signal m_rready  : std_logic;
 
     signal wr_rsp_pending : std_logic := '0';
-    signal rd_rsp_pending : std_logic := '0';
     signal wr_id_hold     : std_logic_vector(G_M_ID_WIDTH - 1 downto 0) := (others => '0');
-    signal rd_id_hold     : std_logic_vector(G_M_ID_WIDTH - 1 downto 0) := (others => '0');
-    signal rd_addr_hold   : std_logic_vector(G_ADDR_WIDTH - 1 downto 0) := (others => '0');
     signal m_wready_base  : std_logic := '1';
     signal rand_wready_en : std_logic := '0';
     signal rand_wready_ok : std_logic := '1';
+
+    constant C_RD_RSP_Q_DEPTH : positive := 32;
+    type rd_id_q_t is array (0 to C_RD_RSP_Q_DEPTH - 1) of std_logic_vector(G_M_ID_WIDTH - 1 downto 0);
+    type rd_addr_q_t is array (0 to C_RD_RSP_Q_DEPTH - 1) of std_logic_vector(G_ADDR_WIDTH - 1 downto 0);
 
     constant AW_SIZE_128B : std_logic_vector(2 downto 0) := "100";
     constant INCR_BURST   : std_logic_vector(1 downto 0) := "01";
@@ -271,6 +272,9 @@ architecture sim of axi_custom_int_2slot_tb is
     constant RD1_ID   : std_logic_vector(G_S_ID_WIDTH - 1 downto 0) := "0";
     constant RD0_ADDR : std_logic_vector(G_ADDR_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#0300#, G_ADDR_WIDTH));
     constant RD1_ADDR : std_logic_vector(G_ADDR_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#0400#, G_ADDR_WIDTH));
+    constant RDSEQ_ID        : std_logic_vector(G_S_ID_WIDTH - 1 downto 0) := "1";
+    constant RDSEQ_BASE_ADDR : std_logic_vector(G_ADDR_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#0800#, G_ADDR_WIDTH));
+    constant RDSEQ_ADDR_STEP : natural := 16#20#;
     constant BP_WR_ID   : std_logic_vector(G_S_ID_WIDTH - 1 downto 0) := "1";
     constant BP_WR_ADDR : std_logic_vector(G_ADDR_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#0600#, G_ADDR_WIDTH));
     constant BP_WR_DATA : std_logic_vector(G_DATA_WIDTH - 1 downto 0) := std_logic_vector(to_unsigned(16#6BAD#, G_DATA_WIDTH));
@@ -408,13 +412,21 @@ begin
         );
 
     master_rsp_model : process (aclk, aresetn)
+        variable rd_id_q   : rd_id_q_t := (others => (others => '0'));
+        variable rd_addr_q : rd_addr_q_t := (others => (others => '0'));
+        variable rd_wrptr  : natural range 0 to C_RD_RSP_Q_DEPTH - 1 := 0;
+        variable rd_rdptr  : natural range 0 to C_RD_RSP_Q_DEPTH - 1 := 0;
+        variable rd_count  : natural range 0 to C_RD_RSP_Q_DEPTH := 0;
+        variable ar_fire   : boolean;
+        variable rd_rsp_holdoff : natural range 0 to 2 := 0;
     begin
         if aresetn = '0' then 
             wr_rsp_pending <= '0';
-            rd_rsp_pending <= '0';
             wr_id_hold     <= (others => '0');
-            rd_id_hold     <= (others => '0');
-            rd_addr_hold   <= (others => '0');
+            rd_wrptr       := 0;
+            rd_rdptr       := 0;
+            rd_count       := 0;
+            rd_rsp_holdoff := 0;
             m_bid          <= (others => '0');
             m_bresp        <= "00";
             m_bvalid       <= '0';
@@ -424,6 +436,7 @@ begin
             m_rlast        <= '0';
             m_rvalid       <= '0';
         elsif rising_edge(aclk) then
+            ar_fire := false;
             if (m_awvalid = '1') and (m_awready = '1') then
                 wr_id_hold <= m_awid;
             end if;
@@ -442,20 +455,42 @@ begin
             end if;
 
             if (m_arvalid = '1') and (m_arready = '1') then
-                rd_id_hold     <= m_arid;
-                rd_addr_hold   <= m_araddr;
-                rd_rsp_pending <= '1';
+                assert rd_count < C_RD_RSP_Q_DEPTH
+                    report "Read response model queue overflow."
+                    severity failure;
+                if rd_count < C_RD_RSP_Q_DEPTH then
+                    rd_id_q(rd_wrptr)   := m_arid;
+                    rd_addr_q(rd_wrptr) := m_araddr;
+                    if rd_wrptr = C_RD_RSP_Q_DEPTH - 1 then
+                        rd_wrptr := 0;
+                    else
+                        rd_wrptr := rd_wrptr + 1;
+                    end if;
+                    rd_count := rd_count + 1;
+                    ar_fire  := true;
+                end if;
+            end if;
+
+            if ar_fire then
+                rd_rsp_holdoff := 2;
+            elsif rd_rsp_holdoff > 0 then
+                rd_rsp_holdoff := rd_rsp_holdoff - 1;
             end if;
 
             if (m_rvalid = '1') and (m_rready = '1') then
                 m_rvalid <= '0';
-            elsif (rd_rsp_pending = '1') and (m_rvalid = '0') then
-                m_rid          <= rd_id_hold;
-                m_rdata        <= std_logic_vector(resize(unsigned(rd_addr_hold), G_DATA_WIDTH));
+            elsif (rd_count > 0) and (m_rvalid = '0') and (not ar_fire) and (rd_rsp_holdoff = 0) then
+                m_rid          <= rd_id_q(rd_rdptr);
+                m_rdata        <= std_logic_vector(resize(unsigned(rd_addr_q(rd_rdptr)), G_DATA_WIDTH));
                 m_rresp        <= "00";
                 m_rlast        <= '1';
                 m_rvalid       <= '1';
-                rd_rsp_pending <= '0';
+                if rd_rdptr = C_RD_RSP_Q_DEPTH - 1 then
+                    rd_rdptr := 0;
+                else
+                    rd_rdptr := rd_rdptr + 1;
+                end if;
+                rd_count := rd_count - 1;
             end if;
         end if;
     end process;
@@ -484,6 +519,7 @@ begin
     stim_proc : process
         variable exp_data : std_logic_vector(G_DATA_WIDTH - 1 downto 0);
         variable exp_last : std_logic;
+        variable exp_addr : std_logic_vector(G_ADDR_WIDTH - 1 downto 0);
     begin
         s0_awlen   <= (others => '0');
         s1_awlen   <= (others => '0');
@@ -750,7 +786,25 @@ begin
             report "First master AR address mismatch."
             severity failure;
         
-        -- 8).check the slot0 is get the granst for reading based on ROund Robin Method
+        -- 8). Second granted read should come from slot 1 (no wait for first R).
+        for i in 0 to 100 loop
+            wait until rising_edge(aclk);
+            exit when (m_arvalid = '1') and (m_arready = '1');
+        end loop;
+        assert (m_arvalid = '1') and (m_arready = '1')
+            report "Timeout waiting for second master AR handshake."
+            severity failure;
+        assert m_arid(G_M_ID_WIDTH - 1) = '1'
+            report "Second master AR should be from slot 1."
+            severity failure;
+        assert m_arid(G_S_ID_WIDTH - 1 downto 0) = RD1_ID
+            report "Second master AR low ID bits do not match slot 1 ID."
+            severity failure;
+        assert m_araddr = RD1_ADDR
+            report "Second master AR address mismatch."
+            severity failure;
+
+        -- 9).check the slot0 is get the granst for reading based on ROund Robin Method
         for i in 0 to 100 loop
             wait until rising_edge(aclk);
             exit when (s0_rvalid = '1') or (s1_rvalid = '1');
@@ -769,24 +823,6 @@ begin
             severity failure;
         assert s0_rdata = std_logic_vector(resize(unsigned(RD0_ADDR), G_DATA_WIDTH))
             report "Slot 0 RDATA mismatch."
-            severity failure;
-
-        -- 9). Second granted read should come from slot 1.
-        for i in 0 to 100 loop
-            wait until rising_edge(aclk);
-            exit when (m_arvalid = '1') and (m_arready = '1');
-        end loop;
-        assert (m_arvalid = '1') and (m_arready = '1')
-            report "Timeout waiting for second master AR handshake."
-            severity failure;
-        assert m_arid(G_M_ID_WIDTH - 1) = '1'
-            report "Second master AR should be from slot 1."
-            severity failure;
-        assert m_arid(G_S_ID_WIDTH - 1 downto 0) = RD1_ID
-            report "Second master AR low ID bits do not match slot 1 ID."
-            severity failure;
-        assert m_araddr = RD1_ADDR
-            report "Second master AR address mismatch."
             severity failure;
 
             --10). check the read data  , read response and RLAST signal for slot 1 after getting the grant for read transaction based on Round Robin method
@@ -810,8 +846,44 @@ begin
             report "Slot 1 RDATA mismatch."
             severity failure;
 
+        -- 11) Sequential reads from slot0 using one ARID across multiple addresses.
+        for req in 0 to 3 loop
+            exp_addr   := std_logic_vector(unsigned(RDSEQ_BASE_ADDR) + to_unsigned(req * RDSEQ_ADDR_STEP, G_ADDR_WIDTH));
+            s0_arid    <= RDSEQ_ID;
+            s0_araddr  <= exp_addr;
+            s0_arvalid <= '1';
+            wait until rising_edge(aclk);
+            assert s0_arready = '1'
+                report "Sequential read enqueue failed for slot 0."
+                severity failure;
+        end loop;
+        s0_arvalid <= '0';
+
+        for req in 0 to 3 loop
+            exp_addr := std_logic_vector(unsigned(RDSEQ_BASE_ADDR) + to_unsigned(req * RDSEQ_ADDR_STEP, G_ADDR_WIDTH));
+            for i in 0 to 100 loop
+                wait until rising_edge(aclk);
+                exit when (s0_rvalid = '1') or (s1_rvalid = '1');
+            end loop;
+            assert (s0_rvalid = '1') and (s1_rvalid = '0')
+                report "Sequential read response was not routed to slot 0."
+                severity failure;
+            assert s0_rid = RDSEQ_ID
+                report "Sequential slot 0 RID mismatch."
+                severity failure;
+            assert s0_rresp = "00"
+                report "Sequential slot 0 RRESP mismatch."
+                severity failure;
+            assert s0_rlast = '1'
+                report "Sequential slot 0 RLAST mismatch."
+                severity failure;
+            assert s0_rdata = std_logic_vector(resize(unsigned(exp_addr), G_DATA_WIDTH))
+                report "Sequential slot 0 RDATA mismatch."
+                severity failure;
+        end loop;
+
         -- * BACKPRESSURE PHASE * --
-        -- 11) Master AWREADY backpressure.
+        -- 12) Master AWREADY backpressure.
         m_awready  <= '0';
         s0_awid    <= BP_WR_ID;
         s0_awaddr  <= BP_WR_ADDR;
@@ -850,7 +922,7 @@ begin
             report "AW handshake did not complete after releasing AWREADY."
             severity failure;
 
-        -- 12) Master WREADY backpressure.
+        -- 13) Master WREADY backpressure.
         m_wready_base  <= '0';
         s0_wdata  <= BP_WR_DATA;
         s0_wstrb  <= (others => '1');
@@ -880,7 +952,7 @@ begin
         s0_wlast  <= '0';
         m_wready_base  <= '1';
 
-        -- 13) Slave-side BREADY backpressure.
+        -- 14) Slave-side BREADY backpressure.
         s0_bready <= '0';
         for i in 0 to 100 loop
             wait until rising_edge(aclk);
@@ -907,7 +979,7 @@ begin
             report "B channel did not drain after releasing slot 0 BREADY."
             severity failure;
 
-        -- 14) Master ARREADY backpressure.
+        -- 15) Master ARREADY backpressure.
         m_arready  <= '0';
         s0_arid    <= BP_RD_ID;
         s0_araddr  <= BP_RD_ADDR;
@@ -946,7 +1018,7 @@ begin
             report "AR handshake did not complete after releasing ARREADY."
             severity failure;
 
-        -- 15) Slave-side RREADY backpressure.
+        -- 16) Slave-side RREADY backpressure.
         s0_rready <= '0';
         for i in 0 to 100 loop
             wait until rising_edge(aclk);
