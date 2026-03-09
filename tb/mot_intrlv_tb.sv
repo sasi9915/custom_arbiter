@@ -5,8 +5,8 @@ module mod_intrlv_tb;
     // Mod Interleaver Signals
 
     // /AXI Clock and reset signals
-    reg             axis_resetn;
-    reg             axis_clk;
+    wire            axis_resetn;
+    wire            axis_clk;
     
     
     // AXI Stream Slave Interface (frame)
@@ -26,42 +26,42 @@ module mod_intrlv_tb;
     wire            frame_intrlvd_tlast;
     
     // AXI4 Master Interface (DDR4)
-    reg [3:0]       ddr4_m_axi_awid;
-    reg [28:0]      ddr4_m_axi_awaddr;
-    reg [7:0]       ddr4_m_axi_awlen;
-    reg [2:0]       ddr4_m_axi_awsize;
-    reg [1:0]       ddr4_m_axi_awburst;
-    reg [0:0]       ddr4_m_axi_awlock;
-    reg [3:0]       ddr4_m_axi_awcache;
-    reg [2:0]       ddr4_m_axi_awprot;
-    reg [3:0]       ddr4_m_axi_awqos;
-    reg             ddr4_m_axi_awvalid;
+    wire [3:0]      ddr4_m_axi_awid;
+    wire [28:0]     ddr4_m_axi_awaddr;
+    wire [7:0]      ddr4_m_axi_awlen;
+    wire [2:0]      ddr4_m_axi_awsize;
+    wire [1:0]      ddr4_m_axi_awburst;
+    wire            ddr4_m_axi_awlock;
+    wire [3:0]      ddr4_m_axi_awcache;
+    wire [2:0]      ddr4_m_axi_awprot;
+    wire [3:0]      ddr4_m_axi_awqos;
+    wire            ddr4_m_axi_awvalid;
     wire            ddr4_m_axi_awready;
     
-    reg [127:0]     ddr4_m_axi_wdata;
-    reg [15:0]      ddr4_m_axi_wstrb;
-    reg             ddr4_m_axi_wlast;
-    reg             ddr4_m_axi_wvalid;
+    wire [127:0]    ddr4_m_axi_wdata;
+    wire [15:0]     ddr4_m_axi_wstrb;
+    wire            ddr4_m_axi_wlast;
+    wire            ddr4_m_axi_wvalid;
     wire            ddr4_m_axi_wready;
     
-    reg             ddr4_m_axi_bready;
+    wire            ddr4_m_axi_bready;
     wire [3:0]      ddr4_m_axi_bid;
     wire [1:0]      ddr4_m_axi_bresp;
     wire            ddr4_m_axi_bvalid;
     
-    reg [3:0]       ddr4_m_axi_arid;
-    reg [28:0]      ddr4_m_axi_araddr;
-    reg [7:0]       ddr4_m_axi_arlen;
-    reg [2:0]       ddr4_m_axi_arsize;
-    reg [1:0]       ddr4_m_axi_arburst;
-    reg [0:0]       ddr4_m_axi_arlock;
-    reg [3:0]       ddr4_m_axi_arcache;
-    reg [2:0]       ddr4_m_axi_arprot;
-    reg [3:0]       ddr4_m_axi_arqos;
-    reg             ddr4_m_axi_arvalid;
+    wire [3:0]      ddr4_m_axi_arid;
+    wire [28:0]     ddr4_m_axi_araddr;
+    wire [7:0]      ddr4_m_axi_arlen;
+    wire [2:0]      ddr4_m_axi_arsize;
+    wire [1:0]      ddr4_m_axi_arburst;
+    wire            ddr4_m_axi_arlock;
+    wire [3:0]      ddr4_m_axi_arcache;
+    wire [2:0]      ddr4_m_axi_arprot;
+    wire [3:0]      ddr4_m_axi_arqos;
+    wire            ddr4_m_axi_arvalid;
     wire            ddr4_m_axi_arready;
     
-    reg             ddr4_m_axi_rready;
+    wire            ddr4_m_axi_rready;
     wire            ddr4_m_axi_rlast;
     wire            ddr4_m_axi_rvalid;
     wire [1:0]      ddr4_m_axi_rresp;
@@ -72,13 +72,13 @@ module mod_intrlv_tb;
 
     // DDR4 Interface Signals
     // System Reset
-    reg             ddr4_intf_sys_rst;
+    wire            ddr4_intf_sys_rst;
 
     // Clock and Reset Interface
     wire            ddr4_intf_c0_init_calib_complete;
     wire            ddr4_intf_dbg_clk;
     reg             ddr4_intf_c0_sys_clk_p;
-    reg             ddr4_intf_c0_sys_clk_n;
+    wire            ddr4_intf_c0_sys_clk_n;
     wire [511:0]    ddr4_intf_dbg_bus;
         
     // DDR4 Memory Interface
@@ -113,17 +113,17 @@ module mod_intrlv_tb;
     localparam real DDR_REF_PERIOD_NS = 1e9 / DDR_REF_FREQ_HZ;
 
     
-    // Instantiate the DUT
-    mod_intrlv mod_intrlv_inst (
+    // Instantiate top (includes custom AXI interconnect + mod_intrlv)
+    top top_inst (
         .axis_resetn            (axis_resetn),
         .axis_clk               (axis_clk),
 
-        .frame_tready           (frame_tready),
-        .frame_tvalid           (frame_tvalid),
-        .frame_tuser            (frame_tuser),
-        .frame_tdata            (frame_tdata),
-        .frame_tkeep            (frame_tkeep),
-        .frame_tlast            (frame_tlast),
+        .mod_frame_tready       (frame_tready),
+        .mod_frame_tvalid       (frame_tvalid),
+        .mod_frame_tuser        (frame_tuser),
+        .mod_frame_tdata        (frame_tdata),
+        .mod_frame_tkeep        (frame_tkeep),
+        .mod_frame_tlast        (frame_tlast),
 
         .frame_intrlvd_tready   (frame_intrlvd_tready),
         .frame_intrlvd_tvalid   (frame_intrlvd_tvalid),
@@ -132,43 +132,43 @@ module mod_intrlv_tb;
         .frame_intrlvd_tkeep    (frame_intrlvd_tkeep),
         .frame_intrlvd_tlast    (frame_intrlvd_tlast),
 
-        .ddr4_m_axi_awid        (ddr4_m_axi_awid),
-        .ddr4_m_axi_awaddr      (ddr4_m_axi_awaddr),
-        .ddr4_m_axi_awlen       (ddr4_m_axi_awlen),
-        .ddr4_m_axi_awsize      (ddr4_m_axi_awsize),
-        .ddr4_m_axi_awburst     (ddr4_m_axi_awburst),
-        .ddr4_m_axi_awlock      (ddr4_m_axi_awlock),
-        .ddr4_m_axi_awcache     (ddr4_m_axi_awcache),
-        .ddr4_m_axi_awprot      (ddr4_m_axi_awprot),
-        .ddr4_m_axi_awqos       (ddr4_m_axi_awqos),
-        .ddr4_m_axi_awvalid     (ddr4_m_axi_awvalid),
-        .ddr4_m_axi_awready     (ddr4_m_axi_awready),
-        .ddr4_m_axi_wdata       (ddr4_m_axi_wdata),
-        .ddr4_m_axi_wstrb       (ddr4_m_axi_wstrb),
-        .ddr4_m_axi_wlast       (ddr4_m_axi_wlast),
-        .ddr4_m_axi_wvalid      (ddr4_m_axi_wvalid),
-        .ddr4_m_axi_wready      (ddr4_m_axi_wready),
-        .ddr4_m_axi_bready      (ddr4_m_axi_bready),
-        .ddr4_m_axi_bid         (ddr4_m_axi_bid),
-        .ddr4_m_axi_bresp       (ddr4_m_axi_bresp),
-        .ddr4_m_axi_bvalid      (ddr4_m_axi_bvalid),
-        .ddr4_m_axi_arid        (ddr4_m_axi_arid),
-        .ddr4_m_axi_araddr      (ddr4_m_axi_araddr),
-        .ddr4_m_axi_arlen       (ddr4_m_axi_arlen),
-        .ddr4_m_axi_arsize      (ddr4_m_axi_arsize),
-        .ddr4_m_axi_arburst     (ddr4_m_axi_arburst),
-        .ddr4_m_axi_arlock      (ddr4_m_axi_arlock),
-        .ddr4_m_axi_arcache     (ddr4_m_axi_arcache),
-        .ddr4_m_axi_arprot      (ddr4_m_axi_arprot),
-        .ddr4_m_axi_arqos       (ddr4_m_axi_arqos),
-        .ddr4_m_axi_arvalid     (ddr4_m_axi_arvalid),
-        .ddr4_m_axi_arready     (ddr4_m_axi_arready),
-        .ddr4_m_axi_rready      (ddr4_m_axi_rready),
-        .ddr4_m_axi_rlast       (ddr4_m_axi_rlast),
-        .ddr4_m_axi_rvalid      (ddr4_m_axi_rvalid),
-        .ddr4_m_axi_rresp       (ddr4_m_axi_rresp),
-        .ddr4_m_axi_rid         (ddr4_m_axi_rid),
-        .ddr4_m_axi_rdata       (ddr4_m_axi_rdata)
+        .M_AXI_AWID             (ddr4_m_axi_awid),
+        .M_AXI_AWADDR           (ddr4_m_axi_awaddr),
+        .M_AXI_AWLEN            (ddr4_m_axi_awlen),
+        .M_AXI_AWSIZE           (ddr4_m_axi_awsize),
+        .M_AXI_AWBURST          (ddr4_m_axi_awburst),
+        .M_AXI_AWLOCK           (ddr4_m_axi_awlock),
+        .M_AXI_AWCACHE          (ddr4_m_axi_awcache),
+        .M_AXI_AWPROT           (ddr4_m_axi_awprot),
+        .M_AXI_AWQOS            (ddr4_m_axi_awqos),
+        .M_AXI_AWVALID          (ddr4_m_axi_awvalid),
+        .M_AXI_AWREADY          (ddr4_m_axi_awready),
+        .M_AXI_WDATA            (ddr4_m_axi_wdata),
+        .M_AXI_WSTRB            (ddr4_m_axi_wstrb),
+        .M_AXI_WLAST            (ddr4_m_axi_wlast),
+        .M_AXI_WVALID           (ddr4_m_axi_wvalid),
+        .M_AXI_WREADY           (ddr4_m_axi_wready),
+        .M_AXI_BID              (ddr4_m_axi_bid),
+        .M_AXI_BRESP            (ddr4_m_axi_bresp),
+        .M_AXI_BVALID           (ddr4_m_axi_bvalid),
+        .M_AXI_BREADY           (ddr4_m_axi_bready),
+        .M_AXI_ARID             (ddr4_m_axi_arid),
+        .M_AXI_ARADDR           (ddr4_m_axi_araddr),
+        .M_AXI_ARLEN            (ddr4_m_axi_arlen),
+        .M_AXI_ARSIZE           (ddr4_m_axi_arsize),
+        .M_AXI_ARBURST          (ddr4_m_axi_arburst),
+        .M_AXI_ARLOCK           (ddr4_m_axi_arlock),
+        .M_AXI_ARCACHE          (ddr4_m_axi_arcache),
+        .M_AXI_ARPROT           (ddr4_m_axi_arprot),
+        .M_AXI_ARQOS            (ddr4_m_axi_arqos),
+        .M_AXI_ARVALID          (ddr4_m_axi_arvalid),
+        .M_AXI_ARREADY          (ddr4_m_axi_arready),
+        .M_AXI_RID              (ddr4_m_axi_rid),
+        .M_AXI_RDATA            (ddr4_m_axi_rdata),
+        .M_AXI_RRESP            (ddr4_m_axi_rresp),
+        .M_AXI_RLAST            (ddr4_m_axi_rlast),
+        .M_AXI_RVALID           (ddr4_m_axi_rvalid),
+        .M_AXI_RREADY           (ddr4_m_axi_rready)
     );
     
 
