@@ -1,0 +1,10 @@
+v 4
+file . "tb/custom_int/axi_custom_int_2slot_tb.vhd" "02ae04d45223028e04d74160da7e0974d5f5e81a" "20260304034519.272":
+  entity tb_xpm_fifo_sync_wrap at 1( 0) + 0 on 145;
+  architecture model of tb_xpm_fifo_sync_wrap at 31( 1078) + 0 on 146;
+  configuration axi_custom_int_2slot_with_tb_fifo_cfg at 94( 3082) + 0 on 147;
+  entity axi_custom_int_2slot_tb at 115( 3822) + 0 on 148;
+  architecture sim of axi_custom_int_2slot_tb at 123( 3987) + 0 on 149;
+file . "src/rtl/custom_int/axi_custom_int_2slot.vhd" "b8de9120d9e9f0d303af7be606ddc2405d8fb3f9" "20260304034518.708":
+  entity axi_custom_int_2slot at 1( 0) + 0 on 143;
+  architecture rtl of axi_custom_int_2slot at 133( 6300) + 0 on 144;
