@@ -180,7 +180,7 @@
     parameter integer DM_WIDTH                = 2,
 
     parameter         DRAM_TYPE               = "DDR4",
-    parameter         MEM_ADDR_ORDER          = "ROW_COLUMN_BANK_INTLV",
+    parameter         MEM_ADDR_ORDER          = "ROW_COLUMN_BANK",
 
     parameter DM_DBI                          = "DM_NODBI",
 
@@ -266,7 +266,7 @@
     parameter C_S_AXI_SUPPORTS_NARROW_BURST   = 0,
                                               // Indicates whether to instatiate upsizer
                                               // Range: 0, 1
-    parameter C_RD_WR_ARB_ALGORITHM           = "RD_PRI_REG",
+    parameter C_RD_WR_ARB_ALGORITHM           = "ROUND_ROBIN",
                                              // Indicates the Arbitration
                                              // Allowed values - "TDM", "ROUND_ROBIN",
                                              // "RD_PRI_REG", "RD_PRI_REG_STARVE_LIMIT"

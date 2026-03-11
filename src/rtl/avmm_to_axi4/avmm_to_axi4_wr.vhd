@@ -194,17 +194,29 @@ begin
 
                 when send_w =>
                     r_avmm_s_busy      <= '1';
-                    r_axi_m_axi_wdata  <= buf_burst(to_integer(r_beat_cnt));
                     r_axi_m_axi_wvalid <= '1';
 
-                    if r_beat_cnt = "111" then
-                        r_axi_m_axi_wlast <= '1';
+                    -- Advance beat index only on real W handshake.
+                    if r_axi_m_axi_wvalid = '1' and w_axi_m_axi_wready = '1' then
+                        if r_beat_cnt /= "111" then
+                            r_beat_cnt   <= r_beat_cnt + 1;
+                            r_axi_m_axi_wdata <= buf_burst(to_integer(r_beat_cnt + 1));
+                            if r_beat_cnt = "110" then
+                                r_axi_m_axi_wlast <= '1';
+                            else
+                                r_axi_m_axi_wlast <= '0';
+                            end if;
+                        else
+                            r_axi_m_axi_wdata <= buf_burst(to_integer(r_beat_cnt));
+                            r_axi_m_axi_wlast <= '1';
+                        end if;
                     else
-                        r_axi_m_axi_wlast <= '0';
-                    end if;
-
-                    if w_axi_m_axi_wready = '1' then
-                        r_beat_cnt <= r_beat_cnt + 1;
+                        r_axi_m_axi_wdata <= buf_burst(to_integer(r_beat_cnt));
+                        if r_beat_cnt = "111" then
+                            r_axi_m_axi_wlast <= '1';
+                        else
+                            r_axi_m_axi_wlast <= '0';
+                        end if;
                     end if;
 
                 when wait_b =>
@@ -221,7 +233,7 @@ begin
         end if;
     end process;
 
-    sm_process : process(current_state, avmm_s_write, r_burst_cnt, axi_m_axi_awready, axi_m_axi_wready, r_beat_cnt, axi_m_axi_bvalid)
+    sm_process : process(current_state, avmm_s_write, r_burst_cnt, r_axi_m_axi_awvalid, w_axi_m_axi_awready, r_axi_m_axi_wvalid, w_axi_m_axi_wready, r_beat_cnt, w_axi_m_axi_bvalid)
     begin
         case current_state is
 
@@ -238,21 +250,21 @@ begin
                 end if;
 
             when send_aw =>
-                if axi_m_axi_awready = '1' then
+                if r_axi_m_axi_awvalid = '1' and w_axi_m_axi_awready = '1' then
                     next_state <= send_w;
                 else
                     next_state <= send_aw;
                 end if;
 
             when send_w =>
-                if axi_m_axi_wready = '1' and r_beat_cnt = "111" then
+                if r_axi_m_axi_wvalid = '1' and w_axi_m_axi_wready = '1' and r_beat_cnt = "111" then
                     next_state <= wait_b;
                 else
                     next_state <= send_w;
                 end if;
 
             when wait_b =>
-                if axi_m_axi_bvalid = '1' then
+                if w_axi_m_axi_bvalid = '1' then
                     next_state <= idle;
                 else
                     next_state <= wait_b;
