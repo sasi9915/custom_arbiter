@@ -600,8 +600,9 @@ begin
 
     avmm_to_axi4_rd_inst : avmm_to_axi4_rd
         generic map(
-            g_ADDR_WIDTH => 29,         -- keep default or change as needed
-            g_DATA_WIDTH => 128         -- keep default or change as needed
+            g_ADDR_WIDTH      => 29,
+            g_DATA_WIDTH      => 128,
+            g_MAX_OUTSTANDING => 32
         )
         port map(
             axi_aresetn         => axis_resetn,
