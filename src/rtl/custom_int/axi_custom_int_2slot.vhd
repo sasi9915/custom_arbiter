@@ -368,7 +368,34 @@ begin
                 when RD_SEND_AR =>
                     if m_arready = '1' then
                         r_rd_rr_sel <= not r_rd_slot_sel; -- * change the grant access for next round after address accepted
-                        r_rd_state  <= RD_IDLE;
+
+                        -- Prefetch next AR command immediately after handshake to avoid
+                        -- an idle bubble between consecutive AR transfers.
+                        if (w_ar0_fifo_empty = '0') or (w_ar1_fifo_empty = '0') then
+                            if (w_ar0_fifo_empty = '0') and (w_ar1_fifo_empty = '0') then
+                                -- Alternate the slot after each accepted address.
+                                if r_rd_slot_sel = '0' then
+                                    r_rd_slot_sel    <= '1';
+                                    r_rd_cmd_reg     <= w_ar1_fifo_q;
+                                    r_ar1_fifo_rdreq <= '1';
+                                else
+                                    r_rd_slot_sel    <= '0';
+                                    r_rd_cmd_reg     <= w_ar0_fifo_q;
+                                    r_ar0_fifo_rdreq <= '1';
+                                end if;
+                            elsif w_ar0_fifo_empty = '0' then
+                                r_rd_slot_sel    <= '0';
+                                r_rd_cmd_reg     <= w_ar0_fifo_q;
+                                r_ar0_fifo_rdreq <= '1';
+                            else
+                                r_rd_slot_sel    <= '1';
+                                r_rd_cmd_reg     <= w_ar1_fifo_q;
+                                r_ar1_fifo_rdreq <= '1';
+                            end if;
+                            r_rd_state <= RD_SEND_AR;
+                        else
+                            r_rd_state <= RD_IDLE;
+                        end if;
                     end if;
             end case;
         end if;
@@ -508,7 +535,9 @@ begin
     begin
         s0_rvalid <= '0';
         s1_rvalid <= '0';
-        m_rready  <= '0';
+        -- Keep RREADY asserted when idle to minimize response latency.
+        -- When RVALID is high, apply selected-slot backpressure.
+        m_rready  <= '1';
 
         if w_rid_slot = '0' then
             s0_rvalid <= m_rvalid;

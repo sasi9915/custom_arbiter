@@ -182,7 +182,8 @@ architecture arc_demod_deintrlv of demod_deintrlv is
     component avmm_to_axi4_rd
         generic(
             g_ADDR_WIDTH : integer := 29;
-            g_DATA_WIDTH : integer := 128
+            g_DATA_WIDTH : integer := 128;
+            g_MAX_OUTSTANDING : positive := 16
         );
         port(
             axi_aresetn         : in  std_logic;

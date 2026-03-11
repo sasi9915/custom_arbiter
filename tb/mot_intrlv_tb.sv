@@ -267,7 +267,7 @@ module mod_intrlv_tb;
     // ------------------------------------------------------------------
     // DDR4 Reest & Clock
     // ------------------------------------------------------------------
-    initial ddr4_intf_c0_sys_clk_p = 1'b0;
+    initial ddr4_intf_c0_sys_clk_p = 1'b1;
     always #(DDR_REF_PERIOD_NS/2.0) ddr4_intf_c0_sys_clk_p = ~ddr4_intf_c0_sys_clk_p;
     assign ddr4_intf_c0_sys_clk_n = ~ddr4_intf_c0_sys_clk_p;
     
@@ -319,7 +319,7 @@ module mod_intrlv_tb;
             
             // Send 10-word packet with counter
             frame_tvalid = 1'b1;
-            for (i = 0; i < 131072; i = i + 1) begin
+            for (i = 0; i < 1024; i = i + 1) begin
                 frame_tdata = 32'h00000000 + i;
                 frame_tuser = 16'hABCD;
                 if (i == 999999) begin

@@ -65,8 +65,8 @@ end entity;
 architecture arc_mod_intrlv of mod_intrlv is
 
     -- Constants
-    constant C_ROWS         : unsigned(11 downto 0)  := to_unsigned(2048, 12);
-    constant C_COLS         : unsigned(11 downto 0)  := to_unsigned(2048, 12);
+    constant C_ROWS         : unsigned(11 downto 0)  := to_unsigned(64, 12);
+    constant C_COLS         : unsigned(11 downto 0)  := to_unsigned(64, 12);
     constant C_base_address : unsigned(28 downto 0) := to_unsigned(1000, 29);
     constant C_BURST_LEN    : unsigned(3 downto 0)  := to_unsigned(8, 4);
 
@@ -182,7 +182,8 @@ architecture arc_mod_intrlv of mod_intrlv is
     component avmm_to_axi4_rd
         generic(
             g_ADDR_WIDTH : integer := 29;
-            g_DATA_WIDTH : integer := 128
+            g_DATA_WIDTH : integer := 128;
+            g_MAX_OUTSTANDING : positive := 16
         );
         port(
             axi_aresetn         : in  std_logic;

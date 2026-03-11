@@ -3,131 +3,34 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="axi_custom_int_2slot_tb_behav.wdb" id="1">
+      <db_ref path="mod_intrlv_tb_behav.wdb" id="1">
          <top_modules>
-            <top_module name="axi_custom_int_2slot_tb" />
+            <top_module name="arch_package" />
             <top_module name="glbl" />
+            <top_module name="mod_intrlv_tb" />
+            <top_module name="proj_package" />
+            <top_module name="vcomponents" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="704166fs"></ZoomStartTime>
-      <ZoomEndTime time="1059167fs"></ZoomEndTime>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="466797fs"></ZoomEndTime>
       <Cursor1Time time="1000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="226"></NameColumnWidth>
-      <ValueColumnWidth column_width="89"></ValueColumnWidth>
+      <ValueColumnWidth column_width="85"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="21" />
+   <WVObjectSize size="137" />
    <wvobject type="group" fp_name="group1589">
       <obj_property name="label">so_write</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_awid">
-         <obj_property name="ElementShortName">s0_awid[0:0]</obj_property>
-         <obj_property name="ObjectShortName">s0_awid[0:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_awaddr">
-         <obj_property name="ElementShortName">s0_awaddr[28:0]</obj_property>
-         <obj_property name="ObjectShortName">s0_awaddr[28:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_awvalid">
-         <obj_property name="ElementShortName">s0_awvalid</obj_property>
-         <obj_property name="ObjectShortName">s0_awvalid</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_awready">
-         <obj_property name="ElementShortName">s0_awready</obj_property>
-         <obj_property name="ObjectShortName">s0_awready</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_wvalid">
-         <obj_property name="ElementShortName">s0_wvalid</obj_property>
-         <obj_property name="ObjectShortName">s0_wvalid</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_wready">
-         <obj_property name="ElementShortName">s0_wready</obj_property>
-         <obj_property name="ObjectShortName">s0_wready</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_wdata">
-         <obj_property name="ElementShortName">s0_wdata[127:0]</obj_property>
-         <obj_property name="ObjectShortName">s0_wdata[127:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_wlast">
-         <obj_property name="ElementShortName">s0_wlast</obj_property>
-         <obj_property name="ObjectShortName">s0_wlast</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_bid">
-         <obj_property name="ElementShortName">s0_bid[0:0]</obj_property>
-         <obj_property name="ObjectShortName">s0_bid[0:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_bready">
-         <obj_property name="ElementShortName">s0_bready</obj_property>
-         <obj_property name="ObjectShortName">s0_bready</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_bvalid">
-         <obj_property name="ElementShortName">s0_bvalid</obj_property>
-         <obj_property name="ObjectShortName">s0_bvalid</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_bresp">
-         <obj_property name="ElementShortName">s0_bresp[1:0]</obj_property>
-         <obj_property name="ObjectShortName">s0_bresp[1:0]</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject type="group" fp_name="group1677">
       <obj_property name="label">so_fifo_write</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot0_fifo_inst/i_data">
-         <obj_property name="ElementShortName">i_data[54:0]</obj_property>
-         <obj_property name="ObjectShortName">i_data[54:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot0_fifo_inst/i_rdreq">
-         <obj_property name="ElementShortName">i_rdreq</obj_property>
-         <obj_property name="ObjectShortName">i_rdreq</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot0_fifo_inst/i_resetn">
-         <obj_property name="ElementShortName">i_resetn</obj_property>
-         <obj_property name="ObjectShortName">i_resetn</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot0_fifo_inst/i_wrreq">
-         <obj_property name="ElementShortName">i_wrreq</obj_property>
-         <obj_property name="ObjectShortName">i_wrreq</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot0_fifo_inst/mem">
-         <obj_property name="ElementShortName">mem[0:15][54:0]</obj_property>
-         <obj_property name="ObjectShortName">mem[0:15][54:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot0_fifo_inst/o_almost_empty">
-         <obj_property name="ElementShortName">o_almost_empty</obj_property>
-         <obj_property name="ObjectShortName">o_almost_empty</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot0_fifo_inst/o_almost_full">
-         <obj_property name="ElementShortName">o_almost_full</obj_property>
-         <obj_property name="ObjectShortName">o_almost_full</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot0_fifo_inst/o_empty">
-         <obj_property name="ElementShortName">o_empty</obj_property>
-         <obj_property name="ObjectShortName">o_empty</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot0_fifo_inst/o_full">
-         <obj_property name="ElementShortName">o_full</obj_property>
-         <obj_property name="ObjectShortName">o_full</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot0_fifo_inst/o_q">
-         <obj_property name="ElementShortName">o_q[54:0]</obj_property>
-         <obj_property name="ObjectShortName">o_q[54:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot0_fifo_inst/o_q_val">
-         <obj_property name="ElementShortName">o_q_val</obj_property>
-         <obj_property name="ObjectShortName">o_q_val</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot0_fifo_inst/o_usedw">
-         <obj_property name="ElementShortName">o_usedw[15:0]</obj_property>
-         <obj_property name="ObjectShortName">o_usedw[15:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot0_fifo_inst/q_val">
-         <obj_property name="ElementShortName">q_val</obj_property>
-         <obj_property name="ObjectShortName">q_val</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject fp_name="divider1846" type="divider">
       <obj_property name="label">----------------------------</obj_property>
@@ -141,72 +44,6 @@
       <obj_property name="label">DDR_WRITE</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_awid">
-         <obj_property name="ElementShortName">m_awid[3:0]</obj_property>
-         <obj_property name="ObjectShortName">m_awid[3:0]</obj_property>
-         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-         <obj_property name="Radix">BINARYRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_awaddr">
-         <obj_property name="ElementShortName">m_awaddr[28:0]</obj_property>
-         <obj_property name="ObjectShortName">m_awaddr[28:0]</obj_property>
-         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_awvalid">
-         <obj_property name="ElementShortName">m_awvalid</obj_property>
-         <obj_property name="ObjectShortName">m_awvalid</obj_property>
-         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_awready">
-         <obj_property name="ElementShortName">m_awready</obj_property>
-         <obj_property name="ObjectShortName">m_awready</obj_property>
-         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_wvalid">
-         <obj_property name="ElementShortName">m_wvalid</obj_property>
-         <obj_property name="ObjectShortName">m_wvalid</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_wready">
-         <obj_property name="ElementShortName">m_wready</obj_property>
-         <obj_property name="ObjectShortName">m_wready</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_wdata">
-         <obj_property name="ElementShortName">m_wdata[127:0]</obj_property>
-         <obj_property name="ObjectShortName">m_wdata[127:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_wlast">
-         <obj_property name="ElementShortName">m_wlast</obj_property>
-         <obj_property name="ObjectShortName">m_wlast</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_bid">
-         <obj_property name="ElementShortName">m_bid[3:0]</obj_property>
-         <obj_property name="ObjectShortName">m_bid[3:0]</obj_property>
-         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-         <obj_property name="Radix">BINARYRADIX</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_bvalid">
-         <obj_property name="ElementShortName">m_bvalid</obj_property>
-         <obj_property name="ObjectShortName">m_bvalid</obj_property>
-         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_bready">
-         <obj_property name="ElementShortName">m_bready</obj_property>
-         <obj_property name="ObjectShortName">m_bready</obj_property>
-         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_bresp">
-         <obj_property name="ElementShortName">m_bresp[1:0]</obj_property>
-         <obj_property name="ObjectShortName">m_bresp[1:0]</obj_property>
-         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject fp_name="divider1846" type="divider">
       <obj_property name="label">----------------------------</obj_property>
@@ -220,54 +57,6 @@
       <obj_property name="label">s1_write</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_awid">
-         <obj_property name="ElementShortName">s1_awid[0:0]</obj_property>
-         <obj_property name="ObjectShortName">s1_awid[0:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_awaddr">
-         <obj_property name="ElementShortName">s1_awaddr[28:0]</obj_property>
-         <obj_property name="ObjectShortName">s1_awaddr[28:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_awvalid">
-         <obj_property name="ElementShortName">s1_awvalid</obj_property>
-         <obj_property name="ObjectShortName">s1_awvalid</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_awready">
-         <obj_property name="ElementShortName">s1_awready</obj_property>
-         <obj_property name="ObjectShortName">s1_awready</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_wvalid">
-         <obj_property name="ElementShortName">s1_wvalid</obj_property>
-         <obj_property name="ObjectShortName">s1_wvalid</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_wready">
-         <obj_property name="ElementShortName">s1_wready</obj_property>
-         <obj_property name="ObjectShortName">s1_wready</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_wdata">
-         <obj_property name="ElementShortName">s1_wdata[127:0]</obj_property>
-         <obj_property name="ObjectShortName">s1_wdata[127:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_wlast">
-         <obj_property name="ElementShortName">s1_wlast</obj_property>
-         <obj_property name="ObjectShortName">s1_wlast</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_bid">
-         <obj_property name="ElementShortName">s1_bid[0:0]</obj_property>
-         <obj_property name="ObjectShortName">s1_bid[0:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_bvalid">
-         <obj_property name="ElementShortName">s1_bvalid</obj_property>
-         <obj_property name="ObjectShortName">s1_bvalid</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_bready">
-         <obj_property name="ElementShortName">s1_bready</obj_property>
-         <obj_property name="ObjectShortName">s1_bready</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_bresp">
-         <obj_property name="ElementShortName">s1_bresp[1:0]</obj_property>
-         <obj_property name="ObjectShortName">s1_bresp[1:0]</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject fp_name="divider1846" type="divider">
       <obj_property name="label">----------------------------</obj_property>
@@ -276,58 +65,6 @@
    <wvobject type="group" fp_name="group1800">
       <obj_property name="label">s1_fifo_write</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot1_fifo_inst/i_data">
-         <obj_property name="ElementShortName">i_data[54:0]</obj_property>
-         <obj_property name="ObjectShortName">i_data[54:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot1_fifo_inst/i_rdreq">
-         <obj_property name="ElementShortName">i_rdreq</obj_property>
-         <obj_property name="ObjectShortName">i_rdreq</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot1_fifo_inst/i_resetn">
-         <obj_property name="ElementShortName">i_resetn</obj_property>
-         <obj_property name="ObjectShortName">i_resetn</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot1_fifo_inst/i_wrreq">
-         <obj_property name="ElementShortName">i_wrreq</obj_property>
-         <obj_property name="ObjectShortName">i_wrreq</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot1_fifo_inst/mem">
-         <obj_property name="ElementShortName">mem[0:15][54:0]</obj_property>
-         <obj_property name="ObjectShortName">mem[0:15][54:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot1_fifo_inst/o_almost_empty">
-         <obj_property name="ElementShortName">o_almost_empty</obj_property>
-         <obj_property name="ObjectShortName">o_almost_empty</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot1_fifo_inst/o_almost_full">
-         <obj_property name="ElementShortName">o_almost_full</obj_property>
-         <obj_property name="ObjectShortName">o_almost_full</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot1_fifo_inst/o_empty">
-         <obj_property name="ElementShortName">o_empty</obj_property>
-         <obj_property name="ObjectShortName">o_empty</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot1_fifo_inst/o_full">
-         <obj_property name="ElementShortName">o_full</obj_property>
-         <obj_property name="ObjectShortName">o_full</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot1_fifo_inst/o_q">
-         <obj_property name="ElementShortName">o_q[54:0]</obj_property>
-         <obj_property name="ObjectShortName">o_q[54:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot1_fifo_inst/o_q_val">
-         <obj_property name="ElementShortName">o_q_val</obj_property>
-         <obj_property name="ObjectShortName">o_q_val</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot1_fifo_inst/o_usedw">
-         <obj_property name="ElementShortName">o_usedw[15:0]</obj_property>
-         <obj_property name="ObjectShortName">o_usedw[15:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/aw_slot1_fifo_inst/q_val">
-         <obj_property name="ElementShortName">q_val</obj_property>
-         <obj_property name="ObjectShortName">q_val</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject fp_name="divider1846" type="divider">
       <obj_property name="label">----------------------------</obj_property>
@@ -337,46 +74,6 @@
       <obj_property name="label">s1_read</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_arid">
-         <obj_property name="ElementShortName">s1_arid[0:0]</obj_property>
-         <obj_property name="ObjectShortName">s1_arid[0:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_araddr">
-         <obj_property name="ElementShortName">s1_araddr[28:0]</obj_property>
-         <obj_property name="ObjectShortName">s1_araddr[28:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_arvalid">
-         <obj_property name="ElementShortName">s1_arvalid</obj_property>
-         <obj_property name="ObjectShortName">s1_arvalid</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_arready">
-         <obj_property name="ElementShortName">s1_arready</obj_property>
-         <obj_property name="ObjectShortName">s1_arready</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_rid">
-         <obj_property name="ElementShortName">s1_rid[0:0]</obj_property>
-         <obj_property name="ObjectShortName">s1_rid[0:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_rvalid">
-         <obj_property name="ElementShortName">s1_rvalid</obj_property>
-         <obj_property name="ObjectShortName">s1_rvalid</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_rready">
-         <obj_property name="ElementShortName">s1_rready</obj_property>
-         <obj_property name="ObjectShortName">s1_rready</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_rdata">
-         <obj_property name="ElementShortName">s1_rdata[127:0]</obj_property>
-         <obj_property name="ObjectShortName">s1_rdata[127:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_rlast">
-         <obj_property name="ElementShortName">s1_rlast</obj_property>
-         <obj_property name="ObjectShortName">s1_rlast</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s1_rresp">
-         <obj_property name="ElementShortName">s1_rresp[1:0]</obj_property>
-         <obj_property name="ObjectShortName">s1_rresp[1:0]</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject fp_name="divider1846" type="divider">
       <obj_property name="label">----------------------------</obj_property>
@@ -385,58 +82,6 @@
    <wvobject type="group" fp_name="group1817">
       <obj_property name="label">s0_fifo_read</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot0_fifo_inst/i_data">
-         <obj_property name="ElementShortName">i_data[54:0]</obj_property>
-         <obj_property name="ObjectShortName">i_data[54:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot0_fifo_inst/i_rdreq">
-         <obj_property name="ElementShortName">i_rdreq</obj_property>
-         <obj_property name="ObjectShortName">i_rdreq</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot0_fifo_inst/i_resetn">
-         <obj_property name="ElementShortName">i_resetn</obj_property>
-         <obj_property name="ObjectShortName">i_resetn</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot0_fifo_inst/i_wrreq">
-         <obj_property name="ElementShortName">i_wrreq</obj_property>
-         <obj_property name="ObjectShortName">i_wrreq</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot0_fifo_inst/mem">
-         <obj_property name="ElementShortName">mem[0:15][54:0]</obj_property>
-         <obj_property name="ObjectShortName">mem[0:15][54:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot0_fifo_inst/o_almost_empty">
-         <obj_property name="ElementShortName">o_almost_empty</obj_property>
-         <obj_property name="ObjectShortName">o_almost_empty</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot0_fifo_inst/o_almost_full">
-         <obj_property name="ElementShortName">o_almost_full</obj_property>
-         <obj_property name="ObjectShortName">o_almost_full</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot0_fifo_inst/o_empty">
-         <obj_property name="ElementShortName">o_empty</obj_property>
-         <obj_property name="ObjectShortName">o_empty</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot0_fifo_inst/o_full">
-         <obj_property name="ElementShortName">o_full</obj_property>
-         <obj_property name="ObjectShortName">o_full</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot0_fifo_inst/o_q">
-         <obj_property name="ElementShortName">o_q[54:0]</obj_property>
-         <obj_property name="ObjectShortName">o_q[54:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot0_fifo_inst/o_q_val">
-         <obj_property name="ElementShortName">o_q_val</obj_property>
-         <obj_property name="ObjectShortName">o_q_val</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot0_fifo_inst/o_usedw">
-         <obj_property name="ElementShortName">o_usedw[15:0]</obj_property>
-         <obj_property name="ObjectShortName">o_usedw[15:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot0_fifo_inst/q_val">
-         <obj_property name="ElementShortName">q_val</obj_property>
-         <obj_property name="ObjectShortName">q_val</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject fp_name="divider1846" type="divider">
       <obj_property name="label">----------------------------</obj_property>
@@ -446,68 +91,6 @@
       <obj_property name="label">DDR_READ</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_arid">
-         <obj_property name="ElementShortName">m_arid[3:0]</obj_property>
-         <obj_property name="ObjectShortName">m_arid[3:0]</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-         <obj_property name="Radix">BINARYRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_araddr">
-         <obj_property name="ElementShortName">m_araddr[28:0]</obj_property>
-         <obj_property name="ObjectShortName">m_araddr[28:0]</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_arvalid">
-         <obj_property name="ElementShortName">m_arvalid</obj_property>
-         <obj_property name="ObjectShortName">m_arvalid</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_arready">
-         <obj_property name="ElementShortName">m_arready</obj_property>
-         <obj_property name="ObjectShortName">m_arready</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_rvalid">
-         <obj_property name="ElementShortName">m_rvalid</obj_property>
-         <obj_property name="ObjectShortName">m_rvalid</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_rready">
-         <obj_property name="ElementShortName">m_rready</obj_property>
-         <obj_property name="ObjectShortName">m_rready</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_rdata">
-         <obj_property name="ElementShortName">m_rdata[127:0]</obj_property>
-         <obj_property name="ObjectShortName">m_rdata[127:0]</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_rid">
-         <obj_property name="ElementShortName">m_rid[3:0]</obj_property>
-         <obj_property name="ObjectShortName">m_rid[3:0]</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-         <obj_property name="Radix">BINARYRADIX</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/m_rlast">
-         <obj_property name="ElementShortName">m_rlast</obj_property>
-         <obj_property name="ObjectShortName">m_rlast</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/m_rresp">
-         <obj_property name="ElementShortName">m_rresp[1:0]</obj_property>
-         <obj_property name="ObjectShortName">m_rresp[1:0]</obj_property>
-         <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject fp_name="divider1846" type="divider">
       <obj_property name="label">----------------------------</obj_property>
@@ -517,46 +100,6 @@
       <obj_property name="label">s0_read</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_rid">
-         <obj_property name="ElementShortName">s0_rid[0:0]</obj_property>
-         <obj_property name="ObjectShortName">s0_rid[0:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_araddr">
-         <obj_property name="ElementShortName">s0_araddr[28:0]</obj_property>
-         <obj_property name="ObjectShortName">s0_araddr[28:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_arvalid">
-         <obj_property name="ElementShortName">s0_arvalid</obj_property>
-         <obj_property name="ObjectShortName">s0_arvalid</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_arready">
-         <obj_property name="ElementShortName">s0_arready</obj_property>
-         <obj_property name="ObjectShortName">s0_arready</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_arid">
-         <obj_property name="ElementShortName">s0_arid[0:0]</obj_property>
-         <obj_property name="ObjectShortName">s0_arid[0:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_rvalid">
-         <obj_property name="ElementShortName">s0_rvalid</obj_property>
-         <obj_property name="ObjectShortName">s0_rvalid</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_rdata">
-         <obj_property name="ElementShortName">s0_rdata[127:0]</obj_property>
-         <obj_property name="ObjectShortName">s0_rdata[127:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_rready">
-         <obj_property name="ElementShortName">s0_rready</obj_property>
-         <obj_property name="ObjectShortName">s0_rready</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_rlast">
-         <obj_property name="ElementShortName">s0_rlast</obj_property>
-         <obj_property name="ObjectShortName">s0_rlast</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/s0_rresp">
-         <obj_property name="ElementShortName">s0_rresp[1:0]</obj_property>
-         <obj_property name="ObjectShortName">s0_rresp[1:0]</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject fp_name="divider1846" type="divider">
       <obj_property name="label">----------------------------</obj_property>
@@ -565,46 +108,470 @@
    <wvobject type="group" fp_name="group1818">
       <obj_property name="label">s1_fifo_read</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot1_fifo_inst/i_wrreq">
-         <obj_property name="ElementShortName">i_wrreq</obj_property>
-         <obj_property name="ObjectShortName">i_wrreq</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot1_fifo_inst/mem">
-         <obj_property name="ElementShortName">mem[0:15][54:0]</obj_property>
-         <obj_property name="ObjectShortName">mem[0:15][54:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot1_fifo_inst/o_almost_empty">
-         <obj_property name="ElementShortName">o_almost_empty</obj_property>
-         <obj_property name="ObjectShortName">o_almost_empty</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot1_fifo_inst/o_almost_full">
-         <obj_property name="ElementShortName">o_almost_full</obj_property>
-         <obj_property name="ObjectShortName">o_almost_full</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot1_fifo_inst/o_empty">
-         <obj_property name="ElementShortName">o_empty</obj_property>
-         <obj_property name="ObjectShortName">o_empty</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot1_fifo_inst/o_full">
-         <obj_property name="ElementShortName">o_full</obj_property>
-         <obj_property name="ObjectShortName">o_full</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot1_fifo_inst/o_q">
-         <obj_property name="ElementShortName">o_q[54:0]</obj_property>
-         <obj_property name="ObjectShortName">o_q[54:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot1_fifo_inst/o_q_val">
-         <obj_property name="ElementShortName">o_q_val</obj_property>
-         <obj_property name="ObjectShortName">o_q_val</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot1_fifo_inst/o_usedw">
-         <obj_property name="ElementShortName">o_usedw[15:0]</obj_property>
-         <obj_property name="ObjectShortName">o_usedw[15:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/axi_custom_int_2slot_tb/dut_i/ar_slot1_fifo_inst/q_val">
-         <obj_property name="ElementShortName">q_val</obj_property>
-         <obj_property name="ObjectShortName">q_val</obj_property>
-      </wvobject>
+   </wvobject>
+   <wvobject fp_name="divider1846" type="divider">
+      <obj_property name="label">----------------------------</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/frame_tvalid">
+      <obj_property name="ElementShortName">frame_tvalid</obj_property>
+      <obj_property name="ObjectShortName">frame_tvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/frame_tready">
+      <obj_property name="ElementShortName">frame_tready</obj_property>
+      <obj_property name="ObjectShortName">frame_tready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/frame_tuser">
+      <obj_property name="ElementShortName">frame_tuser[15:0]</obj_property>
+      <obj_property name="ObjectShortName">frame_tuser[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/frame_tdata">
+      <obj_property name="ElementShortName">frame_tdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">frame_tdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/frame_tkeep">
+      <obj_property name="ElementShortName">frame_tkeep[3:0]</obj_property>
+      <obj_property name="ObjectShortName">frame_tkeep[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/frame_tlast">
+      <obj_property name="ElementShortName">frame_tlast</obj_property>
+      <obj_property name="ObjectShortName">frame_tlast</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider1846" type="divider">
+      <obj_property name="label">----------------------------</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/frame_intrlvd_tvalid">
+      <obj_property name="ElementShortName">frame_intrlvd_tvalid</obj_property>
+      <obj_property name="ObjectShortName">frame_intrlvd_tvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/frame_intrlvd_tready">
+      <obj_property name="ElementShortName">frame_intrlvd_tready</obj_property>
+      <obj_property name="ObjectShortName">frame_intrlvd_tready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/frame_intrlvd_tuser">
+      <obj_property name="ElementShortName">frame_intrlvd_tuser[15:0]</obj_property>
+      <obj_property name="ObjectShortName">frame_intrlvd_tuser[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/frame_intrlvd_tdata">
+      <obj_property name="ElementShortName">frame_intrlvd_tdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">frame_intrlvd_tdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/frame_intrlvd_tkeep">
+      <obj_property name="ElementShortName">frame_intrlvd_tkeep[3:0]</obj_property>
+      <obj_property name="ObjectShortName">frame_intrlvd_tkeep[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/frame_intrlvd_tlast">
+      <obj_property name="ElementShortName">frame_intrlvd_tlast</obj_property>
+      <obj_property name="ObjectShortName">frame_intrlvd_tlast</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider1846" type="divider">
+      <obj_property name="label">----------------------------</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_awid">
+      <obj_property name="ElementShortName">ddr4_m_axi_awid[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_awid[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_awaddr">
+      <obj_property name="ElementShortName">ddr4_m_axi_awaddr[28:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_awaddr[28:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_awlen">
+      <obj_property name="ElementShortName">ddr4_m_axi_awlen[7:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_awlen[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_awsize">
+      <obj_property name="ElementShortName">ddr4_m_axi_awsize[2:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_awsize[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_awburst">
+      <obj_property name="ElementShortName">ddr4_m_axi_awburst[1:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_awburst[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_m_axi_awlock">
+      <obj_property name="ElementShortName">ddr4_m_axi_awlock</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_awlock</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_awcache">
+      <obj_property name="ElementShortName">ddr4_m_axi_awcache[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_awcache[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_awprot">
+      <obj_property name="ElementShortName">ddr4_m_axi_awprot[2:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_awprot[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_awqos">
+      <obj_property name="ElementShortName">ddr4_m_axi_awqos[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_awqos[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_m_axi_awvalid">
+      <obj_property name="ElementShortName">ddr4_m_axi_awvalid</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_awvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_m_axi_awready">
+      <obj_property name="ElementShortName">ddr4_m_axi_awready</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_awready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_wdata">
+      <obj_property name="ElementShortName">ddr4_m_axi_wdata[127:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_wdata[127:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_wstrb">
+      <obj_property name="ElementShortName">ddr4_m_axi_wstrb[15:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_wstrb[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_m_axi_wlast">
+      <obj_property name="ElementShortName">ddr4_m_axi_wlast</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_wlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_m_axi_wvalid">
+      <obj_property name="ElementShortName">ddr4_m_axi_wvalid</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_wvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_m_axi_wready">
+      <obj_property name="ElementShortName">ddr4_m_axi_wready</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_wready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_m_axi_bready">
+      <obj_property name="ElementShortName">ddr4_m_axi_bready</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_bready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_bid">
+      <obj_property name="ElementShortName">ddr4_m_axi_bid[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_bid[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_bresp">
+      <obj_property name="ElementShortName">ddr4_m_axi_bresp[1:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_bresp[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_m_axi_bvalid">
+      <obj_property name="ElementShortName">ddr4_m_axi_bvalid</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_bvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_arid">
+      <obj_property name="ElementShortName">ddr4_m_axi_arid[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_arid[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_araddr">
+      <obj_property name="ElementShortName">ddr4_m_axi_araddr[28:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_araddr[28:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_arlen">
+      <obj_property name="ElementShortName">ddr4_m_axi_arlen[7:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_arlen[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_arsize">
+      <obj_property name="ElementShortName">ddr4_m_axi_arsize[2:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_arsize[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_arburst">
+      <obj_property name="ElementShortName">ddr4_m_axi_arburst[1:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_arburst[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_m_axi_arlock">
+      <obj_property name="ElementShortName">ddr4_m_axi_arlock</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_arlock</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_arcache">
+      <obj_property name="ElementShortName">ddr4_m_axi_arcache[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_arcache[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_arprot">
+      <obj_property name="ElementShortName">ddr4_m_axi_arprot[2:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_arprot[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_arqos">
+      <obj_property name="ElementShortName">ddr4_m_axi_arqos[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_arqos[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_m_axi_arvalid">
+      <obj_property name="ElementShortName">ddr4_m_axi_arvalid</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_arvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_m_axi_arready">
+      <obj_property name="ElementShortName">ddr4_m_axi_arready</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_arready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_m_axi_rready">
+      <obj_property name="ElementShortName">ddr4_m_axi_rready</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_rready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_m_axi_rlast">
+      <obj_property name="ElementShortName">ddr4_m_axi_rlast</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_rlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_m_axi_rvalid">
+      <obj_property name="ElementShortName">ddr4_m_axi_rvalid</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_rvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_rresp">
+      <obj_property name="ElementShortName">ddr4_m_axi_rresp[1:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_rresp[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_rid">
+      <obj_property name="ElementShortName">ddr4_m_axi_rid[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_rid[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_rdata">
+      <obj_property name="ElementShortName">ddr4_m_axi_rdata[127:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_rdata[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider1846" type="divider">
+      <obj_property name="label">----------------------------</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_wr_inst/avmm_s_write">
+      <obj_property name="ElementShortName">avmm_s_write</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_write</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_wr_inst/avmm_s_address">
+      <obj_property name="ElementShortName">avmm_s_address[28:0]</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_address[28:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_wr_inst/avmm_s_writedata">
+      <obj_property name="ElementShortName">avmm_s_writedata[127:0]</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_writedata[127:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_wr_inst/avmm_s_busy">
+      <obj_property name="ElementShortName">avmm_s_busy</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_busy</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_wr_inst/axi_m_axi_awaddr">
+      <obj_property name="ElementShortName">axi_m_axi_awaddr[28:0]</obj_property>
+      <obj_property name="ObjectShortName">axi_m_axi_awaddr[28:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_wr_inst/axi_m_axi_awvalid">
+      <obj_property name="ElementShortName">axi_m_axi_awvalid</obj_property>
+      <obj_property name="ObjectShortName">axi_m_axi_awvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_wr_inst/axi_m_axi_wdata">
+      <obj_property name="ElementShortName">axi_m_axi_wdata[127:0]</obj_property>
+      <obj_property name="ObjectShortName">axi_m_axi_wdata[127:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_wr_inst/axi_m_axi_wlast">
+      <obj_property name="ElementShortName">axi_m_axi_wlast</obj_property>
+      <obj_property name="ObjectShortName">axi_m_axi_wlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_wr_inst/axi_m_axi_wvalid">
+      <obj_property name="ElementShortName">axi_m_axi_wvalid</obj_property>
+      <obj_property name="ObjectShortName">axi_m_axi_wvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_wr_inst/axi_m_axi_wready">
+      <obj_property name="ElementShortName">axi_m_axi_wready</obj_property>
+      <obj_property name="ObjectShortName">axi_m_axi_wready</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider1846" type="divider">
+      <obj_property name="label">----------------------------</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_rd_inst/avmm_s_read">
+      <obj_property name="ElementShortName">avmm_s_read</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_read</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_rd_inst/avmm_s_address">
+      <obj_property name="ElementShortName">avmm_s_address[28:0]</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_address[28:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_rd_inst/avmm_s_address_val">
+      <obj_property name="ElementShortName">avmm_s_address_val</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_address_val</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_rd_inst/avmm_s_readdata_val">
+      <obj_property name="ElementShortName">avmm_s_readdata_val</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_readdata_val</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_rd_inst/avmm_s_readdata">
+      <obj_property name="ElementShortName">avmm_s_readdata[127:0]</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_readdata[127:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_rd_inst/avmm_s_busy">
+      <obj_property name="ElementShortName">avmm_s_busy</obj_property>
+      <obj_property name="ObjectShortName">avmm_s_busy</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_rd_inst/axi_m_axi_arvalid">
+      <obj_property name="ElementShortName">axi_m_axi_arvalid</obj_property>
+      <obj_property name="ObjectShortName">axi_m_axi_arvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_rd_inst/axi_m_axi_arready">
+      <obj_property name="ElementShortName">axi_m_axi_arready</obj_property>
+      <obj_property name="ObjectShortName">axi_m_axi_arready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_rd_inst/axi_m_axi_rready">
+      <obj_property name="ElementShortName">axi_m_axi_rready</obj_property>
+      <obj_property name="ObjectShortName">axi_m_axi_rready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_rd_inst/axi_m_axi_rlast">
+      <obj_property name="ElementShortName">axi_m_axi_rlast</obj_property>
+      <obj_property name="ObjectShortName">axi_m_axi_rlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/avmm_to_axi4_rd_inst/axi_m_axi_rvalid">
+      <obj_property name="ElementShortName">axi_m_axi_rvalid</obj_property>
+      <obj_property name="ObjectShortName">axi_m_axi_rvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider1846" type="divider">
+      <obj_property name="label">----------------------------</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awid[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awid[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awaddr">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awaddr[28:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awaddr[28:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awlen">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awlen[7:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awlen[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awsize">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awsize[2:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awsize[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awburst">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awburst[1:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awburst[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awlock">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awlock[0:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awlock[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awcache">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awcache[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awcache[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awprot">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awprot[2:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awprot[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awqos">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awqos[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awqos[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awvalid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awvalid</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awready">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awready</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_wdata">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_wdata[127:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_wdata[127:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_wstrb">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_wstrb[15:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_wstrb[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_wlast">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_wlast</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_wlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_wvalid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_wvalid</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_wvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_wready">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_wready</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_wready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_bready">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_bready</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_bready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_bid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_bid[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_bid[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_bresp">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_bresp[1:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_bresp[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_bvalid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_bvalid</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_bvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arid[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arid[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_araddr">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_araddr[28:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_araddr[28:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arlen">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arlen[7:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arlen[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arsize">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arsize[2:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arsize[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arburst">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arburst[1:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arburst[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arlock">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arlock[0:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arlock[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arcache">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arcache[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arcache[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arprot">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arprot[2:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arprot[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arqos">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arqos[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arqos[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arvalid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arvalid</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arready">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arready</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_rready">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_rready</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_rready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_rid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_rid[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_rid[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_rdata">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_rdata[127:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_rdata[127:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_rresp">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_rresp[1:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_rresp[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_rlast">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_rlast</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_rlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_rvalid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_rvalid</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_rvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider1846" type="divider">
+      <obj_property name="label">----------------------------</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider1846" type="divider">
+      <obj_property name="label">----------------------------</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider1846" type="divider">
+      <obj_property name="label">----------------------------</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
    </wvobject>
    <wvobject fp_name="divider1846" type="divider">
       <obj_property name="label">----------------------------</obj_property>
