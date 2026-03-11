@@ -75,6 +75,26 @@ architecture arc_avmm_to_axi4_rd of avmm_to_axi4_rd is
     signal w_axi_m_axi_rdata   : std_logic_vector(127 downto 0);
 
     signal w_ar_credit_available : std_logic;
+    signal w_ar_fire             : std_logic;
+    signal w_r_fire              : std_logic;
+
+    signal w_req0_valid_deq : std_logic;
+    signal w_req1_valid_deq : std_logic;
+    signal w_req0_addr_deq  : std_logic_vector(28 downto 0);
+
+    signal w_store_req0 : std_logic;
+    signal w_store_req1 : std_logic;
+
+    signal w_req0_valid_next : std_logic;
+    signal w_req1_valid_next : std_logic;
+    signal w_req0_addr_next  : std_logic_vector(28 downto 0);
+    signal w_req1_addr_next  : std_logic_vector(28 downto 0);
+
+    signal w_outstanding_inc      : std_logic;
+    signal w_outstanding_dec      : std_logic;
+    signal w_outstanding_cnt_next : unsigned(C_OUTSTANDING_W - 1 downto 0);
+
+    signal w_busy_next : std_logic;
 
 begin
 
@@ -93,7 +113,6 @@ begin
     axi_m_axi_arprot  <= "000";
     axi_m_axi_arqos   <= X"0";
 
-    w_ar_credit_available <= '1' when r_outstanding_cnt < C_MAX_OUTSTANDING_U else '0';
     axi_m_axi_arvalid     <= r_req0_valid and w_ar_credit_available;
 
     w_axi_m_axi_arready <= axi_m_axi_arready;
@@ -101,18 +120,107 @@ begin
     w_axi_m_axi_rvalid  <= axi_m_axi_rvalid;
     w_axi_m_axi_rdata   <= axi_m_axi_rdata;
 
+    p_ar_credit_available : process(r_outstanding_cnt)
+    begin
+        w_ar_credit_available <= '0';
+        if r_outstanding_cnt < C_MAX_OUTSTANDING_U then
+            w_ar_credit_available <= '1';
+        end if;
+    end process;
+
+    p_ar_fire : process(r_req0_valid, w_ar_credit_available, w_axi_m_axi_arready)
+    begin
+        w_ar_fire <= '0';
+        if (r_req0_valid = '1') and (w_ar_credit_available = '1') and (w_axi_m_axi_arready = '1') then
+            w_ar_fire <= '1';
+        end if;
+    end process;
+
+    p_r_fire : process(w_axi_m_axi_rvalid, r_axi_m_axi_rready)
+    begin
+        w_r_fire <= '0';
+        if (w_axi_m_axi_rvalid = '1') and (r_axi_m_axi_rready = '1') then
+            w_r_fire <= '1';
+        end if;
+    end process;
+
+    p_req_dequeue : process(w_ar_fire, r_req1_valid, r_req1_addr, r_req0_valid, r_req0_addr)
+    begin
+        w_req0_valid_deq <= r_req0_valid;
+        w_req1_valid_deq <= r_req1_valid;
+        w_req0_addr_deq  <= r_req0_addr;
+
+        if w_ar_fire = '1' then
+            if r_req1_valid = '1' then
+                w_req0_valid_deq <= '1';
+                w_req1_valid_deq <= '0';
+                w_req0_addr_deq  <= r_req1_addr;
+            else
+                w_req0_valid_deq <= '0';
+            end if;
+        end if;
+    end process;
+
+    p_req_store_sel : process(avmm_s_address_val, w_req0_valid_deq, w_req1_valid_deq)
+    begin
+        w_store_req0 <= '0';
+        w_store_req1 <= '0';
+
+        if avmm_s_address_val = '1' then
+            if w_req0_valid_deq = '0' then
+                w_store_req0 <= '1';
+            elsif w_req1_valid_deq = '0' then
+                w_store_req1 <= '1';
+            end if;
+        end if;
+    end process;
+
+    p_req_next : process(w_req0_valid_deq, w_req1_valid_deq, w_req0_addr_deq, r_req1_addr, w_store_req0, w_store_req1, avmm_s_address)
+    begin
+        w_req0_valid_next <= w_req0_valid_deq;
+        w_req1_valid_next <= w_req1_valid_deq;
+        w_req0_addr_next  <= w_req0_addr_deq;
+        w_req1_addr_next  <= r_req1_addr;
+
+        if w_store_req0 = '1' then
+            w_req0_valid_next <= '1';
+            w_req0_addr_next  <= avmm_s_address;
+        elsif w_store_req1 = '1' then
+            w_req1_valid_next <= '1';
+            w_req1_addr_next  <= avmm_s_address;
+        end if;
+    end process;
+
+    p_outstanding_next : process(w_ar_fire, w_r_fire, r_outstanding_cnt)
+    begin
+        w_outstanding_inc      <= '0';
+        w_outstanding_dec      <= '0';
+        w_outstanding_cnt_next <= r_outstanding_cnt;
+
+        if (w_ar_fire = '1') and (w_r_fire = '0') then
+            if r_outstanding_cnt < C_MAX_OUTSTANDING_U then
+                w_outstanding_inc      <= '1';
+                w_outstanding_cnt_next <= r_outstanding_cnt + 1;
+            end if;
+        elsif (w_r_fire = '1') and (w_ar_fire = '0') then
+            if r_outstanding_cnt > 0 then
+                w_outstanding_dec      <= '1';
+                w_outstanding_cnt_next <= r_outstanding_cnt - 1;
+            end if;
+        end if;
+    end process;
+
+    p_busy_next : process(w_req0_valid_next, w_req1_valid_next)
+    begin
+        w_busy_next <= '0';
+        if (w_req0_valid_next = '1') and (w_req1_valid_next = '1') then
+            w_busy_next <= '1';
+        end if;
+    end process;
+
     -- avmm_s_read is intentionally ignored for compatibility with the current caller,
     -- which drives address_val as the request qualifier.
     main_process : process(axi_aresetn, axi_aclk)
-        variable v_req0_valid : std_logic;
-        variable v_req1_valid : std_logic;
-        variable v_req0_addr  : std_logic_vector(28 downto 0);
-        variable v_req1_addr  : std_logic_vector(28 downto 0);
-
-        variable v_ar_fire : boolean;
-        variable v_r_fire  : boolean;
-
-        variable v_outstanding_cnt : unsigned(C_OUTSTANDING_W - 1 downto 0);
     begin
         if axi_aresetn = '0' then
             r_avmm_s_readdata_val <= '0';
@@ -128,61 +236,15 @@ begin
             r_axi_m_axi_rready <= '0';
 
         elsif rising_edge(axi_aclk) then
-            v_req0_valid := r_req0_valid;
-            v_req1_valid := r_req1_valid;
-            v_req0_addr  := r_req0_addr;
-            v_req1_addr  := r_req1_addr;
-            v_outstanding_cnt := r_outstanding_cnt;
+            r_req0_valid <= w_req0_valid_next;
+            r_req1_valid <= w_req1_valid_next;
+            r_req0_addr  <= w_req0_addr_next;
+            r_req1_addr  <= w_req1_addr_next;
 
-            v_ar_fire := (r_req0_valid = '1') and (w_ar_credit_available = '1') and (w_axi_m_axi_arready = '1');
-            v_r_fire  := (w_axi_m_axi_rvalid = '1') and (r_axi_m_axi_rready = '1');
-
-            -- Dequeue one AR command when it handshakes.
-            if v_ar_fire then
-                if v_req1_valid = '1' then
-                    v_req0_addr  := v_req1_addr;
-                    v_req0_valid := '1';
-                    v_req1_valid := '0';
-                else
-                    v_req0_valid := '0';
-                end if;
-            end if;
-
-            -- Capture up to one extra AVMM request while the current one is pending.
-            if avmm_s_address_val = '1' then
-                if v_req0_valid = '0' then
-                    v_req0_addr  := avmm_s_address;
-                    v_req0_valid := '1';
-                elsif v_req1_valid = '0' then
-                    v_req1_addr  := avmm_s_address;
-                    v_req1_valid := '1';
-                end if;
-            end if;
-
-            -- Track number of issued-but-not-yet-returned read requests.
-            if v_ar_fire and (not v_r_fire) then
-                if v_outstanding_cnt < C_MAX_OUTSTANDING_U then
-                    v_outstanding_cnt := v_outstanding_cnt + 1;
-                end if;
-            elsif v_r_fire and (not v_ar_fire) then
-                if v_outstanding_cnt > 0 then
-                    v_outstanding_cnt := v_outstanding_cnt - 1;
-                end if;
-            end if;
-
-            r_req0_valid <= v_req0_valid;
-            r_req1_valid <= v_req1_valid;
-            r_req0_addr  <= v_req0_addr;
-            r_req1_addr  <= v_req1_addr;
-
-            r_outstanding_cnt <= v_outstanding_cnt;
+            r_outstanding_cnt <= w_outstanding_cnt_next;
 
             -- Busy means the 2-entry staging buffer is full.
-            if (v_req0_valid = '1') and (v_req1_valid = '1') then
-                r_avmm_s_busy <= '1';
-            else
-                r_avmm_s_busy <= '0';
-            end if;
+            r_avmm_s_busy <= w_busy_next;
 
             if w_axi_m_axi_rvalid = '1' then
                 r_avmm_s_readdata     <= w_axi_m_axi_rdata;
