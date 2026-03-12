@@ -14,15 +14,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="466797fs"></ZoomEndTime>
-      <Cursor1Time time="1000000fs"></Cursor1Time>
+      <ZoomStartTime time="3303626fs"></ZoomStartTime>
+      <ZoomEndTime time="18583627fs"></ZoomEndTime>
+      <Cursor1Time time="5343626fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="226"></NameColumnWidth>
-      <ValueColumnWidth column_width="85"></ValueColumnWidth>
+      <ValueColumnWidth column_width="81"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="137" />
+   <WVObjectSize size="192" />
    <wvobject type="group" fp_name="group1589">
       <obj_property name="label">so_write</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -128,6 +128,7 @@
    <wvobject type="array" fp_name="/mod_intrlv_tb/frame_tdata">
       <obj_property name="ElementShortName">frame_tdata[31:0]</obj_property>
       <obj_property name="ObjectShortName">frame_tdata[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/mod_intrlv_tb/frame_tkeep">
       <obj_property name="ElementShortName">frame_tkeep[3:0]</obj_property>
@@ -156,6 +157,7 @@
    <wvobject type="array" fp_name="/mod_intrlv_tb/frame_intrlvd_tdata">
       <obj_property name="ElementShortName">frame_intrlvd_tdata[31:0]</obj_property>
       <obj_property name="ObjectShortName">frame_intrlvd_tdata[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/mod_intrlv_tb/frame_intrlvd_tkeep">
       <obj_property name="ElementShortName">frame_intrlvd_tkeep[3:0]</obj_property>
@@ -500,6 +502,7 @@
    <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_araddr">
       <obj_property name="ElementShortName">c0_ddr4_s_axi_araddr[28:0]</obj_property>
       <obj_property name="ObjectShortName">c0_ddr4_s_axi_araddr[28:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arlen">
       <obj_property name="ElementShortName">c0_ddr4_s_axi_arlen[7:0]</obj_property>
@@ -564,6 +567,228 @@
    <wvobject fp_name="divider1846" type="divider">
       <obj_property name="label">----------------------------</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_adr">
+      <obj_property name="ElementShortName">c0_ddr4_adr[16:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_adr[16:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_ba">
+      <obj_property name="ElementShortName">c0_ddr4_ba[1:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_ba[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_bg">
+      <obj_property name="ElementShortName">c0_ddr4_bg[0:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_bg[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_cke">
+      <obj_property name="ElementShortName">c0_ddr4_cke[0:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_cke[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_odt">
+      <obj_property name="ElementShortName">c0_ddr4_odt[0:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_odt[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_cs_n">
+      <obj_property name="ElementShortName">c0_ddr4_cs_n[0:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_cs_n[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_ck_t">
+      <obj_property name="ElementShortName">c0_ddr4_ck_t[0:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_ck_t[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_ck_c">
+      <obj_property name="ElementShortName">c0_ddr4_ck_c[0:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_ck_c[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_reset_n">
+      <obj_property name="ElementShortName">c0_ddr4_reset_n</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_reset_n</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_dm_dbi_n">
+      <obj_property name="ElementShortName">c0_ddr4_dm_dbi_n[1:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_dm_dbi_n[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_dq">
+      <obj_property name="ElementShortName">c0_ddr4_dq[15:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_dq[15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_dqs_c">
+      <obj_property name="ElementShortName">c0_ddr4_dqs_c[1:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_dqs_c[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_dqs_t">
+      <obj_property name="ElementShortName">c0_ddr4_dqs_t[1:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_dqs_t[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_init_calib_complete">
+      <obj_property name="ElementShortName">c0_init_calib_complete</obj_property>
+      <obj_property name="ObjectShortName">c0_init_calib_complete</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_ui_clk">
+      <obj_property name="ElementShortName">c0_ddr4_ui_clk</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_ui_clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_ui_clk_sync_rst">
+      <obj_property name="ElementShortName">c0_ddr4_ui_clk_sync_rst</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_ui_clk_sync_rst</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/dbg_clk">
+      <obj_property name="ElementShortName">dbg_clk</obj_property>
+      <obj_property name="ObjectShortName">dbg_clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_aresetn">
+      <obj_property name="ElementShortName">c0_ddr4_aresetn</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_aresetn</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awid[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awid[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awaddr">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awaddr[28:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awaddr[28:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awlen">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awlen[7:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awlen[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awsize">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awsize[2:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awsize[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awburst">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awburst[1:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awburst[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awlock">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awlock[0:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awlock[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awcache">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awcache[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awcache[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awprot">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awprot[2:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awprot[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awqos">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awqos[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awqos[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awvalid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awvalid</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_awready">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awready</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_wdata">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_wdata[127:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_wdata[127:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_wstrb">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_wstrb[15:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_wstrb[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_wlast">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_wlast</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_wlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_wvalid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_wvalid</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_wvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_wready">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_wready</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_wready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_bready">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_bready</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_bready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_bid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_bid[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_bid[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_bresp">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_bresp[1:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_bresp[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_bvalid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_bvalid</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_bvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arid[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arid[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_araddr">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_araddr[28:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_araddr[28:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arlen">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arlen[7:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arlen[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arsize">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arsize[2:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arsize[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arburst">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arburst[1:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arburst[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arlock">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arlock[0:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arlock[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arcache">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arcache[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arcache[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arprot">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arprot[2:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arprot[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arqos">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arqos[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arqos[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arvalid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arvalid</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_arready">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arready</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_rready">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_rready</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_rready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_rid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_rid[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_rid[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_rdata">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_rdata[127:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_rdata[127:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_rresp">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_rresp[1:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_rresp[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_rlast">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_rlast</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_rlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/ddr4_intf_inst/c0_ddr4_s_axi_rvalid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_rvalid</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_rvalid</obj_property>
    </wvobject>
    <wvobject fp_name="divider1846" type="divider">
       <obj_property name="label">----------------------------</obj_property>

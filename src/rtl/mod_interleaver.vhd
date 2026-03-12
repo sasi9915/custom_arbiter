@@ -65,9 +65,9 @@ end entity;
 architecture arc_mod_intrlv of mod_intrlv is
 
     -- Constants
-    constant C_ROWS         : unsigned(11 downto 0)  := to_unsigned(64, 12);
-    constant C_COLS         : unsigned(11 downto 0)  := to_unsigned(64, 12);
-    constant C_base_address : unsigned(28 downto 0) := to_unsigned(1000, 29);
+    constant C_ROWS         : unsigned(12 downto 0) := to_unsigned(64, 13);
+    constant C_COLS         : unsigned(12 downto 0) := to_unsigned(64, 13);
+    constant C_base_address : unsigned(28 downto 0) := to_unsigned(100, 29);
     constant C_BURST_LEN    : unsigned(3 downto 0)  := to_unsigned(8, 4);
 
     -- Clocks & Resets
@@ -182,8 +182,7 @@ architecture arc_mod_intrlv of mod_intrlv is
     component avmm_to_axi4_rd
         generic(
             g_ADDR_WIDTH : integer := 29;
-            g_DATA_WIDTH : integer := 128;
-            g_MAX_OUTSTANDING : positive := 16
+            g_DATA_WIDTH : integer := 128
         );
         port(
             axi_aresetn         : in  std_logic;
@@ -229,8 +228,8 @@ architecture arc_mod_intrlv of mod_intrlv is
 
     -- Temp Signals
     signal w_write_limit               : unsigned(28 downto 0)          := (others => '0');
-    signal r_rd_address_current_row    : unsigned(11 downto 0)           := (others => '0');
-    signal r_rd_address_current_column : unsigned(11 downto 0)           := (others => '0');
+    signal r_rd_address_current_row    : unsigned(12 downto 0)          := (others => '0');
+    signal r_rd_address_current_column : unsigned(12 downto 0)          := (others => '0');
     signal r_rd_address_gen            : std_logic                      := '0';
     signal sr_frame_data               : std_logic_vector(127 downto 0) := (others => '0');
     signal r_out_data                  : std_logic_vector(31 downto 0)  := (others => '0');
@@ -240,6 +239,7 @@ architecture arc_mod_intrlv of mod_intrlv is
     signal r_write_ddr_address         : unsigned(28 downto 0)          := (others => '0');
     signal r_out_last                  : std_logic                      := '0';
     signal r_tkeep                     : std_logic_vector(3 downto 0)   := (others => '0');
+    signal r_output_state              : std_logic                      := '0';
 
     -- Registered Outputs
     signal r_frame_tready         : std_logic;
@@ -298,6 +298,7 @@ begin
             r_ddr_offset        <= (others => '0');
             r_write_ddr_address <= (others => '0');
             r_out_last          <= '0';
+            r_output_state      <= '0';
             r_bit_idx           <= (others => '0');
             r_tkeep             <= (others => '0');
             r_burst_cnt         <= (others => '0');
@@ -413,7 +414,8 @@ begin
                         r_out_data(to_integer(r_bit_idx)) <= w_avmm_to_axi4_rd_avmm_readdata(to_integer(unsigned(fifo_dout)));
 
                         if r_bit_idx = "011111" then
-                            r_bit_idx <= (others => '0');
+                            r_bit_idx      <= (others => '0');
+                            r_output_state <= '1';
                         else
                             r_bit_idx <= r_bit_idx + 1;
                         end if;
@@ -438,7 +440,7 @@ begin
                     end if;
 
                     -- send the data and associated sideband signals out over AXI4-Stream
-                    if (r_bit_idx = "000000" and (r_write_ddr_address > 0)) then
+                    if r_output_state = '1' then
                         if (frame_intrlvd_tready = '1') and (r_frame_intrlvd_tvalid = '0') then
                             r_frame_intrlvd_tdata  <= r_out_data;
                             r_frame_intrlvd_tuser  <= frame_tuser;
@@ -448,6 +450,7 @@ begin
                         elsif (frame_intrlvd_tready = '1') and (r_frame_intrlvd_tvalid = '1') then
                             r_frame_intrlvd_tvalid <= '0';
                             r_frame_intrlvd_tlast  <= '0';
+                            r_output_state         <= '0';
                             r_frame_intrlvd_tkeep  <= (others => '0');
                             r_frame_intrlvd_tdata  <= (others => '0');
                             r_frame_intrlvd_tuser  <= (others => '0');
@@ -538,7 +541,6 @@ begin
             CASCADE_HEIGHT      => 0,   -- DECIMAL
             DOUT_RESET_VALUE    => "0", -- String
             ECC_MODE            => "no_ecc", -- String
-          --  EN_SIM_ASSERT_ERR   => "warning", -- String
             FIFO_MEMORY_TYPE    => "auto", -- String
             FIFO_READ_LATENCY   => 0,   -- DECIMAL
             FIFO_WRITE_DEPTH    => 128, -- DECIMAL
