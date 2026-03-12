@@ -368,9 +368,34 @@ begin
                 when RD_SEND_AR =>
                     if m_arready = '1' then
                         r_rd_rr_sel <= not r_rd_slot_sel; -- * change the grant access for next round after address accepted
-                        -- Return to IDLE after each accepted AR command. The next command
-                        -- is fetched from FIFO in RD_IDLE to avoid re-latching stale FIFO q.
-                        r_rd_state  <= RD_IDLE;
+
+                        -- Prefetch next AR command immediately after handshake to avoid
+                        -- an idle bubble between consecutive AR transfers.
+                        if (w_ar0_fifo_empty = '0') or (w_ar1_fifo_empty = '0') then
+                            if (w_ar0_fifo_empty = '0') and (w_ar1_fifo_empty = '0') then
+                                -- Alternate the slot after each accepted address.
+                                if r_rd_slot_sel = '0' then
+                                    r_rd_slot_sel    <= '1';
+                                    r_rd_cmd_reg     <= w_ar1_fifo_q;
+                                    r_ar1_fifo_rdreq <= '1';
+                                else
+                                    r_rd_slot_sel    <= '0';
+                                    r_rd_cmd_reg     <= w_ar0_fifo_q;
+                                    r_ar0_fifo_rdreq <= '1';
+                                end if;
+                            elsif w_ar0_fifo_empty = '0' then
+                                r_rd_slot_sel    <= '0';
+                                r_rd_cmd_reg     <= w_ar0_fifo_q;
+                                r_ar0_fifo_rdreq <= '1';
+                            else
+                                r_rd_slot_sel    <= '1';
+                                r_rd_cmd_reg     <= w_ar1_fifo_q;
+                                r_ar1_fifo_rdreq <= '1';
+                            end if;
+                            r_rd_state <= RD_SEND_AR;
+                        else
+                            r_rd_state <= RD_IDLE;
+                        end if;
                     end if;
             end case;
         end if;
@@ -380,10 +405,6 @@ begin
     process(r_wr_state, r_wr_slot_sel, r_wr_cmd_reg)
     begin
         m_awvalid                         <= '0';
-        -- ID remap format for 2 slots:
-        --   M_ID[MSB] = slot index bit
-        --   M_ID[LSB +: G_S_ID_WIDTH] = original slave ID
-        --   Middle bits (if any) = 0
         m_awid                            <= (others => '0');
         m_awid(G_M_ID_WIDTH - 1)          <= r_wr_slot_sel;
         m_awid(G_S_ID_WIDTH - 1 downto 0) <= r_wr_cmd_reg(C_ID_MSB downto C_ID_LSB);
@@ -624,5 +645,4 @@ begin
         );
 
 end architecture rtl;
-
 

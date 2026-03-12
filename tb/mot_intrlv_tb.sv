@@ -340,7 +340,7 @@ integer outfile_2;
 
     // Open the file at the start of simulation
     initial begin
-        outfile_2 = $fopen("/home/satanya/Documents/Reading Materials/documents_20260109/ddr_tb_example/src/rtl/mod_intrlv_output.txt", "w");
+        outfile_2 = $fopen("/home/sasindu/work/custom_arbitor/custom_arbiter/misc/mod_intrlv_output.txt", "w");
         if (outfile_2 == 0) begin
             $display("ERROR: Could not open file for writing!");
 //            $finish;
