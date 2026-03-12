@@ -368,34 +368,9 @@ begin
                 when RD_SEND_AR =>
                     if m_arready = '1' then
                         r_rd_rr_sel <= not r_rd_slot_sel; -- * change the grant access for next round after address accepted
-
-                        -- Prefetch next AR command immediately after handshake to avoid
-                        -- an idle bubble between consecutive AR transfers.
-                        if (w_ar0_fifo_empty = '0') or (w_ar1_fifo_empty = '0') then
-                            if (w_ar0_fifo_empty = '0') and (w_ar1_fifo_empty = '0') then
-                                -- Alternate the slot after each accepted address.
-                                if r_rd_slot_sel = '0' then
-                                    r_rd_slot_sel    <= '1';
-                                    r_rd_cmd_reg     <= w_ar1_fifo_q;
-                                    r_ar1_fifo_rdreq <= '1';
-                                else
-                                    r_rd_slot_sel    <= '0';
-                                    r_rd_cmd_reg     <= w_ar0_fifo_q;
-                                    r_ar0_fifo_rdreq <= '1';
-                                end if;
-                            elsif w_ar0_fifo_empty = '0' then
-                                r_rd_slot_sel    <= '0';
-                                r_rd_cmd_reg     <= w_ar0_fifo_q;
-                                r_ar0_fifo_rdreq <= '1';
-                            else
-                                r_rd_slot_sel    <= '1';
-                                r_rd_cmd_reg     <= w_ar1_fifo_q;
-                                r_ar1_fifo_rdreq <= '1';
-                            end if;
-                            r_rd_state <= RD_SEND_AR;
-                        else
-                            r_rd_state <= RD_IDLE;
-                        end if;
+                        -- Return to IDLE after each accepted AR command. The next command
+                        -- is fetched from FIFO in RD_IDLE to avoid re-latching stale FIFO q.
+                        r_rd_state  <= RD_IDLE;
                     end if;
             end case;
         end if;
@@ -649,3 +624,5 @@ begin
         );
 
 end architecture rtl;
+
+
