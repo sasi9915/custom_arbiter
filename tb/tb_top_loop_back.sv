@@ -127,7 +127,7 @@ module top_loop_back_tb;
     localparam real DDR_REF_PERIOD_NS = 1e9 / DDR_REF_FREQ_HZ;
 
 
-    // Instantiate DUT top
+    // Instantiate the DUT
     top dut (
         .axis_resetn            (axis_resetn),
         .axis_clk               (axis_clk),
@@ -330,38 +330,18 @@ module top_loop_back_tb;
 
 
 
-    reg test_done;
-
     initial begin
         frame_deintrlvd_tready = 1'b1;
-        test_done = 1'b0;
-
-        wait (ddr4_intf_c0_init_calib_complete === 1'b1);
-        $display("DDR4 calibration completed at %0t ns", $time);
-
-        test_axi_stream();
-
-        wait (test_done == 1'b1);
-        repeat (10) @(posedge axis_clk);
-        $finish;
-    end
-
-    initial begin
-        #2ms;
-        if (test_done == 1'b0) begin
-            $display("TIMEOUT: loopback simulation did not complete by %0t ns", $time);
-            $finish;
-        end
-    end
-
-    // Loop back interleaver output stream into deinterleaver input stream.
-    always @(*) begin
-        demod_frame_tvalid = frame_intrlvd_tvalid;
-        demod_frame_tuser  = frame_intrlvd_tuser;
-        demod_frame_tdata  = frame_intrlvd_tdata;
-        demod_frame_tkeep  = frame_intrlvd_tkeep;
-        demod_frame_tlast  = frame_intrlvd_tlast;
-        frame_intrlvd_tready = demod_frame_tready;
+        frame_intrlvd_tready = 1'b1;
+        demod_frame_tvalid = 1'b0;
+        demod_frame_tuser  = 16'h0000;
+        demod_frame_tdata  = 32'h00000000;
+        demod_frame_tkeep  = 4'b1111;
+        demod_frame_tlast  = 1'b0;
+        fork
+            test_axi_stream();
+//            test_axi_stream_demod();
+        join
     end
 
 
@@ -466,7 +446,7 @@ module top_loop_back_tb;
                     $display("Packet complete at time %0t ns, last word received: 0x%h",
                              $time, frame_deintrlvd_tdata);
                     $fclose(outfile);
-                    test_done <= 1'b1;
+    //                $finish;
                 end
             end
         end

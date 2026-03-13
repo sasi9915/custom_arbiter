@@ -191,6 +191,22 @@ architecture rtl of top is
         );
     end component demod_deintrlv;
 
+    
+    function llr_mapper_16(input_bits : std_logic_vector(1 downto 0)) return std_logic_vector is
+        variable result : std_logic_vector(31 downto 0);
+        variable temp   : signed(15 downto 0);
+    begin
+        for i in 0 to 1 loop
+            if input_bits(i) = '1' then
+                temp := to_signed(32767, 16);
+            else
+                temp := to_signed(-32767, 16);
+            end if;
+            result((i * 16 + 15) downto (i * 16)) := std_logic_vector(temp);
+        end loop;
+        return result;
+    end function;
+
     -- Internal signals for connecting mod_intrlv to AXI interconnect
     signal slot0_awid    : std_logic_vector(3 downto 0);
     signal slot0_awaddr  : std_logic_vector(28 downto 0);
@@ -230,6 +246,29 @@ architecture rtl of top is
     signal slot0_rvalid  : std_logic;
     signal slot0_rready  : std_logic;
     signal slot0_resetn  : std_logic;
+
+    -- Internal signals for looping mod output stream to deinterleaver input stream.
+    signal w_frame_intrlvd_tready : std_logic;
+    signal w_frame_intrlvd_tvalid : std_logic;
+    signal w_frame_intrlvd_tuser  : std_logic_vector(15 downto 0);
+    signal w_frame_intrlvd_tdata  : std_logic_vector(31 downto 0);
+    signal w_frame_intrlvd_tkeep  : std_logic_vector(3 downto 0);
+    signal w_frame_intrlvd_tlast  : std_logic;
+
+    signal w_demod_frame_tready : std_logic;
+    signal r_demod_frame_tvalid : std_logic := '0';
+    signal r_demod_frame_tuser  : std_logic_vector(15 downto 0) := (others => '0');
+    signal r_demod_frame_tdata  : std_logic_vector(31 downto 0) := (others => '0');
+    signal r_demod_frame_tkeep  : std_logic_vector(3 downto 0) := (others => '0');
+    signal r_demod_frame_tlast  : std_logic := '0';
+
+    signal r_fetch_counter : unsigned(4 downto 0) := (others => '0');
+    signal r_fetch_req     : std_logic := '1';
+    signal r_tvalid        : std_logic := '0';
+    signal r_intrlvd_tlast : std_logic := '0';
+    signal r_intrlvd_tdata : std_logic_vector(31 downto 0) := (others => '0');
+    signal r_intrlvd_tuser : std_logic_vector(15 downto 0) := (others => '0');
+    signal r_intrlvd_tkeep : std_logic_vector(3 downto 0) := (others => '0');
 
     -- Internal signals for connecting demod_deintrlv to AXI interconnect
     signal slot1_awid    : std_logic_vector(3 downto 0);
@@ -279,6 +318,114 @@ begin
     slot1_bid(3 downto 1) <= (others => '0');
     slot1_rid(3 downto 1) <= (others => '0');
 
+    -- Keep mod output visible at top-level and feed internal 16-bit-LLR loopback.
+    frame_intrlvd_tvalid <= w_frame_intrlvd_tvalid;
+    frame_intrlvd_tuser  <= w_frame_intrlvd_tuser;
+    frame_intrlvd_tdata  <= w_frame_intrlvd_tdata;
+    frame_intrlvd_tkeep  <= w_frame_intrlvd_tkeep;
+    frame_intrlvd_tlast  <= w_frame_intrlvd_tlast;
+    demod_frame_tready   <= w_demod_frame_tready;
+
+    -- Pull next interleaved word only when the demod/deinterleaver side is ready.
+    w_frame_intrlvd_tready <= r_fetch_req and w_demod_frame_tready;
+
+    loopback_16llr_proc : process(axis_clk, axis_resetn)
+    begin
+        if axis_resetn = '0' then
+            r_fetch_counter      <= (others => '0');
+            r_fetch_req          <= '1';
+            r_tvalid             <= '0';
+            r_intrlvd_tlast      <= '0';
+            r_intrlvd_tdata      <= (others => '0');
+            r_intrlvd_tuser      <= (others => '0');
+            r_intrlvd_tkeep      <= (others => '0');
+            r_demod_frame_tdata  <= (others => '0');
+            r_demod_frame_tuser  <= (others => '0');
+            r_demod_frame_tkeep  <= (others => '0');
+            r_demod_frame_tlast  <= '0';
+            r_demod_frame_tvalid <= '0';
+        elsif rising_edge(axis_clk) then
+            r_demod_frame_tvalid <= '0';
+            r_demod_frame_tlast  <= '0';
+            r_demod_frame_tkeep  <= (others => '1');
+
+            if w_frame_intrlvd_tvalid = '1' and w_frame_intrlvd_tready = '1' then
+                r_intrlvd_tdata <= w_frame_intrlvd_tdata;
+                r_intrlvd_tuser <= w_frame_intrlvd_tuser;
+                r_intrlvd_tkeep <= w_frame_intrlvd_tkeep;
+                r_intrlvd_tlast <= w_frame_intrlvd_tlast;
+                r_tvalid        <= '1';
+                r_fetch_req     <= '0';
+                r_fetch_counter <= (others => '0');
+            elsif r_tvalid = '1' and w_demod_frame_tready = '1' then
+                r_demod_frame_tuser <= r_intrlvd_tuser;
+
+                case to_integer(r_fetch_counter) is
+                    when 0 =>
+                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(1 downto 0));
+                        r_demod_frame_tvalid <= r_intrlvd_tkeep(0);
+                    when 1 =>
+                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(3 downto 2));
+                        r_demod_frame_tvalid <= r_intrlvd_tkeep(0);
+                    when 2 =>
+                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(5 downto 4));
+                        r_demod_frame_tvalid <= r_intrlvd_tkeep(0);
+                    when 3 =>
+                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(7 downto 6));
+                        r_demod_frame_tvalid <= r_intrlvd_tkeep(0);
+                    when 4 =>
+                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(9 downto 8));
+                        r_demod_frame_tvalid <= r_intrlvd_tkeep(1);
+                    when 5 =>
+                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(11 downto 10));
+                        r_demod_frame_tvalid <= r_intrlvd_tkeep(1);
+                    when 6 =>
+                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(13 downto 12));
+                        r_demod_frame_tvalid <= r_intrlvd_tkeep(1);
+                    when 7 =>
+                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(15 downto 14));
+                        r_demod_frame_tvalid <= r_intrlvd_tkeep(1);
+                    when 8 =>
+                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(17 downto 16));
+                        r_demod_frame_tvalid <= r_intrlvd_tkeep(2);
+                    when 9 =>
+                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(19 downto 18));
+                        r_demod_frame_tvalid <= r_intrlvd_tkeep(2);
+                    when 10 =>
+                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(21 downto 20));
+                        r_demod_frame_tvalid <= r_intrlvd_tkeep(2);
+                    when 11 =>
+                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(23 downto 22));
+                        r_demod_frame_tvalid <= r_intrlvd_tkeep(2);
+                    when 12 =>
+                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(25 downto 24));
+                        r_demod_frame_tvalid <= r_intrlvd_tkeep(3);
+                    when 13 =>
+                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(27 downto 26));
+                        r_demod_frame_tvalid <= r_intrlvd_tkeep(3);
+                    when 14 =>
+                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(29 downto 28));
+                        r_demod_frame_tvalid <= r_intrlvd_tkeep(3);
+                    when 15 =>
+                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(31 downto 30));
+                        r_demod_frame_tvalid <= r_intrlvd_tkeep(3);
+                        r_demod_frame_tlast  <= r_intrlvd_tlast;
+                    when others =>
+                        r_demod_frame_tdata  <= (others => '0');
+                        r_demod_frame_tvalid <= '0';
+                end case;
+
+                if r_fetch_counter = to_unsigned(15, r_fetch_counter'length) then
+                    r_fetch_counter <= (others => '0');
+                    r_fetch_req     <= '1';
+                    r_tvalid        <= '0';
+                else
+                    r_fetch_counter <= r_fetch_counter + 1;
+                end if;
+            end if;
+        end if;
+    end process;
+
     -- mod_intrlv instance
     u_mod_intrlv : mod_intrlv
         port map(
@@ -290,12 +437,12 @@ begin
             frame_tdata          => mod_frame_tdata,
             frame_tkeep          => mod_frame_tkeep,
             frame_tlast          => mod_frame_tlast,
-            frame_intrlvd_tready => frame_intrlvd_tready,
-            frame_intrlvd_tvalid => frame_intrlvd_tvalid,
-            frame_intrlvd_tuser  => frame_intrlvd_tuser,
-            frame_intrlvd_tdata  => frame_intrlvd_tdata,
-            frame_intrlvd_tkeep  => frame_intrlvd_tkeep,
-            frame_intrlvd_tlast  => frame_intrlvd_tlast,
+            frame_intrlvd_tready => w_frame_intrlvd_tready,
+            frame_intrlvd_tvalid => w_frame_intrlvd_tvalid,
+            frame_intrlvd_tuser  => w_frame_intrlvd_tuser,
+            frame_intrlvd_tdata  => w_frame_intrlvd_tdata,
+            frame_intrlvd_tkeep  => w_frame_intrlvd_tkeep,
+            frame_intrlvd_tlast  => w_frame_intrlvd_tlast,
             -- Connect to internal AXI signals
             ddr4_m_axi_awid      => slot0_awid,
             ddr4_m_axi_awaddr    => slot0_awaddr,
@@ -341,12 +488,12 @@ begin
         port map(
             axis_resetn            => axis_resetn,
             axis_clk               => axis_clk,
-            frame_tready           => demod_frame_tready,
-            frame_tvalid           => demod_frame_tvalid,
-            frame_tuser            => demod_frame_tuser,
-            frame_tdata            => demod_frame_tdata,
-            frame_tkeep            => demod_frame_tkeep,
-            frame_tlast            => demod_frame_tlast,
+            frame_tready           => w_demod_frame_tready,
+            frame_tvalid           => r_demod_frame_tvalid,
+            frame_tuser            => r_demod_frame_tuser,
+            frame_tdata            => r_demod_frame_tdata,
+            frame_tkeep            => r_demod_frame_tkeep,
+            frame_tlast            => r_demod_frame_tlast,
             frame_deintrlvd_tready => frame_deintrlvd_tready,
             frame_deintrlvd_tvalid => frame_deintrlvd_tvalid,
             frame_deintrlvd_tuser  => frame_deintrlvd_tuser,
