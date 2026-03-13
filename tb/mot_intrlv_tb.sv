@@ -1,39 +1,18 @@
 `timescale 1ns/1ps
 
-module mod_intrlv_tb;
+module demod_deintrlv_tb;
     
-    // Mod Interleaver Signals
-
-    // /AXI Clock and reset signals
+    // AXI clock and reset signals
     wire            axis_resetn;
     wire            axis_clk;
-    
-    
-    // AXI Stream Slave Interface (frame)
-    reg             frame_tvalid;
-    wire            frame_tready;
-    reg [15:0]      frame_tuser;
-    reg [31:0]      frame_tdata;
-    reg [3:0]       frame_tkeep;
-    reg             frame_tlast;
-    
-    // AXI Stream Master Interface (frame_intrlvd)
-    wire            frame_intrlvd_tvalid;
-    reg             frame_intrlvd_tready;
-    wire [15:0]     frame_intrlvd_tuser;
-    wire [31:0]     frame_intrlvd_tdata;
-    wire [3:0]      frame_intrlvd_tkeep;
-    wire            frame_intrlvd_tlast;
 
-    // AXI Stream Slave Interface (demod_frame)
+    // Active deinterleaver stimulus/output ports.
     reg             demod_frame_tvalid;
     wire            demod_frame_tready;
     reg [15:0]      demod_frame_tuser;
     reg [31:0]      demod_frame_tdata;
     reg [3:0]       demod_frame_tkeep;
     reg             demod_frame_tlast;
-
-    // AXI Stream Master Interface (frame_deintrlvd)
     wire            frame_deintrlvd_tvalid;
     reg             frame_deintrlvd_tready;
     wire [15:0]     frame_deintrlvd_tuser;
@@ -47,7 +26,7 @@ module mod_intrlv_tb;
     wire [7:0]      ddr4_m_axi_awlen;
     wire [2:0]      ddr4_m_axi_awsize;
     wire [1:0]      ddr4_m_axi_awburst;
-    wire            ddr4_m_axi_awlock;
+    wire [0:0]      ddr4_m_axi_awlock;
     wire [3:0]      ddr4_m_axi_awcache;
     wire [2:0]      ddr4_m_axi_awprot;
     wire [3:0]      ddr4_m_axi_awqos;
@@ -70,7 +49,7 @@ module mod_intrlv_tb;
     wire [7:0]      ddr4_m_axi_arlen;
     wire [2:0]      ddr4_m_axi_arsize;
     wire [1:0]      ddr4_m_axi_arburst;
-    wire            ddr4_m_axi_arlock;
+    wire [0:0]      ddr4_m_axi_arlock;
     wire [3:0]      ddr4_m_axi_arcache;
     wire [2:0]      ddr4_m_axi_arprot;
     wire [3:0]      ddr4_m_axi_arqos;
@@ -127,26 +106,18 @@ module mod_intrlv_tb;
 
     localparam real DDR_REF_FREQ_HZ   = 75_000_000.0;           // 75 MHz
     localparam real DDR_REF_PERIOD_NS = 1e9 / DDR_REF_FREQ_HZ;
+    localparam integer INPUT_WORDS    = 2048;
+    localparam integer TIMEOUT_CYCLES = 200000;
+
+    integer outfile;
+    integer rx_count;
+    integer cycle_count;
 
     
-    // Instantiate top (includes custom AXI interconnect + mod_intrlv)
+    // Instantiate the DUT
     top top_inst (
         .axis_resetn            (axis_resetn),
         .axis_clk               (axis_clk),
-
-        .mod_frame_tready       (frame_tready),
-        .mod_frame_tvalid       (frame_tvalid),
-        .mod_frame_tuser        (frame_tuser),
-        .mod_frame_tdata        (frame_tdata),
-        .mod_frame_tkeep        (frame_tkeep),
-        .mod_frame_tlast        (frame_tlast),
-
-        .frame_intrlvd_tready   (frame_intrlvd_tready),
-        .frame_intrlvd_tvalid   (frame_intrlvd_tvalid),
-        .frame_intrlvd_tuser    (frame_intrlvd_tuser),
-        .frame_intrlvd_tdata    (frame_intrlvd_tdata),
-        .frame_intrlvd_tkeep    (frame_intrlvd_tkeep),
-        .frame_intrlvd_tlast    (frame_intrlvd_tlast),
 
         .demod_frame_tready     (demod_frame_tready),
         .demod_frame_tvalid     (demod_frame_tvalid),
@@ -154,12 +125,13 @@ module mod_intrlv_tb;
         .demod_frame_tdata      (demod_frame_tdata),
         .demod_frame_tkeep      (demod_frame_tkeep),
         .demod_frame_tlast      (demod_frame_tlast),
-        .frame_deintrlvd_tready (frame_deintrlvd_tready),
-        .frame_deintrlvd_tvalid (frame_deintrlvd_tvalid),
-        .frame_deintrlvd_tuser  (frame_deintrlvd_tuser),
-        .frame_deintrlvd_tdata  (frame_deintrlvd_tdata),
-        .frame_deintrlvd_tkeep  (frame_deintrlvd_tkeep),
-        .frame_deintrlvd_tlast  (frame_deintrlvd_tlast),
+
+        .frame_deintrlvd_tready   (frame_deintrlvd_tready),
+        .frame_deintrlvd_tvalid   (frame_deintrlvd_tvalid),
+        .frame_deintrlvd_tuser    (frame_deintrlvd_tuser),
+        .frame_deintrlvd_tdata    (frame_deintrlvd_tdata),
+        .frame_deintrlvd_tkeep    (frame_deintrlvd_tkeep),
+        .frame_deintrlvd_tlast    (frame_deintrlvd_tlast),
 
         .M_AXI_AWID             (ddr4_m_axi_awid),
         .M_AXI_AWADDR           (ddr4_m_axi_awaddr),
@@ -177,10 +149,10 @@ module mod_intrlv_tb;
         .M_AXI_WLAST            (ddr4_m_axi_wlast),
         .M_AXI_WVALID           (ddr4_m_axi_wvalid),
         .M_AXI_WREADY           (ddr4_m_axi_wready),
+        .M_AXI_BREADY           (ddr4_m_axi_bready),
         .M_AXI_BID              (ddr4_m_axi_bid),
         .M_AXI_BRESP            (ddr4_m_axi_bresp),
         .M_AXI_BVALID           (ddr4_m_axi_bvalid),
-        .M_AXI_BREADY           (ddr4_m_axi_bready),
         .M_AXI_ARID             (ddr4_m_axi_arid),
         .M_AXI_ARADDR           (ddr4_m_axi_araddr),
         .M_AXI_ARLEN            (ddr4_m_axi_arlen),
@@ -192,12 +164,12 @@ module mod_intrlv_tb;
         .M_AXI_ARQOS            (ddr4_m_axi_arqos),
         .M_AXI_ARVALID          (ddr4_m_axi_arvalid),
         .M_AXI_ARREADY          (ddr4_m_axi_arready),
-        .M_AXI_RID              (ddr4_m_axi_rid),
-        .M_AXI_RDATA            (ddr4_m_axi_rdata),
-        .M_AXI_RRESP            (ddr4_m_axi_rresp),
+        .M_AXI_RREADY           (ddr4_m_axi_rready),
         .M_AXI_RLAST            (ddr4_m_axi_rlast),
         .M_AXI_RVALID           (ddr4_m_axi_rvalid),
-        .M_AXI_RREADY           (ddr4_m_axi_rready)
+        .M_AXI_RRESP            (ddr4_m_axi_rresp),
+        .M_AXI_RID              (ddr4_m_axi_rid),
+        .M_AXI_RDATA            (ddr4_m_axi_rdata)
     );
     
 
@@ -233,7 +205,7 @@ module mod_intrlv_tb;
         .c0_ddr4_ck_c             (ddr4_intf_c0_ddr4_ck_c),
         .c0_ddr4_ck_t             (ddr4_intf_c0_ddr4_ck_t),
         
-        // AXI Slave Interface (Connected to mod_intrlv)
+        // AXI Slave Interface (Connected to demod_deintrlv)
         .c0_ddr4_s_axi_awid       (ddr4_m_axi_awid),
         .c0_ddr4_s_axi_awaddr     (ddr4_m_axi_awaddr),
         .c0_ddr4_s_axi_awlen      (ddr4_m_axi_awlen),
@@ -296,7 +268,7 @@ module mod_intrlv_tb;
     // ------------------------------------------------------------------
     // DDR4 Reest & Clock
     // ------------------------------------------------------------------
-    initial ddr4_intf_c0_sys_clk_p = 1'b1;
+    initial ddr4_intf_c0_sys_clk_p = 1'b0;
     always #(DDR_REF_PERIOD_NS/2.0) ddr4_intf_c0_sys_clk_p = ~ddr4_intf_c0_sys_clk_p;
     assign ddr4_intf_c0_sys_clk_n = ~ddr4_intf_c0_sys_clk_p;
     
@@ -319,99 +291,89 @@ module mod_intrlv_tb;
 
     // Testbench initial block
     initial begin
-        
-        assign frame_intrlvd_tready = 1'b1;
-        demod_frame_tvalid          = 1'b0;
-        demod_frame_tuser           = 16'h0000;
-        demod_frame_tdata           = 32'h00000000;
-        demod_frame_tkeep           = 4'b1111;
-        demod_frame_tlast           = 1'b0;
-        frame_deintrlvd_tready      = 1'b1;
+        frame_deintrlvd_tready = 1'b1;
+        demod_frame_tvalid     = 1'b0;
+        demod_frame_tuser      = 16'h0000;
+        demod_frame_tdata      = 32'h00000000;
+        demod_frame_tkeep      = 4'b1111;
+        demod_frame_tlast      = 1'b0;
+        rx_count               = 0;
+        cycle_count            = 0;
 
-        
-        // Test AXI Stream interface
-        test_axi_stream();
-
-        
-        
-        // End simulation
-//      #1000 $finish;
+        test_demod_stream();
     end
     
-    // Test AXI Stream interface
-    task test_axi_stream;
+    // Drive the deinterleaver input stream on top.demod_frame_*.
+    task test_demod_stream;
         integer i;
         begin
-            // Drive valid signals
-            frame_tvalid = 1'b0;
-            frame_tuser = 16'h0000;
-            frame_tdata = 32'h00000000;
-            frame_tkeep = 4'b1111;
-            frame_tlast = 1'b0;
+            demod_frame_tvalid = 1'b0;
+            demod_frame_tuser  = 16'h0000;
+            demod_frame_tdata  = 32'h00000000;
+            demod_frame_tkeep  = 4'b1111;
+            demod_frame_tlast  = 1'b0;
             
             // Wait for reset to be asserted
             @(posedge axis_clk);
             
-            // Send 10-word packet with counter
-            frame_tvalid = 1'b1;
-            for (i = 0; i < 1024; i = i + 1) begin
-                frame_tdata = 32'h00000000 + i;
-                frame_tuser = 16'hABCD;
-                if (i == 999999) begin
-                    frame_tlast = 1'b1;
+            // Send one complete deinterleaver frame.
+            demod_frame_tvalid = 1'b1;
+            for (i = 0; i < INPUT_WORDS; i = i + 1) begin
+                demod_frame_tdata = 32'h00000000 + i;
+                demod_frame_tuser = 16'hABCD;
+                if (i == INPUT_WORDS - 1) begin
+                    demod_frame_tlast = 1'b1;
                 end else begin
-                    frame_tlast = 1'b0;
+                    demod_frame_tlast = 1'b0;
                 end
                 
                 @(posedge axis_clk);
-                while (!frame_tready) @(posedge axis_clk);
+                while (!demod_frame_tready) @(posedge axis_clk);
             end
             
-            frame_tvalid = 1'b0;
+            demod_frame_tvalid = 1'b0;
+            demod_frame_tlast  = 1'b0;
         end
     endtask
 
-integer outfile_2;
-
-    // Open the file at the start of simulation
     initial begin
-        outfile_2 = $fopen("/home/satanya/Documents/Reading Materials/documents_20260109/ddr_tb_example/src/rtl/mod_intrlv_output.txt", "w");
-        if (outfile_2 == 0) begin
-            $display("ERROR: Could not open file for writing!");
-//            $finish;
+        outfile = $fopen("misc/demod_deintrlv_output.txt", "w");
+        if (outfile == 0) begin
+            $fatal(1, "Could not open misc/demod_deintrlv_output.txt");
         end
     end
 
-    // ------------------------------------------------------------------
-    // Monitor frame_deintrlvd signals and write to file
-    // ------------------------------------------------------------------
     always @(posedge axis_clk) begin
         if (!axis_resetn) begin
-            // nothing
+            rx_count    <= 0;
+            cycle_count <= 0;
         end else begin
-            if (frame_intrlvd_tvalid && frame_intrlvd_tready) begin
-                // Log exactly one transfer
-                $fdisplay(outfile_2, "%h", frame_intrlvd_tdata);
-                $fflush(outfile_2);
+            cycle_count <= cycle_count + 1;
 
-                if (frame_intrlvd_tlast) begin
-                    $display("Packet complete at time %0t ns, last word received: 0x%h",
-                             $time, frame_intrlvd_tdata);
-                    $fclose(outfile_2);
-//                    $finish;
+            if (cycle_count > TIMEOUT_CYCLES) begin
+                $fatal(1, "Timeout waiting for deinterleaver output");
+            end
+
+            if (frame_deintrlvd_tvalid && frame_deintrlvd_tready) begin
+                rx_count <= rx_count + 1;
+                $fdisplay(outfile, "%h", frame_deintrlvd_tdata);
+                $fflush(outfile);
+
+                if (frame_deintrlvd_tlast) begin
+                    $display("Deinterleaver output complete at time %0t ns after %0d words", $time, rx_count + 1);
+                    $fclose(outfile);
                 end
             end
         end
     end
-
 
 
     
 //  // Monitor signals for verification
 //  initial begin
-//      $monitor("Time=%0t: frame_tvalid=%b, frame_tready=%b, frame_tdata=0x%h, frame_intrlvd_tvalid=%b, frame_intrlvd_tready=%b, frame_intrlvd_tdata=0x%h",
-//               $time, frame_tvalid, frame_tready, frame_tdata, 
-//               frame_intrlvd_tvalid, frame_intrlvd_tready, frame_intrlvd_tdata);
+//      $monitor("Time=%0t: demod_frame_tvalid=%b, demod_frame_tready=%b, demod_frame_tdata=0x%h, frame_deintrlvd_tvalid=%b, frame_deintrlvd_tready=%b, frame_deintrlvd_tdata=0x%h",
+//               $time, demod_frame_tvalid, demod_frame_tready, demod_frame_tdata,
+//               frame_deintrlvd_tvalid, frame_deintrlvd_tready, frame_deintrlvd_tdata);
 //  end
 
 endmodule

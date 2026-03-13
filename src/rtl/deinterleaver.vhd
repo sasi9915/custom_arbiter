@@ -438,7 +438,7 @@ begin
                     end if;
 
                     -- send the data and associated sideband signals out over AXI4-Stream
-                    if (r_bit_idx = "000000" and (r_write_ddr_address > 0)) then
+                    if (r_bit_idx = "0" and (r_write_ddr_address > 0)) then
                         if (frame_deintrlvd_tready = '1') and (r_frame_deintrlvd_tvalid = '0') then
                             r_frame_deintrlvd_tdata  <= r_out_data;
                             r_frame_deintrlvd_tuser  <= frame_tuser;

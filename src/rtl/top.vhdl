@@ -10,19 +10,19 @@ entity top is
         -- AXI-Stream Interface
         axis_resetn            : in  std_logic;
         axis_clk               : in  std_logic;
-        -- mod_intrlv AXI Master Interface (to connect to AXI Interconnect)
-        mod_frame_tready       : out std_logic;
-        mod_frame_tvalid       : in  std_logic;
-        mod_frame_tuser        : in  std_logic_vector(15 downto 00);
-        mod_frame_tdata        : in  std_logic_vector(31 downto 00);
-        mod_frame_tkeep        : in  std_logic_vector(03 downto 00);
-        mod_frame_tlast        : in  std_logic;
-        frame_intrlvd_tready   : in  std_logic;
-        frame_intrlvd_tvalid   : out std_logic;
-        frame_intrlvd_tuser    : out std_logic_vector(15 downto 00);
-        frame_intrlvd_tdata    : out std_logic_vector(31 downto 00);
-        frame_intrlvd_tkeep    : out std_logic_vector(03 downto 00);
-        frame_intrlvd_tlast    : out std_logic;
+        -- -- mod_intrlv AXI Master Interface (to connect to AXI Interconnect)
+        -- mod_frame_tready       : out std_logic;
+        -- mod_frame_tvalid       : in  std_logic;
+        -- mod_frame_tuser        : in  std_logic_vector(15 downto 00);
+        -- mod_frame_tdata        : in  std_logic_vector(31 downto 00);
+        -- mod_frame_tkeep        : in  std_logic_vector(03 downto 00);
+        -- mod_frame_tlast        : in  std_logic;
+        -- frame_intrlvd_tready   : in  std_logic;
+        -- frame_intrlvd_tvalid   : out std_logic;
+        -- frame_intrlvd_tuser    : out std_logic_vector(15 downto 00);
+        -- frame_intrlvd_tdata    : out std_logic_vector(31 downto 00);
+        -- frame_intrlvd_tkeep    : out std_logic_vector(03 downto 00);
+        -- frame_intrlvd_tlast    : out std_logic;
         -- demod_deintrlv AXI Master Interface (to connect to AXI Interconnect)
         demod_frame_tready     : out std_logic;
         demod_frame_tvalid     : in  std_logic;
@@ -191,21 +191,130 @@ architecture rtl of top is
         );
     end component demod_deintrlv;
 
-    
-    function llr_mapper_16(input_bits : std_logic_vector(1 downto 0)) return std_logic_vector is
-        variable result : std_logic_vector(31 downto 0);
-        variable temp   : signed(15 downto 0);
-    begin
-        for i in 0 to 1 loop
-            if input_bits(i) = '1' then
-                temp := to_signed(32767, 16);
-            else
-                temp := to_signed(-32767, 16);
-            end if;
-            result((i * 16 + 15) downto (i * 16)) := std_logic_vector(temp);
-        end loop;
-        return result;
-    end function;
+    COMPONENT axi_interconnect_0
+        PORT (
+          INTERCONNECT_ACLK : IN STD_LOGIC;
+          INTERCONNECT_ARESETN : IN STD_LOGIC;
+          S00_AXI_ARESET_OUT_N : OUT STD_LOGIC;
+          S00_AXI_ACLK : IN STD_LOGIC;
+          S00_AXI_AWID : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+          S00_AXI_AWADDR : IN STD_LOGIC_VECTOR(28 DOWNTO 0);
+          S00_AXI_AWLEN : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+          S00_AXI_AWSIZE : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+          S00_AXI_AWBURST : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+          S00_AXI_AWLOCK : IN STD_LOGIC;
+          S00_AXI_AWCACHE : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          S00_AXI_AWPROT : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+          S00_AXI_AWQOS : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          S00_AXI_AWVALID : IN STD_LOGIC;
+          S00_AXI_AWREADY : OUT STD_LOGIC;
+          S00_AXI_WDATA : IN STD_LOGIC_VECTOR(127 DOWNTO 0);
+          S00_AXI_WSTRB : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+          S00_AXI_WLAST : IN STD_LOGIC;
+          S00_AXI_WVALID : IN STD_LOGIC;
+          S00_AXI_WREADY : OUT STD_LOGIC;
+          S00_AXI_BID : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
+          S00_AXI_BRESP : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+          S00_AXI_BVALID : OUT STD_LOGIC;
+          S00_AXI_BREADY : IN STD_LOGIC;
+          S00_AXI_ARID : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+          S00_AXI_ARADDR : IN STD_LOGIC_VECTOR(28 DOWNTO 0);
+          S00_AXI_ARLEN : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+          S00_AXI_ARSIZE : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+          S00_AXI_ARBURST : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+          S00_AXI_ARLOCK : IN STD_LOGIC;
+          S00_AXI_ARCACHE : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          S00_AXI_ARPROT : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+          S00_AXI_ARQOS : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          S00_AXI_ARVALID : IN STD_LOGIC;
+          S00_AXI_ARREADY : OUT STD_LOGIC;
+          S00_AXI_RID : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
+          S00_AXI_RDATA : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
+          S00_AXI_RRESP : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+          S00_AXI_RLAST : OUT STD_LOGIC;
+          S00_AXI_RVALID : OUT STD_LOGIC;
+          S00_AXI_RREADY : IN STD_LOGIC;
+          S01_AXI_ARESET_OUT_N : OUT STD_LOGIC;
+          S01_AXI_ACLK : IN STD_LOGIC;
+          S01_AXI_AWID : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+          S01_AXI_AWADDR : IN STD_LOGIC_VECTOR(28 DOWNTO 0);
+          S01_AXI_AWLEN : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+          S01_AXI_AWSIZE : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+          S01_AXI_AWBURST : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+          S01_AXI_AWLOCK : IN STD_LOGIC;
+          S01_AXI_AWCACHE : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          S01_AXI_AWPROT : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+          S01_AXI_AWQOS : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          S01_AXI_AWVALID : IN STD_LOGIC;
+          S01_AXI_AWREADY : OUT STD_LOGIC;
+          S01_AXI_WDATA : IN STD_LOGIC_VECTOR(127 DOWNTO 0);
+          S01_AXI_WSTRB : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+          S01_AXI_WLAST : IN STD_LOGIC;
+          S01_AXI_WVALID : IN STD_LOGIC;
+          S01_AXI_WREADY : OUT STD_LOGIC;
+          S01_AXI_BID : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
+          S01_AXI_BRESP : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+          S01_AXI_BVALID : OUT STD_LOGIC;
+          S01_AXI_BREADY : IN STD_LOGIC;
+          S01_AXI_ARID : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+          S01_AXI_ARADDR : IN STD_LOGIC_VECTOR(28 DOWNTO 0);
+          S01_AXI_ARLEN : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+          S01_AXI_ARSIZE : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+          S01_AXI_ARBURST : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+          S01_AXI_ARLOCK : IN STD_LOGIC;
+          S01_AXI_ARCACHE : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          S01_AXI_ARPROT : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+          S01_AXI_ARQOS : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          S01_AXI_ARVALID : IN STD_LOGIC;
+          S01_AXI_ARREADY : OUT STD_LOGIC;
+          S01_AXI_RID : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
+          S01_AXI_RDATA : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
+          S01_AXI_RRESP : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+          S01_AXI_RLAST : OUT STD_LOGIC;
+          S01_AXI_RVALID : OUT STD_LOGIC;
+          S01_AXI_RREADY : IN STD_LOGIC;
+          M00_AXI_ARESET_OUT_N : OUT STD_LOGIC;
+          M00_AXI_ACLK : IN STD_LOGIC;
+          M00_AXI_AWID : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+          M00_AXI_AWADDR : OUT STD_LOGIC_VECTOR(28 DOWNTO 0);
+          M00_AXI_AWLEN : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+          M00_AXI_AWSIZE : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+          M00_AXI_AWBURST : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+          M00_AXI_AWLOCK : OUT STD_LOGIC;
+          M00_AXI_AWCACHE : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+          M00_AXI_AWPROT : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+          M00_AXI_AWQOS : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+          M00_AXI_AWVALID : OUT STD_LOGIC;
+          M00_AXI_AWREADY : IN STD_LOGIC;
+          M00_AXI_WDATA : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
+          M00_AXI_WSTRB : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+          M00_AXI_WLAST : OUT STD_LOGIC;
+          M00_AXI_WVALID : OUT STD_LOGIC;
+          M00_AXI_WREADY : IN STD_LOGIC;
+          M00_AXI_BID : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          M00_AXI_BRESP : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+          M00_AXI_BVALID : IN STD_LOGIC;
+          M00_AXI_BREADY : OUT STD_LOGIC;
+          M00_AXI_ARID : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+          M00_AXI_ARADDR : OUT STD_LOGIC_VECTOR(28 DOWNTO 0);
+          M00_AXI_ARLEN : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+          M00_AXI_ARSIZE : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+          M00_AXI_ARBURST : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+          M00_AXI_ARLOCK : OUT STD_LOGIC;
+          M00_AXI_ARCACHE : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+          M00_AXI_ARPROT : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+          M00_AXI_ARQOS : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+          M00_AXI_ARVALID : OUT STD_LOGIC;
+          M00_AXI_ARREADY : IN STD_LOGIC;
+          M00_AXI_RID : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          M00_AXI_RDATA : IN STD_LOGIC_VECTOR(127 DOWNTO 0);
+          M00_AXI_RRESP : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+          M00_AXI_RLAST : IN STD_LOGIC;
+          M00_AXI_RVALID : IN STD_LOGIC;
+          M00_AXI_RREADY : OUT STD_LOGIC 
+        );
+      END COMPONENT;
+      
 
     -- Internal signals for connecting mod_intrlv to AXI interconnect
     signal slot0_awid    : std_logic_vector(3 downto 0);
@@ -246,29 +355,6 @@ architecture rtl of top is
     signal slot0_rvalid  : std_logic;
     signal slot0_rready  : std_logic;
     signal slot0_resetn  : std_logic;
-
-    -- Internal signals for looping mod output stream to deinterleaver input stream.
-    signal w_frame_intrlvd_tready : std_logic;
-    signal w_frame_intrlvd_tvalid : std_logic;
-    signal w_frame_intrlvd_tuser  : std_logic_vector(15 downto 0);
-    signal w_frame_intrlvd_tdata  : std_logic_vector(31 downto 0);
-    signal w_frame_intrlvd_tkeep  : std_logic_vector(3 downto 0);
-    signal w_frame_intrlvd_tlast  : std_logic;
-
-    signal w_demod_frame_tready : std_logic;
-    signal r_demod_frame_tvalid : std_logic := '0';
-    signal r_demod_frame_tuser  : std_logic_vector(15 downto 0) := (others => '0');
-    signal r_demod_frame_tdata  : std_logic_vector(31 downto 0) := (others => '0');
-    signal r_demod_frame_tkeep  : std_logic_vector(3 downto 0) := (others => '0');
-    signal r_demod_frame_tlast  : std_logic := '0';
-
-    signal r_fetch_counter : unsigned(4 downto 0) := (others => '0');
-    signal r_fetch_req     : std_logic := '1';
-    signal r_tvalid        : std_logic := '0';
-    signal r_intrlvd_tlast : std_logic := '0';
-    signal r_intrlvd_tdata : std_logic_vector(31 downto 0) := (others => '0');
-    signal r_intrlvd_tuser : std_logic_vector(15 downto 0) := (others => '0');
-    signal r_intrlvd_tkeep : std_logic_vector(3 downto 0) := (others => '0');
 
     -- Internal signals for connecting demod_deintrlv to AXI interconnect
     signal slot1_awid    : std_logic_vector(3 downto 0);
@@ -312,188 +398,58 @@ architecture rtl of top is
 
 begin
 
-    -- s0/s1 side IDs are 1-bit on the interconnect-facing side.
+    -- Deinterleaver-only simulation build:
+    -- keep the mod/interleaver path and slot0 completely idle.
+    -- mod_frame_tready     <= '0';
+    -- frame_intrlvd_tvalid <= '0';
+    -- frame_intrlvd_tuser  <= (others => '0');
+    -- frame_intrlvd_tdata  <= (others => '0');
+    -- frame_intrlvd_tkeep  <= (others => '0');
+    -- frame_intrlvd_tlast  <= '0';
+
+    slot0_awid    <= (others => '0');
+    slot0_awaddr  <= (others => '0');
+    slot0_awlen   <= (others => '0');
+    slot0_awsize  <= (others => '0');
+    slot0_awburst <= (others => '0');
+    slot0_awlock  <= (others => '0');
+    slot0_awcache <= (others => '0');
+    slot0_awprot  <= (others => '0');
+    slot0_awqos   <= (others => '0');
+    slot0_awvalid <= '0';
+    slot0_wdata   <= (others => '0');
+    slot0_wstrb   <= (others => '0');
+    slot0_wlast   <= '0';
+    slot0_wvalid  <= '0';
+    slot0_bready  <= '0';
+    slot0_arid    <= (others => '0');
+    slot0_araddr  <= (others => '0');
+    slot0_arlen   <= (others => '0');
+    slot0_arsize  <= (others => '0');
+    slot0_arburst <= (others => '0');
+    slot0_arlock  <= (others => '0');
+    slot0_arcache <= (others => '0');
+    slot0_arprot  <= (others => '0');
+    slot0_arqos   <= (others => '0');
+    slot0_arvalid <= '0';
+    slot0_rready  <= '0';
+
     slot0_bid(3 downto 1) <= (others => '0');
     slot0_rid(3 downto 1) <= (others => '0');
     slot1_bid(3 downto 1) <= (others => '0');
     slot1_rid(3 downto 1) <= (others => '0');
-
-    -- Keep mod output visible at top-level and feed internal 16-bit-LLR loopback.
-    frame_intrlvd_tvalid <= w_frame_intrlvd_tvalid;
-    frame_intrlvd_tuser  <= w_frame_intrlvd_tuser;
-    frame_intrlvd_tdata  <= w_frame_intrlvd_tdata;
-    frame_intrlvd_tkeep  <= w_frame_intrlvd_tkeep;
-    frame_intrlvd_tlast  <= w_frame_intrlvd_tlast;
-    demod_frame_tready   <= w_demod_frame_tready;
-
-    -- Pull next interleaved word only when the demod/deinterleaver side is ready.
-    w_frame_intrlvd_tready <= r_fetch_req and w_demod_frame_tready;
-
-    loopback_16llr_proc : process(axis_clk, axis_resetn)
-    begin
-        if axis_resetn = '0' then
-            r_fetch_counter      <= (others => '0');
-            r_fetch_req          <= '1';
-            r_tvalid             <= '0';
-            r_intrlvd_tlast      <= '0';
-            r_intrlvd_tdata      <= (others => '0');
-            r_intrlvd_tuser      <= (others => '0');
-            r_intrlvd_tkeep      <= (others => '0');
-            r_demod_frame_tdata  <= (others => '0');
-            r_demod_frame_tuser  <= (others => '0');
-            r_demod_frame_tkeep  <= (others => '0');
-            r_demod_frame_tlast  <= '0';
-            r_demod_frame_tvalid <= '0';
-        elsif rising_edge(axis_clk) then
-            r_demod_frame_tvalid <= '0';
-            r_demod_frame_tlast  <= '0';
-            r_demod_frame_tkeep  <= (others => '1');
-
-            if w_frame_intrlvd_tvalid = '1' and w_frame_intrlvd_tready = '1' then
-                r_intrlvd_tdata <= w_frame_intrlvd_tdata;
-                r_intrlvd_tuser <= w_frame_intrlvd_tuser;
-                r_intrlvd_tkeep <= w_frame_intrlvd_tkeep;
-                r_intrlvd_tlast <= w_frame_intrlvd_tlast;
-                r_tvalid        <= '1';
-                r_fetch_req     <= '0';
-                r_fetch_counter <= (others => '0');
-            elsif r_tvalid = '1' and w_demod_frame_tready = '1' then
-                r_demod_frame_tuser <= r_intrlvd_tuser;
-
-                case to_integer(r_fetch_counter) is
-                    when 0 =>
-                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(1 downto 0));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(0);
-                    when 1 =>
-                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(3 downto 2));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(0);
-                    when 2 =>
-                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(5 downto 4));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(0);
-                    when 3 =>
-                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(7 downto 6));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(0);
-                    when 4 =>
-                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(9 downto 8));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(1);
-                    when 5 =>
-                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(11 downto 10));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(1);
-                    when 6 =>
-                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(13 downto 12));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(1);
-                    when 7 =>
-                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(15 downto 14));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(1);
-                    when 8 =>
-                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(17 downto 16));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(2);
-                    when 9 =>
-                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(19 downto 18));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(2);
-                    when 10 =>
-                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(21 downto 20));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(2);
-                    when 11 =>
-                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(23 downto 22));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(2);
-                    when 12 =>
-                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(25 downto 24));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(3);
-                    when 13 =>
-                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(27 downto 26));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(3);
-                    when 14 =>
-                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(29 downto 28));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(3);
-                    when 15 =>
-                        r_demod_frame_tdata  <= llr_mapper_16(r_intrlvd_tdata(31 downto 30));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(3);
-                        r_demod_frame_tlast  <= r_intrlvd_tlast;
-                    when others =>
-                        r_demod_frame_tdata  <= (others => '0');
-                        r_demod_frame_tvalid <= '0';
-                end case;
-
-                if r_fetch_counter = to_unsigned(15, r_fetch_counter'length) then
-                    r_fetch_counter <= (others => '0');
-                    r_fetch_req     <= '1';
-                    r_tvalid        <= '0';
-                else
-                    r_fetch_counter <= r_fetch_counter + 1;
-                end if;
-            end if;
-        end if;
-    end process;
-
-    -- mod_intrlv instance
-    u_mod_intrlv : mod_intrlv
-        port map(
-            axis_resetn          => axis_resetn,
-            axis_clk             => axis_clk,
-            frame_tready         => mod_frame_tready,
-            frame_tvalid         => mod_frame_tvalid,
-            frame_tuser          => mod_frame_tuser,
-            frame_tdata          => mod_frame_tdata,
-            frame_tkeep          => mod_frame_tkeep,
-            frame_tlast          => mod_frame_tlast,
-            frame_intrlvd_tready => w_frame_intrlvd_tready,
-            frame_intrlvd_tvalid => w_frame_intrlvd_tvalid,
-            frame_intrlvd_tuser  => w_frame_intrlvd_tuser,
-            frame_intrlvd_tdata  => w_frame_intrlvd_tdata,
-            frame_intrlvd_tkeep  => w_frame_intrlvd_tkeep,
-            frame_intrlvd_tlast  => w_frame_intrlvd_tlast,
-            -- Connect to internal AXI signals
-            ddr4_m_axi_awid      => slot0_awid,
-            ddr4_m_axi_awaddr    => slot0_awaddr,
-            ddr4_m_axi_awlen     => slot0_awlen,
-            ddr4_m_axi_awsize    => slot0_awsize,
-            ddr4_m_axi_awburst   => slot0_awburst,
-            ddr4_m_axi_awlock    => slot0_awlock,
-            ddr4_m_axi_awcache   => slot0_awcache,
-            ddr4_m_axi_awprot    => slot0_awprot,
-            ddr4_m_axi_awqos     => slot0_awqos,
-            ddr4_m_axi_awvalid   => slot0_awvalid,
-            ddr4_m_axi_awready   => slot0_awready,
-            ddr4_m_axi_wdata     => slot0_wdata,
-            ddr4_m_axi_wstrb     => slot0_wstrb,
-            ddr4_m_axi_wlast     => slot0_wlast,
-            ddr4_m_axi_wvalid    => slot0_wvalid,
-            ddr4_m_axi_wready    => slot0_wready,
-            ddr4_m_axi_bready    => slot0_bready,
-            ddr4_m_axi_bid       => slot0_bid,
-            ddr4_m_axi_bresp     => slot0_bresp,
-            ddr4_m_axi_bvalid    => slot0_bvalid,
-            ddr4_m_axi_arid      => slot0_arid,
-            ddr4_m_axi_araddr    => slot0_araddr,
-            ddr4_m_axi_arlen     => slot0_arlen,
-            ddr4_m_axi_arsize    => slot0_arsize,
-            ddr4_m_axi_arburst   => slot0_arburst,
-            ddr4_m_axi_arlock    => slot0_arlock,
-            ddr4_m_axi_arcache   => slot0_arcache,
-            ddr4_m_axi_arprot    => slot0_arprot,
-            ddr4_m_axi_arqos     => slot0_arqos,
-            ddr4_m_axi_arvalid   => slot0_arvalid,
-            ddr4_m_axi_arready   => slot0_arready,
-            ddr4_m_axi_rready    => slot0_rready,
-            ddr4_m_axi_rlast     => slot0_rlast,
-            ddr4_m_axi_rvalid    => slot0_rvalid,
-            ddr4_m_axi_rresp     => slot0_rresp,
-            ddr4_m_axi_rid       => slot0_rid,
-            ddr4_m_axi_rdata     => slot0_rdata
-        );
 
     -- demod_deintrlv instance
     u_demod_deintrlv : demod_deintrlv
         port map(
             axis_resetn            => axis_resetn,
             axis_clk               => axis_clk,
-            frame_tready           => w_demod_frame_tready,
-            frame_tvalid           => r_demod_frame_tvalid,
-            frame_tuser            => r_demod_frame_tuser,
-            frame_tdata            => r_demod_frame_tdata,
-            frame_tkeep            => r_demod_frame_tkeep,
-            frame_tlast            => r_demod_frame_tlast,
+            frame_tready           => demod_frame_tready,
+            frame_tvalid           => demod_frame_tvalid,
+            frame_tuser            => demod_frame_tuser,
+            frame_tdata            => demod_frame_tdata,
+            frame_tkeep            => demod_frame_tkeep,
+            frame_tlast            => demod_frame_tlast,
             frame_deintrlvd_tready => frame_deintrlvd_tready,
             frame_deintrlvd_tvalid => frame_deintrlvd_tvalid,
             frame_deintrlvd_tuser  => frame_deintrlvd_tuser,
@@ -540,7 +496,7 @@ begin
             ddr4_m_axi_rdata       => slot1_rdata
         );
 
-    -- Custom AXI interconnect instance
+    -- AXI Interconnect instance
     u_axi_interconnect : entity work.axi_custom_int_2slot
         port map(
             aclk       => axis_clk,
@@ -657,5 +613,4 @@ begin
             m_rvalid   => M_AXI_RVALID,
             m_rready   => M_AXI_RREADY
         );
-
 end architecture rtl;
