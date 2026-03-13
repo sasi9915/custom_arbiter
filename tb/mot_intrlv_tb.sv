@@ -24,6 +24,22 @@ module mod_intrlv_tb;
     wire [31:0]     frame_intrlvd_tdata;
     wire [3:0]      frame_intrlvd_tkeep;
     wire            frame_intrlvd_tlast;
+
+    // AXI Stream Slave Interface (demod_frame)
+    reg             demod_frame_tvalid;
+    wire            demod_frame_tready;
+    reg [15:0]      demod_frame_tuser;
+    reg [31:0]      demod_frame_tdata;
+    reg [3:0]       demod_frame_tkeep;
+    reg             demod_frame_tlast;
+
+    // AXI Stream Master Interface (frame_deintrlvd)
+    wire            frame_deintrlvd_tvalid;
+    reg             frame_deintrlvd_tready;
+    wire [15:0]     frame_deintrlvd_tuser;
+    wire [31:0]     frame_deintrlvd_tdata;
+    wire [3:0]      frame_deintrlvd_tkeep;
+    wire            frame_deintrlvd_tlast;
     
     // AXI4 Master Interface (DDR4)
     wire [3:0]      ddr4_m_axi_awid;
@@ -131,6 +147,19 @@ module mod_intrlv_tb;
         .frame_intrlvd_tdata    (frame_intrlvd_tdata),
         .frame_intrlvd_tkeep    (frame_intrlvd_tkeep),
         .frame_intrlvd_tlast    (frame_intrlvd_tlast),
+
+        .demod_frame_tready     (demod_frame_tready),
+        .demod_frame_tvalid     (demod_frame_tvalid),
+        .demod_frame_tuser      (demod_frame_tuser),
+        .demod_frame_tdata      (demod_frame_tdata),
+        .demod_frame_tkeep      (demod_frame_tkeep),
+        .demod_frame_tlast      (demod_frame_tlast),
+        .frame_deintrlvd_tready (frame_deintrlvd_tready),
+        .frame_deintrlvd_tvalid (frame_deintrlvd_tvalid),
+        .frame_deintrlvd_tuser  (frame_deintrlvd_tuser),
+        .frame_deintrlvd_tdata  (frame_deintrlvd_tdata),
+        .frame_deintrlvd_tkeep  (frame_deintrlvd_tkeep),
+        .frame_deintrlvd_tlast  (frame_deintrlvd_tlast),
 
         .M_AXI_AWID             (ddr4_m_axi_awid),
         .M_AXI_AWADDR           (ddr4_m_axi_awaddr),
@@ -292,6 +321,12 @@ module mod_intrlv_tb;
     initial begin
         
         assign frame_intrlvd_tready = 1'b1;
+        demod_frame_tvalid          = 1'b0;
+        demod_frame_tuser           = 16'h0000;
+        demod_frame_tdata           = 32'h00000000;
+        demod_frame_tkeep           = 4'b1111;
+        demod_frame_tlast           = 1'b0;
+        frame_deintrlvd_tready      = 1'b1;
 
         
         // Test AXI Stream interface

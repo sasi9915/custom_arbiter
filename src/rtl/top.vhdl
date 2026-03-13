@@ -24,18 +24,18 @@ entity top is
         frame_intrlvd_tkeep    : out std_logic_vector(03 downto 00);
         frame_intrlvd_tlast    : out std_logic;
         -- demod_deintrlv AXI Master Interface (to connect to AXI Interconnect)
-        -- demod_frame_tready     : out std_logic;
-        -- demod_frame_tvalid     : in  std_logic;
-        -- demod_frame_tuser      : in  std_logic_vector(15 downto 0);
-        -- demod_frame_tdata      : in  std_logic_vector(31 downto 0);
-        -- demod_frame_tkeep      : in  std_logic_vector(3 downto 0);
-        -- demod_frame_tlast      : in  std_logic;
-        -- frame_deintrlvd_tready : in  std_logic;
-        -- frame_deintrlvd_tvalid : out std_logic;
-        -- frame_deintrlvd_tuser  : out std_logic_vector(15 downto 0);
-        -- frame_deintrlvd_tdata  : out std_logic_vector(31 downto 0);
-        -- frame_deintrlvd_tkeep  : out std_logic_vector(3 downto 0);
-        -- frame_deintrlvd_tlast  : out std_logic;
+        demod_frame_tready     : out std_logic;
+        demod_frame_tvalid     : in  std_logic;
+        demod_frame_tuser      : in  std_logic_vector(15 downto 0);
+        demod_frame_tdata      : in  std_logic_vector(31 downto 0);
+        demod_frame_tkeep      : in  std_logic_vector(3 downto 0);
+        demod_frame_tlast      : in  std_logic;
+        frame_deintrlvd_tready : in  std_logic;
+        frame_deintrlvd_tvalid : out std_logic;
+        frame_deintrlvd_tuser  : out std_logic_vector(15 downto 0);
+        frame_deintrlvd_tdata  : out std_logic_vector(31 downto 0);
+        frame_deintrlvd_tkeep  : out std_logic_vector(3 downto 0);
+        frame_deintrlvd_tlast  : out std_logic;
         -- Exposed AXI Master Interface (to connect DDR4 externally)
         M_AXI_AWID             : out std_logic_vector(3 downto 0);
         M_AXI_AWADDR           : out std_logic_vector(28 downto 0);
@@ -135,61 +135,61 @@ architecture rtl of top is
         );
     end component mod_intrlv;
 
-    -- component demod_deintrlv is
-    --     port(
-    --         axis_resetn            : in  std_logic;
-    --         axis_clk               : in  std_logic;
-    --         frame_tready           : out std_logic;
-    --         frame_tvalid           : in  std_logic;
-    --         frame_tuser            : in  std_logic_vector(15 downto 00);
-    --         frame_tdata            : in  std_logic_vector(31 downto 00);
-    --         frame_tkeep            : in  std_logic_vector(03 downto 00);
-    --         frame_tlast            : in  std_logic;
-    --         frame_deintrlvd_tready : in  std_logic;
-    --         frame_deintrlvd_tvalid : out std_logic;
-    --         frame_deintrlvd_tuser  : out std_logic_vector(15 downto 00);
-    --         frame_deintrlvd_tdata  : out std_logic_vector(31 downto 00);
-    --         frame_deintrlvd_tkeep  : out std_logic_vector(03 downto 00);
-    --         frame_deintrlvd_tlast  : out std_logic;
-    --         ddr4_m_axi_awid        : out std_logic_vector(3 downto 0);
-    --         ddr4_m_axi_awaddr      : out std_logic_vector(28 downto 0);
-    --         ddr4_m_axi_awlen       : out std_logic_vector(7 downto 0);
-    --         ddr4_m_axi_awsize      : out std_logic_vector(2 downto 0);
-    --         ddr4_m_axi_awburst     : out std_logic_vector(1 downto 0);
-    --         ddr4_m_axi_awlock      : out std_logic_vector(0 downto 0);
-    --         ddr4_m_axi_awcache     : out std_logic_vector(3 downto 0);
-    --         ddr4_m_axi_awprot      : out std_logic_vector(2 downto 0);
-    --         ddr4_m_axi_awqos       : out std_logic_vector(3 downto 0);
-    --         ddr4_m_axi_awvalid     : out std_logic;
-    --         ddr4_m_axi_awready     : in  std_logic;
-    --         ddr4_m_axi_wdata       : out std_logic_vector(127 downto 0);
-    --         ddr4_m_axi_wstrb       : out std_logic_vector(15 downto 0);
-    --         ddr4_m_axi_wlast       : out std_logic;
-    --         ddr4_m_axi_wvalid      : out std_logic;
-    --         ddr4_m_axi_wready      : in  std_logic;
-    --         ddr4_m_axi_bready      : out std_logic;
-    --         ddr4_m_axi_bid         : in  std_logic_vector(3 downto 0);
-    --         ddr4_m_axi_bresp       : in  std_logic_vector(1 downto 0);
-    --         ddr4_m_axi_bvalid      : in  std_logic;
-    --         ddr4_m_axi_arid        : out std_logic_vector(3 downto 0);
-    --         ddr4_m_axi_araddr      : out std_logic_vector(28 downto 0);
-    --         ddr4_m_axi_arlen       : out std_logic_vector(7 downto 0);
-    --         ddr4_m_axi_arsize      : out std_logic_vector(2 downto 0);
-    --         ddr4_m_axi_arburst     : out std_logic_vector(1 downto 0);
-    --         ddr4_m_axi_arlock      : out std_logic_vector(0 downto 0);
-    --         ddr4_m_axi_arcache     : out std_logic_vector(3 downto 0);
-    --         ddr4_m_axi_arprot      : out std_logic_vector(2 downto 0);
-    --         ddr4_m_axi_arqos       : out std_logic_vector(3 downto 0);
-    --         ddr4_m_axi_arvalid     : out std_logic;
-    --         ddr4_m_axi_arready     : in  std_logic;
-    --         ddr4_m_axi_rready      : out std_logic;
-    --         ddr4_m_axi_rlast       : in  std_logic;
-    --         ddr4_m_axi_rvalid      : in  std_logic;
-    --         ddr4_m_axi_rresp       : in  std_logic_vector(1 downto 0);
-    --         ddr4_m_axi_rid         : in  std_logic_vector(3 downto 0);
-    --         ddr4_m_axi_rdata       : in  std_logic_vector(127 downto 0)
-    --     );
-    -- end component demod_deintrlv;
+    component demod_deintrlv is
+        port(
+            axis_resetn            : in  std_logic;
+            axis_clk               : in  std_logic;
+            frame_tready           : out std_logic;
+            frame_tvalid           : in  std_logic;
+            frame_tuser            : in  std_logic_vector(15 downto 00);
+            frame_tdata            : in  std_logic_vector(31 downto 00);
+            frame_tkeep            : in  std_logic_vector(03 downto 00);
+            frame_tlast            : in  std_logic;
+            frame_deintrlvd_tready : in  std_logic;
+            frame_deintrlvd_tvalid : out std_logic;
+            frame_deintrlvd_tuser  : out std_logic_vector(15 downto 00);
+            frame_deintrlvd_tdata  : out std_logic_vector(31 downto 00);
+            frame_deintrlvd_tkeep  : out std_logic_vector(03 downto 00);
+            frame_deintrlvd_tlast  : out std_logic;
+            ddr4_m_axi_awid        : out std_logic_vector(3 downto 0);
+            ddr4_m_axi_awaddr      : out std_logic_vector(28 downto 0);
+            ddr4_m_axi_awlen       : out std_logic_vector(7 downto 0);
+            ddr4_m_axi_awsize      : out std_logic_vector(2 downto 0);
+            ddr4_m_axi_awburst     : out std_logic_vector(1 downto 0);
+            ddr4_m_axi_awlock      : out std_logic_vector(0 downto 0);
+            ddr4_m_axi_awcache     : out std_logic_vector(3 downto 0);
+            ddr4_m_axi_awprot      : out std_logic_vector(2 downto 0);
+            ddr4_m_axi_awqos       : out std_logic_vector(3 downto 0);
+            ddr4_m_axi_awvalid     : out std_logic;
+            ddr4_m_axi_awready     : in  std_logic;
+            ddr4_m_axi_wdata       : out std_logic_vector(127 downto 0);
+            ddr4_m_axi_wstrb       : out std_logic_vector(15 downto 0);
+            ddr4_m_axi_wlast       : out std_logic;
+            ddr4_m_axi_wvalid      : out std_logic;
+            ddr4_m_axi_wready      : in  std_logic;
+            ddr4_m_axi_bready      : out std_logic;
+            ddr4_m_axi_bid         : in  std_logic_vector(3 downto 0);
+            ddr4_m_axi_bresp       : in  std_logic_vector(1 downto 0);
+            ddr4_m_axi_bvalid      : in  std_logic;
+            ddr4_m_axi_arid        : out std_logic_vector(3 downto 0);
+            ddr4_m_axi_araddr      : out std_logic_vector(28 downto 0);
+            ddr4_m_axi_arlen       : out std_logic_vector(7 downto 0);
+            ddr4_m_axi_arsize      : out std_logic_vector(2 downto 0);
+            ddr4_m_axi_arburst     : out std_logic_vector(1 downto 0);
+            ddr4_m_axi_arlock      : out std_logic_vector(0 downto 0);
+            ddr4_m_axi_arcache     : out std_logic_vector(3 downto 0);
+            ddr4_m_axi_arprot      : out std_logic_vector(2 downto 0);
+            ddr4_m_axi_arqos       : out std_logic_vector(3 downto 0);
+            ddr4_m_axi_arvalid     : out std_logic;
+            ddr4_m_axi_arready     : in  std_logic;
+            ddr4_m_axi_rready      : out std_logic;
+            ddr4_m_axi_rlast       : in  std_logic;
+            ddr4_m_axi_rvalid      : in  std_logic;
+            ddr4_m_axi_rresp       : in  std_logic_vector(1 downto 0);
+            ddr4_m_axi_rid         : in  std_logic_vector(3 downto 0);
+            ddr4_m_axi_rdata       : in  std_logic_vector(127 downto 0)
+        );
+    end component demod_deintrlv;
 
     -- Internal signals for connecting mod_intrlv to AXI interconnect
     signal slot0_awid    : std_logic_vector(3 downto 0);
@@ -273,37 +273,11 @@ architecture rtl of top is
 
 begin
 
-    -- The current build only drives slot0. Keep slot1 quiescent.
-    slot1_awid    <= (others => '0');
-    slot1_awaddr  <= (others => '0');
-    slot1_awlen   <= (others => '0');
-    slot1_awsize  <= (others => '0');
-    slot1_awburst <= (others => '0');
-    slot1_awlock  <= (others => '0');
-    slot1_awcache <= (others => '0');
-    slot1_awprot  <= (others => '0');
-    slot1_awqos   <= (others => '0');
-    slot1_awvalid <= '0';
-    slot1_wdata   <= (others => '0');
-    slot1_wstrb   <= (others => '0');
-    slot1_wlast   <= '0';
-    slot1_wvalid  <= '0';
-    slot1_bready  <= '0';
-    slot1_arid    <= (others => '0');
-    slot1_araddr  <= (others => '0');
-    slot1_arlen   <= (others => '0');
-    slot1_arsize  <= (others => '0');
-    slot1_arburst <= (others => '0');
-    slot1_arlock  <= (others => '0');
-    slot1_arcache <= (others => '0');
-    slot1_arprot  <= (others => '0');
-    slot1_arqos   <= (others => '0');
-    slot1_arvalid <= '0';
-    slot1_rready  <= '0';
-
     -- s0/s1 side IDs are 1-bit on the interconnect-facing side.
     slot0_bid(3 downto 1) <= (others => '0');
     slot0_rid(3 downto 1) <= (others => '0');
+    slot1_bid(3 downto 1) <= (others => '0');
+    slot1_rid(3 downto 1) <= (others => '0');
 
     -- mod_intrlv instance
     u_mod_intrlv : mod_intrlv
@@ -362,62 +336,62 @@ begin
             ddr4_m_axi_rdata     => slot0_rdata
         );
 
-    -- -- demod_deintrlv instance
-    -- u_demod_deintrlv : demod_deintrlv
-    --     port map(
-    --         axis_resetn            => axis_resetn,
-    --         axis_clk               => axis_clk,
-    --         frame_tready           => demod_frame_tready,
-    --         frame_tvalid           => demod_frame_tvalid,
-    --         frame_tuser            => demod_frame_tuser,
-    --         frame_tdata            => demod_frame_tdata,
-    --         frame_tkeep            => demod_frame_tkeep,
-    --         frame_tlast            => demod_frame_tlast,
-    --         frame_deintrlvd_tready => frame_deintrlvd_tready,
-    --         frame_deintrlvd_tvalid => frame_deintrlvd_tvalid,
-    --         frame_deintrlvd_tuser  => frame_deintrlvd_tuser,
-    --         frame_deintrlvd_tdata  => frame_deintrlvd_tdata,
-    --         frame_deintrlvd_tkeep  => frame_deintrlvd_tkeep,
-    --         frame_deintrlvd_tlast  => frame_deintrlvd_tlast,
-    --         -- Connect to internal AXI signals
-    --         ddr4_m_axi_awid        => slot1_awid,
-    --         ddr4_m_axi_awaddr      => slot1_awaddr,
-    --         ddr4_m_axi_awlen       => slot1_awlen,
-    --         ddr4_m_axi_awsize      => slot1_awsize,
-    --         ddr4_m_axi_awburst     => slot1_awburst,
-    --         ddr4_m_axi_awlock      => slot1_awlock,
-    --         ddr4_m_axi_awcache     => slot1_awcache,
-    --         ddr4_m_axi_awprot      => slot1_awprot,
-    --         ddr4_m_axi_awqos       => slot1_awqos,
-    --         ddr4_m_axi_awvalid     => slot1_awvalid,
-    --         ddr4_m_axi_awready     => slot1_awready,
-    --         ddr4_m_axi_wdata       => slot1_wdata,
-    --         ddr4_m_axi_wstrb       => slot1_wstrb,
-    --         ddr4_m_axi_wlast       => slot1_wlast,
-    --         ddr4_m_axi_wvalid      => slot1_wvalid,
-    --         ddr4_m_axi_wready      => slot1_wready,
-    --         ddr4_m_axi_bid         => slot1_bid,
-    --         ddr4_m_axi_bresp       => slot1_bresp,
-    --         ddr4_m_axi_bvalid      => slot1_bvalid,
-    --         ddr4_m_axi_bready      => slot1_bready,
-    --         ddr4_m_axi_arid        => slot1_arid,
-    --         ddr4_m_axi_araddr      => slot1_araddr,
-    --         ddr4_m_axi_arlen       => slot1_arlen,
-    --         ddr4_m_axi_arsize      => slot1_arsize,
-    --         ddr4_m_axi_arburst     => slot1_arburst,
-    --         ddr4_m_axi_arlock      => slot1_arlock,
-    --         ddr4_m_axi_arcache     => slot1_arcache,
-    --         ddr4_m_axi_arprot      => slot1_arprot,
-    --         ddr4_m_axi_arqos       => slot1_arqos,
-    --         ddr4_m_axi_arvalid     => slot1_arvalid,
-    --         ddr4_m_axi_arready     => slot1_arready,
-    --         ddr4_m_axi_rready      => slot1_rready,
-    --         ddr4_m_axi_rlast       => slot1_rlast,
-    --         ddr4_m_axi_rvalid      => slot1_rvalid,
-    --         ddr4_m_axi_rresp       => slot1_rresp,
-    --         ddr4_m_axi_rid         => slot1_rid,
-    --         ddr4_m_axi_rdata       => slot1_rdata
-    --     );
+    -- demod_deintrlv instance
+    u_demod_deintrlv : demod_deintrlv
+        port map(
+            axis_resetn            => axis_resetn,
+            axis_clk               => axis_clk,
+            frame_tready           => demod_frame_tready,
+            frame_tvalid           => demod_frame_tvalid,
+            frame_tuser            => demod_frame_tuser,
+            frame_tdata            => demod_frame_tdata,
+            frame_tkeep            => demod_frame_tkeep,
+            frame_tlast            => demod_frame_tlast,
+            frame_deintrlvd_tready => frame_deintrlvd_tready,
+            frame_deintrlvd_tvalid => frame_deintrlvd_tvalid,
+            frame_deintrlvd_tuser  => frame_deintrlvd_tuser,
+            frame_deintrlvd_tdata  => frame_deintrlvd_tdata,
+            frame_deintrlvd_tkeep  => frame_deintrlvd_tkeep,
+            frame_deintrlvd_tlast  => frame_deintrlvd_tlast,
+            -- Connect to internal AXI signals
+            ddr4_m_axi_awid        => slot1_awid,
+            ddr4_m_axi_awaddr      => slot1_awaddr,
+            ddr4_m_axi_awlen       => slot1_awlen,
+            ddr4_m_axi_awsize      => slot1_awsize,
+            ddr4_m_axi_awburst     => slot1_awburst,
+            ddr4_m_axi_awlock      => slot1_awlock,
+            ddr4_m_axi_awcache     => slot1_awcache,
+            ddr4_m_axi_awprot      => slot1_awprot,
+            ddr4_m_axi_awqos       => slot1_awqos,
+            ddr4_m_axi_awvalid     => slot1_awvalid,
+            ddr4_m_axi_awready     => slot1_awready,
+            ddr4_m_axi_wdata       => slot1_wdata,
+            ddr4_m_axi_wstrb       => slot1_wstrb,
+            ddr4_m_axi_wlast       => slot1_wlast,
+            ddr4_m_axi_wvalid      => slot1_wvalid,
+            ddr4_m_axi_wready      => slot1_wready,
+            ddr4_m_axi_bid         => slot1_bid,
+            ddr4_m_axi_bresp       => slot1_bresp,
+            ddr4_m_axi_bvalid      => slot1_bvalid,
+            ddr4_m_axi_bready      => slot1_bready,
+            ddr4_m_axi_arid        => slot1_arid,
+            ddr4_m_axi_araddr      => slot1_araddr,
+            ddr4_m_axi_arlen       => slot1_arlen,
+            ddr4_m_axi_arsize      => slot1_arsize,
+            ddr4_m_axi_arburst     => slot1_arburst,
+            ddr4_m_axi_arlock      => slot1_arlock,
+            ddr4_m_axi_arcache     => slot1_arcache,
+            ddr4_m_axi_arprot      => slot1_arprot,
+            ddr4_m_axi_arqos       => slot1_arqos,
+            ddr4_m_axi_arvalid     => slot1_arvalid,
+            ddr4_m_axi_arready     => slot1_arready,
+            ddr4_m_axi_rready      => slot1_rready,
+            ddr4_m_axi_rlast       => slot1_rlast,
+            ddr4_m_axi_rvalid      => slot1_rvalid,
+            ddr4_m_axi_rresp       => slot1_rresp,
+            ddr4_m_axi_rid         => slot1_rid,
+            ddr4_m_axi_rdata       => slot1_rdata
+        );
 
     -- Custom AXI interconnect instance
     u_axi_interconnect : entity work.axi_custom_int_2slot

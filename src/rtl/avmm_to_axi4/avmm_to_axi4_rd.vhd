@@ -2,7 +2,6 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-
 entity avmm_to_axi4_rd is
 
     generic(
@@ -40,7 +39,6 @@ end entity;
 
 architecture arc_avmm_to_axi4_rd of avmm_to_axi4_rd is
 
-
     -- Temp Signals
     signal r_avmm_s_readdata_val : std_logic;
     signal r_avmm_s_readdata     : std_logic_vector(g_DATA_WIDTH - 1 downto 0);
@@ -64,8 +62,6 @@ architecture arc_avmm_to_axi4_rd of avmm_to_axi4_rd is
     signal w_axi_m_axi_rresp   : std_logic_vector(1 downto 0);
     signal w_axi_m_axi_rid     : std_logic_vector(3 downto 0);
     signal w_axi_m_axi_rdata   : std_logic_vector(127 downto 0);
-   
-
 
 begin
 
@@ -109,16 +105,12 @@ begin
             r_axi_m_axi_rready  <= '0';
 
         elsif rising_edge(axi_aclk) then
-            
-            r_avmm_s_busy <= r_axi_m_axi_arvalid and not w_axi_m_axi_arready ;
 
-
+            r_avmm_s_busy <= r_axi_m_axi_arvalid and not w_axi_m_axi_arready;
 
             if avmm_s_read = '1' then
                 rd_req_pending <= '1';
             end if;
-
-          
 
             if avmm_s_address_val = '1' and r_avmm_s_busy = '0' then
                 r_axi_m_axi_araddr  <= avmm_s_address;
@@ -129,10 +121,8 @@ begin
                 r_axi_m_axi_arvalid <= '0';
             end if;
 
-       
-
             -- Provide to AVMM only when avmm_s_read is high
-            if w_axi_m_axi_rvalid = '1'  then
+            if w_axi_m_axi_rvalid = '1' then
                 r_avmm_s_readdata     <= w_axi_m_axi_rdata;
                 r_avmm_s_readdata_val <= '1';
             else
@@ -143,7 +133,5 @@ begin
 
         end if;
     end process;
-
-    
 
 end arc_avmm_to_axi4_rd;
