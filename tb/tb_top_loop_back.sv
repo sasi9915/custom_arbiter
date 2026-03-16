@@ -5,8 +5,8 @@ module top_loop_back_tb;
     // Mod Interleaver Signals
 
     // /AXI Clock and reset signals
-    wire            axis_resetn;
-    wire            axis_clk;
+    reg             axis_resetn;
+    reg             axis_clk;
 
 
     // AXI Stream Slave Interface (frame)
@@ -86,13 +86,13 @@ module top_loop_back_tb;
 
     // DDR4 Interface Signals
     // System Reset
-    wire            ddr4_intf_sys_rst;
+    reg             ddr4_intf_sys_rst;
 
     // Clock and Reset Interface
     wire            ddr4_intf_c0_init_calib_complete;
     wire            ddr4_intf_dbg_clk;
     reg             ddr4_intf_c0_sys_clk_p;
-    wire            ddr4_intf_c0_sys_clk_n;
+    reg             ddr4_intf_c0_sys_clk_n;
     wire [511:0]    ddr4_intf_dbg_bus;
 
     // DDR4 Memory Interface
@@ -128,7 +128,7 @@ module top_loop_back_tb;
 
 
     // Instantiate the DUT
-    top dut (
+    top_loop_back dut (
         .axis_resetn            (axis_resetn),
         .axis_clk               (axis_clk),
 
@@ -141,20 +141,20 @@ module top_loop_back_tb;
         .mod_frame_tlast  (mod_frame_tlast),
 
         // Interleaver output
-        .frame_intrlvd_tvalid (frame_intrlvd_tvalid),
-        .frame_intrlvd_tready (frame_intrlvd_tready),
-        .frame_intrlvd_tuser  (frame_intrlvd_tuser),
-        .frame_intrlvd_tdata  (frame_intrlvd_tdata),
-        .frame_intrlvd_tkeep  (frame_intrlvd_tkeep),
-        .frame_intrlvd_tlast  (frame_intrlvd_tlast),
+//        .mod_frame_tvalid (frame_intrlvd_tvalid),
+//        .mod_frame_tready (frame_intrlvd_tready),
+//        .mod_frame_tuser  (frame_intrlvd_tuser),
+//        .mod_frame_tdata  (frame_intrlvd_tdata),
+//        .mod_frame_tkeep  (frame_intrlvd_tkeep),
+//        .mod_frame_tlast  (frame_intrlvd_tlast),
 
-        // DEMOD input stream
-        .demod_frame_tvalid (demod_frame_tvalid),
-        .demod_frame_tready (demod_frame_tready),
-        .demod_frame_tuser  (demod_frame_tuser),
-        .demod_frame_tdata  (demod_frame_tdata),
-        .demod_frame_tkeep  (demod_frame_tkeep),
-        .demod_frame_tlast  (demod_frame_tlast),
+//        // DEMOD input stream
+//        .demod_frame_tvalid (demod_frame_tvalid),
+//        .demod_frame_tready (demod_frame_tready),
+//        .demod_frame_tuser  (demod_frame_tuser),
+//        .demod_frame_tdata  (demod_frame_tdata),
+//        .demod_frame_tkeep  (demod_frame_tkeep),
+//        .demod_frame_tlast  (demod_frame_tlast),
 
         // Deintrlv output
         .frame_deintrlvd_tvalid (frame_deintrlvd_tvalid),
@@ -333,11 +333,6 @@ module top_loop_back_tb;
     initial begin
         frame_deintrlvd_tready = 1'b1;
         frame_intrlvd_tready = 1'b1;
-        demod_frame_tvalid = 1'b0;
-        demod_frame_tuser  = 16'h0000;
-        demod_frame_tdata  = 32'h00000000;
-        demod_frame_tkeep  = 4'b1111;
-        demod_frame_tlast  = 1'b0;
         fork
             test_axi_stream();
 //            test_axi_stream_demod();
@@ -423,7 +418,7 @@ module top_loop_back_tb;
 
     // Open the file at the start of simulation
     initial begin
-        outfile = $fopen("misc/demod_deintrlv_output.txt", "w");
+        outfile = $fopen("/home/satanya/Documents/Reading Materials/documents_20260109/ddr_tb_example/src/rtl/demod_deintrlv_output.txt", "w");
         if (outfile == 0) begin
             $display("ERROR: Could not open file for writing!");
     //        $finish;
