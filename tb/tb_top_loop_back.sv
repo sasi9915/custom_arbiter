@@ -116,10 +116,6 @@ module top_loop_back_tb;
 
 
 
-
-
-
-
     localparam real CLK_FREQ_HZ   = 100_000_000.0; // 100 MHz
     localparam real CLK_PERIOD_NS = 1e9 / CLK_FREQ_HZ;
 
@@ -128,7 +124,7 @@ module top_loop_back_tb;
 
 
     // Instantiate DUT top
-    top dut (
+    top_loop_back dut (
         .axis_resetn            (axis_resetn),
         .axis_clk               (axis_clk),
 
@@ -140,21 +136,21 @@ module top_loop_back_tb;
         .mod_frame_tkeep  (mod_frame_tkeep),
         .mod_frame_tlast  (mod_frame_tlast),
 
-        // Interleaver output
-        .frame_intrlvd_tvalid (frame_intrlvd_tvalid),
-        .frame_intrlvd_tready (frame_intrlvd_tready),
-        .frame_intrlvd_tuser  (frame_intrlvd_tuser),
-        .frame_intrlvd_tdata  (frame_intrlvd_tdata),
-        .frame_intrlvd_tkeep  (frame_intrlvd_tkeep),
-        .frame_intrlvd_tlast  (frame_intrlvd_tlast),
+        // // Interleaver output
+        // .frame_intrlvd_tvalid (frame_intrlvd_tvalid),
+        // .frame_intrlvd_tready (frame_intrlvd_tready),
+        // .frame_intrlvd_tuser  (frame_intrlvd_tuser),
+        // .frame_intrlvd_tdata  (frame_intrlvd_tdata),
+        // .frame_intrlvd_tkeep  (frame_intrlvd_tkeep),
+        // .frame_intrlvd_tlast  (frame_intrlvd_tlast),
 
-        // DEMOD input stream
-        .demod_frame_tvalid (demod_frame_tvalid),
-        .demod_frame_tready (demod_frame_tready),
-        .demod_frame_tuser  (demod_frame_tuser),
-        .demod_frame_tdata  (demod_frame_tdata),
-        .demod_frame_tkeep  (demod_frame_tkeep),
-        .demod_frame_tlast  (demod_frame_tlast),
+        // // DEMOD input stream
+        // .demod_frame_tvalid (demod_frame_tvalid),
+        // .demod_frame_tready (demod_frame_tready),
+        // .demod_frame_tuser  (demod_frame_tuser),
+        // .demod_frame_tdata  (demod_frame_tdata),
+        // .demod_frame_tkeep  (demod_frame_tkeep),
+        // .demod_frame_tlast  (demod_frame_tlast),
 
         // Deintrlv output
         .frame_deintrlvd_tvalid (frame_deintrlvd_tvalid),
@@ -308,7 +304,7 @@ module top_loop_back_tb;
     // ------------------------------------------------------------------
     // DDR4 Reest & Clock
     // ------------------------------------------------------------------
-    initial ddr4_intf_c0_sys_clk_p = 1'b0;
+    initial ddr4_intf_c0_sys_clk_p = 1'b1;
     always #(DDR_REF_PERIOD_NS/2.0) ddr4_intf_c0_sys_clk_p = ~ddr4_intf_c0_sys_clk_p;
     assign ddr4_intf_c0_sys_clk_n = ~ddr4_intf_c0_sys_clk_p;
 
@@ -333,42 +329,34 @@ module top_loop_back_tb;
     reg test_done;
 
     initial begin
+
+        mod_frame_tvalid = 0;
+        mod_frame_tuser  = 16'h0000;
+        mod_frame_tdata  = 32'h00000000;
+        mod_frame_tkeep  = 4'hF;
+        mod_frame_tlast  = 0;
+
         frame_deintrlvd_tready = 1'b1;
-        test_done = 1'b0;
+        frame_intrlvd_tready   = 1'b1;
 
-        wait (ddr4_intf_c0_init_calib_complete === 1'b1);
-        $display("DDR4 calibration completed at %0t ns", $time);
+        demod_frame_tvalid = 0;
+        demod_frame_tuser  = 0;
+        demod_frame_tdata  = 0;
+        demod_frame_tkeep  = 4'hF;
+        demod_frame_tlast  = 0;
 
-        test_axi_stream();
-
-        wait (test_done == 1'b1);
-        repeat (10) @(posedge axis_clk);
-        $finish;
+        fork
+            test_axi_stream();
+        join
     end
 
-    initial begin
-        #2ms;
-        if (test_done == 1'b0) begin
-            $display("TIMEOUT: loopback simulation did not complete by %0t ns", $time);
-            $finish;
-        end
-    end
-
-    // Loop back interleaver output stream into deinterleaver input stream.
-    always @(*) begin
-        demod_frame_tvalid = frame_intrlvd_tvalid;
-        demod_frame_tuser  = frame_intrlvd_tuser;
-        demod_frame_tdata  = frame_intrlvd_tdata;
-        demod_frame_tkeep  = frame_intrlvd_tkeep;
-        demod_frame_tlast  = frame_intrlvd_tlast;
-        frame_intrlvd_tready = demod_frame_tready;
-    end
-
-
-    // Test AXI Stream interface
     task test_axi_stream;
         integer i;
         begin
+
+            // Wait until DDR controller is ready
+            wait(ddr4_intf_c0_init_calib_complete);
+
             // Drive valid signals
             mod_frame_tvalid = 1'b0;
             mod_frame_tuser = 16'h0000;
@@ -376,12 +364,12 @@ module top_loop_back_tb;
             mod_frame_tkeep = 4'b1111;
             mod_frame_tlast = 1'b0;
 
-            
+
             // Wait for reset to be asserted
             @(posedge axis_clk);
-            
-            repeat (20) @(posedge axis_clk);  // <-- wait 20 clock cycles
-            
+
+            repeat (20) @(posedge axis_clk); // <-- wait 20 clock cycles
+
             // Send 10-word packet with counter
             mod_frame_tvalid = 1'b1;
             for (i = 0; i < 156250; i = i + 1) begin
@@ -398,47 +386,12 @@ module top_loop_back_tb;
             end
 
             mod_frame_tvalid = 1'b0;
+
         end
     endtask
 
 
-//    task test_axi_stream_demod;
-//        integer j;
-//        begin
-//            // Drive valid signals
-//            demod_frame_tvalid = 1'b0;
-//            demod_frame_tuser = 16'h0000;
-//            demod_frame_tdata = 32'h00000000;
-//            demod_frame_tkeep = 4'b1111;
-//            demod_frame_tlast = 1'b0;
 
-//            // Wait for reset to be asserted
-//            @(posedge axis_clk);
-
-//            repeat (20) @(posedge axis_clk);
-
-//            // Send 10-word packet with counter
-//            demod_frame_tvalid = 1'b1;
-//            for (j = 0; j < 1250000; j = j + 1) begin
-//                demod_frame_tdata = 32'h00000000 + j;
-//                demod_frame_tuser = 16'hDCBA;
-//                if (j == 1249999) begin
-//                    demod_frame_tlast = 1'b1;
-//                end else begin
-//                    demod_frame_tlast = 1'b0;
-//                end
-
-//                @(posedge axis_clk);
-//                while (!demod_frame_tready) @(posedge axis_clk);
-//            end
-
-//            demod_frame_tvalid = 1'b0;
-//        end
-//    endtask
-
-//    / ------------------------------------------------------------------
-//     File handle for output
-//     ------------------------------------------------------------------
     integer outfile;
 
     // Open the file at the start of simulation
@@ -446,7 +399,7 @@ module top_loop_back_tb;
         outfile = $fopen("misc/demod_deintrlv_output.txt", "w");
         if (outfile == 0) begin
             $display("ERROR: Could not open file for writing!");
-    //        $finish;
+            //        $finish;
         end
     end
 
@@ -464,7 +417,7 @@ module top_loop_back_tb;
 
                 if (frame_deintrlvd_tlast) begin
                     $display("Packet complete at time %0t ns, last word received: 0x%h",
-                             $time, frame_deintrlvd_tdata);
+                        $time, frame_deintrlvd_tdata);
                     $fclose(outfile);
                     test_done <= 1'b1;
                 end
@@ -472,41 +425,16 @@ module top_loop_back_tb;
         end
     end
 
+    always @(posedge axis_clk) begin
+    if(mod_frame_tvalid && mod_frame_tready)
+        $display("TX: %h", mod_frame_tdata);
+end
 
-    //integer outfile_2;
-
-    //// Open the file at the start of simulation
-    //initial begin
-    //    outfile_2 = $fopen("/home/satanya/Documents/Reading Materials/documents_20260109/ddr_tb_example/src/rtl/mod_intrlv_output.txt", "w");
-    //    if (outfile_2 == 0) begin
-    //        $display("ERROR: Could not open file for writing!");
-    ////        $finish;
-    //    end
-    //end
-
-    //// ------------------------------------------------------------------
-    //// Monitor frame_deintrlvd signals and write to file
-    //// ------------------------------------------------------------------
-    //always @(posedge axis_clk) begin
-    //    if (!axis_resetn) begin
-    //        // nothing
-    //    end else begin
-    //        if (frame_intrlvd_tvalid && frame_intrlvd_tready) begin
-    //            // Log exactly one transfer
-    //            $fdisplay(outfile_2, "%h", frame_intrlvd_tdata);
-    //            $fflush(outfile_2);
-
-    //            if (frame_intrlvd_tlast) begin
-    //                $display("Packet complete at time %0t ns, last word received: 0x%h",
-    //                         $time, frame_intrlvd_tdata);
-    //                $fclose(outfile_2);
-    ////                $finish;
-    //            end
-    //        end
-    //    end
-    //end
-
-
-
+    always @(posedge axis_clk) begin
+    if(frame_deintrlvd_tvalid && frame_deintrlvd_tready)
+        $display("RX: %h", frame_deintrlvd_tdata);
+        
+    end
+    
 
 endmodule

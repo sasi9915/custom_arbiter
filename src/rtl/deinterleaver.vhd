@@ -65,9 +65,9 @@ end entity;
 architecture arc_demod_deintrlv of demod_deintrlv is
 
     -- Constants
-    constant C_ROWS         : unsigned(12 downto 0) := to_unsigned(4096, 13);
-    constant C_COLS         : unsigned(12 downto 0) := to_unsigned(4096, 13);
-    constant C_base_address : unsigned(28 downto 0) := to_unsigned(100, 29);
+    constant C_ROWS         : unsigned(9 downto 0)  := to_unsigned(64, 10);
+    constant C_COLS         : unsigned(9 downto 0)  := to_unsigned(64, 10);
+    constant C_base_address : unsigned(28 downto 0) := to_unsigned(2000, 29);
     constant C_BURST_LEN    : unsigned(3 downto 0)  := to_unsigned(8, 4);
 
     -- Clocks & Resets
@@ -228,8 +228,8 @@ architecture arc_demod_deintrlv of demod_deintrlv is
 
     -- Temp Signals
     signal r_write_limit               : unsigned(28 downto 0)          := (others => '0');
-    signal r_rd_address_current_row    : unsigned(12 downto 0)          := (others => '0');
-    signal r_rd_address_current_column : unsigned(12 downto 0)          := (others => '0');
+    signal r_rd_address_current_row    : unsigned(9 downto 0)           := (others => '0');
+    signal r_rd_address_current_column : unsigned(9 downto 0)           := (others => '0');
     signal r_rd_address_gen            : std_logic                      := '0';
     signal sr_frame_data               : std_logic_vector(127 downto 0) := (others => '0');
     signal r_out_data                  : std_logic_vector(31 downto 0)  := (others => '0');
@@ -238,8 +238,8 @@ architecture arc_demod_deintrlv of demod_deintrlv is
     signal r_ddr_offset                : unsigned(28 downto 0)          := (others => '0');
     signal r_write_ddr_address         : unsigned(28 downto 0)          := (others => '0');
     signal r_out_last                  : std_logic                      := '0';
-    signal r_output_state              : std_logic                      := '0';
     signal r_tkeep                     : std_logic_vector(3 downto 0)   := (others => '0');
+    signal r_burst_cnt                 : unsigned(2 downto 0)           := (others => '0');
 
     -- Registered Outputs
     signal w_frame_tready           : std_logic;
@@ -250,13 +250,11 @@ architecture arc_demod_deintrlv of demod_deintrlv is
     signal r_frame_deintrlvd_tlast  : std_logic;
 
     -- FIFO signals
-    signal fifo_din   : std_logic_vector(2 downto 0);
-    signal fifo_dout  : std_logic_vector(2 downto 0);
-    signal fifo_wr_en : std_logic;
-    signal fifo_rd_en : std_logic;
-    signal fifo_rst   : std_logic;
-
-    signal r_burst_cnt : unsigned(2 downto 0) := (others => '0');
+    signal fifo_din   : std_logic_vector(2 downto 0) := (others => '0');
+    signal fifo_dout  : std_logic_vector(2 downto 0) := (others => '0');
+    signal fifo_wr_en : std_logic                    := '0';
+    signal fifo_rd_en : std_logic                    := '0';
+    signal fifo_rst   : std_logic                    := '0';
 
     type buf_burst_t is array (0 to to_integer(C_BURST_LEN) - 1) of std_logic_vector(127 downto 0);
 
@@ -289,20 +287,25 @@ begin
             r_avmm_to_axi4_rd_avmm_address     <= (others => '0');
             r_avmm_to_axi4_rd_avmm_address_val <= '0';
 
+            fifo_din   <= (others => '0');
+            fifo_wr_en <= '0';
+
             current_state <= wr_idle;
 
             -- Registers
-            r_byte_idx          <= (others => '0');
-            sr_frame_data       <= (others => '0');
-            r_out_data          <= (others => '0');
-            r_ddr_offset        <= (others => '0');
-            r_write_ddr_address <= (others => '0');
-            r_out_last          <= '0';
-            r_output_state      <= '0';
-            r_bit_idx           <= (others => '0');
-            r_tkeep             <= (others => '0');
-            r_burst_cnt         <= (others => '0');
-            buf_burst           <= (others => (others => '0'));
+            r_byte_idx                  <= (others => '0');
+            sr_frame_data               <= (others => '0');
+            r_out_data                  <= (others => '0');
+            r_ddr_offset                <= (others => '0');
+            r_write_ddr_address         <= (others => '0');
+            r_rd_address_current_column <= (others => '0');
+            r_rd_address_current_row    <= (others => '0');
+            r_bit_idx                   <= (others => '0');
+            r_tkeep                     <= (others => '0');
+            r_burst_cnt                 <= (others => '0');
+            buf_burst                   <= (others => (others => '0'));
+            r_rd_address_gen            <= '0';
+            r_out_last                  <= '0';
 
         elsif axis_clk'event and axis_clk = '1' then
 
@@ -412,8 +415,7 @@ begin
                         r_out_data(to_integer(r_bit_idx) * 16 + 15 downto to_integer(r_bit_idx) * 16) <= w_avmm_to_axi4_rd_avmm_readdata(to_integer(unsigned(fifo_dout)) * 16 + 15 downto to_integer(unsigned(fifo_dout)) * 16);
 
                         if r_bit_idx = "1" then
-                            r_bit_idx      <= (others => '0');
-                            r_output_state <= '1';
+                            r_bit_idx <= (others => '0');
                         else
                             r_bit_idx <= r_bit_idx + 1;
                         end if;
@@ -436,7 +438,7 @@ begin
                     end if;
 
                     -- send the data and associated sideband signals out over AXI4-Stream
-                    if r_output_state = '1' then
+                    if (r_bit_idx = "0" and (r_write_ddr_address > 0)) then
                         if (frame_deintrlvd_tready = '1') and (r_frame_deintrlvd_tvalid = '0') then
                             r_frame_deintrlvd_tdata  <= r_out_data;
                             r_frame_deintrlvd_tuser  <= frame_tuser;
@@ -446,7 +448,6 @@ begin
                         elsif (frame_deintrlvd_tready = '1') and (r_frame_deintrlvd_tvalid = '1') then
                             r_frame_deintrlvd_tvalid <= '0';
                             r_frame_deintrlvd_tlast  <= '0';
-                            r_output_state           <= '0';
                             r_frame_deintrlvd_tkeep  <= (others => '0');
                             r_frame_deintrlvd_tdata  <= (others => '0');
                             r_frame_deintrlvd_tuser  <= (others => '0');

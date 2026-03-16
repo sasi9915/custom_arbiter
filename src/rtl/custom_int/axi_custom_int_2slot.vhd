@@ -435,10 +435,10 @@ begin
 
     -- Write response channel (B): decode BID MSB to return slot.
     w_bid_slot <= m_bid(G_M_ID_WIDTH - 1);
-    s0_bid   <= m_bid(G_S_ID_WIDTH - 1 downto 0);
-    s1_bid   <= m_bid(G_S_ID_WIDTH - 1 downto 0);
-    s0_bresp <= m_bresp;
-    s1_bresp <= m_bresp;
+    s0_bid     <= m_bid(G_S_ID_WIDTH - 1 downto 0);
+    s1_bid     <= m_bid(G_S_ID_WIDTH - 1 downto 0);
+    s0_bresp   <= m_bresp;
+    s1_bresp   <= m_bresp;
 
     -- Drive BREADY based on returned slot and master BVALID.
     process(w_bid_slot, s0_bready, s1_bready)
@@ -496,31 +496,51 @@ begin
 
     -- * Read response channel (R): decode RID MSB to return slot.
     w_rid_slot <= m_rid(G_M_ID_WIDTH - 1);
-    s0_rid   <= m_rid(G_S_ID_WIDTH - 1 downto 0);
-    s1_rid   <= m_rid(G_S_ID_WIDTH - 1 downto 0);
-    s0_rdata <= m_rdata;
-    s1_rdata <= m_rdata;
-    s0_rresp <= m_rresp;
-    s1_rresp <= m_rresp;
-    s0_rlast <= m_rlast;
-    s1_rlast <= m_rlast;
 
-    -- Drive RREADY based on returned slot and master RVALID.
-    process(w_rid_slot, m_rvalid, s0_rready, s1_rready)
+    -- Decode slot from RID MSB
+    w_rid_slot <= m_rid(G_M_ID_WIDTH - 1);
+
+    process(w_rid_slot, m_rvalid, m_rdata, m_rresp, m_rlast, m_rid, s0_rready, s1_rready)
     begin
+        -- defaults
         s0_rvalid <= '0';
         s1_rvalid <= '0';
-        -- Keep RREADY asserted when idle to minimize response latency.
-        -- When RVALID is high, apply selected-slot backpressure.
-        m_rready  <= '1';
+
+        s0_rdata <= (others => '0');
+        s1_rdata <= (others => '0');
+
+        s0_rresp <= (others => '0');
+        s1_rresp <= (others => '0');
+
+        s0_rlast <= '0';
+        s1_rlast <= '0';
+
+        s0_rid <= (others => '0');
+        s1_rid <= (others => '0');
+
+        -- default backpressure (only asserted when valid)
+        m_rready <= '0';
 
         if w_rid_slot = '0' then
+            -- route to slot 0
             s0_rvalid <= m_rvalid;
+            s0_rdata  <= m_rdata;
+            s0_rresp  <= m_rresp;
+            s0_rlast  <= m_rlast;
+            s0_rid    <= m_rid(G_S_ID_WIDTH - 1 downto 0);
+
             if m_rvalid = '1' then
                 m_rready <= s0_rready;
             end if;
+
         else
+            -- route to slot 1
             s1_rvalid <= m_rvalid;
+            s1_rdata  <= m_rdata;
+            s1_rresp  <= m_rresp;
+            s1_rlast  <= m_rlast;
+            s1_rid    <= m_rid(G_S_ID_WIDTH - 1 downto 0);
+
             if m_rvalid = '1' then
                 m_rready <= s1_rready;
             end if;
@@ -624,5 +644,4 @@ begin
         );
 
 end architecture rtl;
-
 
