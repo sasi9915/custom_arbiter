@@ -319,10 +319,10 @@ module mod_intrlv_tb;
             
             // Send 10-word packet with counter
             frame_tvalid = 1'b1;
-            for (i = 0; i < 1024; i = i + 1) begin
+            for (i = 0; i < 128; i = i + 1) begin
                 frame_tdata = 32'h00000000 + i;
                 frame_tuser = 16'hABCD;
-                if (i == 999999) begin
+                if (i == 127) begin
                     frame_tlast = 1'b1;
                 end else begin
                     frame_tlast = 1'b0;

@@ -76,6 +76,7 @@ architecture arc_avmm_to_axi4_wr of avmm_to_axi4_wr is
     signal w_axi_m_axi_bid     : std_logic_vector(3 downto 0);
     signal w_axi_m_axi_bresp   : std_logic_vector(1 downto 0);
     signal w_axi_m_axi_bvalid  : std_logic;
+    signal r_aw_done          : std_logic;
 
     constant C_BURST_LEN : integer := 8;
 
@@ -146,13 +147,14 @@ begin
             r_avmm_s_write <= avmm_s_write and not (r_avmm_s_busy);
             if avmm_s_write = '1' and r_avmm_s_busy = '0' then
                 r_avmm_s_address <= avmm_s_address;
+                r_axi_m_axi_awaddr  <= avmm_s_address;
             end if;
 
             -- SM Derived Signals
             r_avmm_s_busy <= avmm_s_write or r_avmm_s_write;
 
             r_axi_m_axi_awid    <= X"0";
-            r_axi_m_axi_awaddr  <= (others => '0');
+           -- r_axi_m_axi_awaddr  <= (others => '0');
             r_axi_m_axi_awlen   <= "00000111";
             r_axi_m_axi_awsize  <= "100";
             r_axi_m_axi_awburst <= "01";
@@ -169,6 +171,12 @@ begin
 
             r_axi_m_axi_bready <= '0';
 
+            if r_axi_m_axi_awvalid = '1' and w_axi_m_axi_awready = '1' then
+                r_aw_done <= '1';
+                else    
+                r_aw_done <= '0';
+            end if;
+
             case current_state is
 
                 when idle =>
@@ -182,7 +190,6 @@ begin
                         if r_burst_cnt = "111" then
                             r_beat_cnt <= (others => '0');
                         else
-                            current_state <= collect_avmm;
                             r_burst_cnt   <= r_burst_cnt + 1;
                         end if;
                     end if;
@@ -194,7 +201,12 @@ begin
 
                 when send_w =>
                     r_avmm_s_busy      <= '1';
+
+                    if r_aw_done = '1' then
                     r_axi_m_axi_wvalid <= '1';
+                    else
+                    r_axi_m_axi_wvalid <= '0';
+                    end if;
 
                     -- Advance beat index only on real W handshake.
                     if r_axi_m_axi_wvalid = '1' and w_axi_m_axi_wready = '1' then
@@ -250,7 +262,7 @@ begin
                 end if;
 
             when send_aw =>
-                if r_axi_m_axi_awvalid = '1' and w_axi_m_axi_awready = '1' then
+                if r_aw_done = '1' then
                     next_state <= send_w;
                 else
                     next_state <= send_aw;
