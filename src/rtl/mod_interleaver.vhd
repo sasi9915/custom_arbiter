@@ -234,7 +234,7 @@ architecture arc_mod_intrlv of mod_intrlv is
     signal sr_frame_data               : std_logic_vector(127 downto 0) := (others => '0');
     signal r_out_data                  : std_logic_vector(31 downto 0)  := (others => '0');
     signal r_byte_idx                  : unsigned(1 downto 0)           := (others => '0');
-    signal r_bit_idx                   : unsigned(5 downto 0)           := (others => '0');
+    signal r_bit_idx                   : unsigned(4 downto 0)           := (others => '0');
     signal r_ddr_offset                : unsigned(28 downto 0)          := (others => '0');
     signal r_write_ddr_address         : unsigned(28 downto 0)          := (others => '0');
     signal r_out_last                  : std_logic                      := '0';
@@ -416,7 +416,7 @@ begin
 
                         r_out_data(to_integer(r_bit_idx)) <= w_avmm_to_axi4_rd_avmm_readdata(to_integer(unsigned(fifo_dout)));
 
-                        if r_bit_idx = "011111" then
+                        if r_bit_idx = to_unsigned(31, r_bit_idx'length) then
                             r_bit_idx <= (others => '0');
                         else
                             r_bit_idx <= r_bit_idx + 1;
@@ -427,9 +427,9 @@ begin
                         if r_write_ddr_address = C_COLS * C_ROWS - 1 then
                             r_out_last <= '1';
                             case r_bit_idx is
-                                when "000111" => r_tkeep <= "0001";
-                                when "001111" => r_tkeep <= "0011";
-                                when "010111" => r_tkeep <= "0111";
+                                when "00111" => r_tkeep <= "0001";
+                                when "01111" => r_tkeep <= "0011";
+                                when "10111" => r_tkeep <= "0111";
                                 when others   => r_tkeep <= "1111";
 
                             end case;
@@ -442,7 +442,7 @@ begin
                     end if;
 
                     -- send the data and associated sideband signals out over AXI4-Stream
-                    if (r_bit_idx = "000000" and (r_write_ddr_address > 0)) then
+                    if (r_bit_idx = to_unsigned(0, r_bit_idx'length) and (r_write_ddr_address > 0)) then
                         if (frame_intrlvd_tready = '1') and (r_frame_intrlvd_tvalid = '0') then
                             r_frame_intrlvd_tdata  <= r_out_data;
                             r_frame_intrlvd_tuser  <= frame_tuser;

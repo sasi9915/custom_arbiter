@@ -14,15 +14,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="242fs"></ZoomStartTime>
-      <ZoomEndTime time="16340243fs"></ZoomEndTime>
-      <Cursor1Time time="4840242fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="799683415fs"></ZoomEndTime>
+      <Cursor1Time time="85684284fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="226"></NameColumnWidth>
-      <ValueColumnWidth column_width="73"></ValueColumnWidth>
+      <ValueColumnWidth column_width="69"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="131" />
+   <WVObjectSize size="70" />
    <wvobject type="group" fp_name="group1589">
       <obj_property name="label">so_write</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -138,53 +138,37 @@
       <obj_property name="ElementShortName">mod_frame_tlast</obj_property>
       <obj_property name="ObjectShortName">mod_frame_tlast</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/demod_frame_tvalid">
-      <obj_property name="ElementShortName">demod_frame_tvalid</obj_property>
-      <obj_property name="ObjectShortName">demod_frame_tvalid</obj_property>
+   <wvobject fp_name="divider1846" type="divider">
+      <obj_property name="label">----------------------------</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/demod_frame_tready">
-      <obj_property name="ElementShortName">demod_frame_tready</obj_property>
-      <obj_property name="ObjectShortName">demod_frame_tready</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/demod_frame_tuser">
-      <obj_property name="ElementShortName">demod_frame_tuser[15:0]</obj_property>
-      <obj_property name="ObjectShortName">demod_frame_tuser[15:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/demod_frame_tdata">
-      <obj_property name="ElementShortName">demod_frame_tdata[31:0]</obj_property>
-      <obj_property name="ObjectShortName">demod_frame_tdata[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/demod_frame_tkeep">
-      <obj_property name="ElementShortName">demod_frame_tkeep[3:0]</obj_property>
-      <obj_property name="ObjectShortName">demod_frame_tkeep[3:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/demod_frame_tlast">
-      <obj_property name="ElementShortName">demod_frame_tlast</obj_property>
-      <obj_property name="ObjectShortName">demod_frame_tlast</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/frame_intrlvd_tvalid">
-      <obj_property name="ElementShortName">frame_intrlvd_tvalid</obj_property>
-      <obj_property name="ObjectShortName">frame_intrlvd_tvalid</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/frame_intrlvd_tready">
+   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_mod_intrlv/frame_intrlvd_tready">
       <obj_property name="ElementShortName">frame_intrlvd_tready</obj_property>
       <obj_property name="ObjectShortName">frame_intrlvd_tready</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/frame_intrlvd_tuser">
+   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_mod_intrlv/frame_intrlvd_tvalid">
+      <obj_property name="ElementShortName">frame_intrlvd_tvalid</obj_property>
+      <obj_property name="ObjectShortName">frame_intrlvd_tvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_mod_intrlv/frame_intrlvd_tuser">
       <obj_property name="ElementShortName">frame_intrlvd_tuser[15:0]</obj_property>
       <obj_property name="ObjectShortName">frame_intrlvd_tuser[15:0]</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/frame_intrlvd_tdata">
+   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_mod_intrlv/frame_intrlvd_tdata">
       <obj_property name="ElementShortName">frame_intrlvd_tdata[31:0]</obj_property>
       <obj_property name="ObjectShortName">frame_intrlvd_tdata[31:0]</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/frame_intrlvd_tkeep">
+   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_mod_intrlv/frame_intrlvd_tkeep">
       <obj_property name="ElementShortName">frame_intrlvd_tkeep[3:0]</obj_property>
       <obj_property name="ObjectShortName">frame_intrlvd_tkeep[3:0]</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/frame_intrlvd_tlast">
+   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_mod_intrlv/frame_intrlvd_tlast">
       <obj_property name="ElementShortName">frame_intrlvd_tlast</obj_property>
       <obj_property name="ObjectShortName">frame_intrlvd_tlast</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider1846" type="divider">
+      <obj_property name="label">----------------------------</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/top_loop_back_tb/frame_deintrlvd_tvalid">
       <obj_property name="ElementShortName">frame_deintrlvd_tvalid</obj_property>
@@ -214,314 +198,86 @@
       <obj_property name="label">----------------------------</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_awid">
-      <obj_property name="ElementShortName">s0_awid[0:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_awid[0:0]</obj_property>
+   <wvobject type="array" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_awid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awid[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awid[3:0]</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_awaddr">
-      <obj_property name="ElementShortName">s0_awaddr[28:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_awaddr[28:0]</obj_property>
+   <wvobject type="logic" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_awvalid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awvalid</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awvalid</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_awlen">
-      <obj_property name="ElementShortName">s0_awlen[7:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_awlen[7:0]</obj_property>
+   <wvobject type="logic" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_awready">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awready</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awready</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_awsize">
-      <obj_property name="ElementShortName">s0_awsize[2:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_awsize[2:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_awburst">
-      <obj_property name="ElementShortName">s0_awburst[1:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_awburst[1:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_awlock">
-      <obj_property name="ElementShortName">s0_awlock</obj_property>
-      <obj_property name="ObjectShortName">s0_awlock</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_awcache">
-      <obj_property name="ElementShortName">s0_awcache[3:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_awcache[3:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_awprot">
-      <obj_property name="ElementShortName">s0_awprot[2:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_awprot[2:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_awqos">
-      <obj_property name="ElementShortName">s0_awqos[3:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_awqos[3:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_awvalid">
-      <obj_property name="ElementShortName">s0_awvalid</obj_property>
-      <obj_property name="ObjectShortName">s0_awvalid</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_awready">
-      <obj_property name="ElementShortName">s0_awready</obj_property>
-      <obj_property name="ObjectShortName">s0_awready</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_wdata">
-      <obj_property name="ElementShortName">s0_wdata[127:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_wdata[127:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_wstrb">
-      <obj_property name="ElementShortName">s0_wstrb[15:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_wstrb[15:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_wlast">
-      <obj_property name="ElementShortName">s0_wlast</obj_property>
-      <obj_property name="ObjectShortName">s0_wlast</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_wvalid">
-      <obj_property name="ElementShortName">s0_wvalid</obj_property>
-      <obj_property name="ObjectShortName">s0_wvalid</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_wready">
-      <obj_property name="ElementShortName">s0_wready</obj_property>
-      <obj_property name="ObjectShortName">s0_wready</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_bid">
-      <obj_property name="ElementShortName">s0_bid[0:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_bid[0:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_bresp">
-      <obj_property name="ElementShortName">s0_bresp[1:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_bresp[1:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_bvalid">
-      <obj_property name="ElementShortName">s0_bvalid</obj_property>
-      <obj_property name="ObjectShortName">s0_bvalid</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_bready">
-      <obj_property name="ElementShortName">s0_bready</obj_property>
-      <obj_property name="ObjectShortName">s0_bready</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_arid">
-      <obj_property name="ElementShortName">s0_arid[0:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_arid[0:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_araddr">
-      <obj_property name="ElementShortName">s0_araddr[28:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_araddr[28:0]</obj_property>
+   <wvobject type="array" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_awaddr">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_awaddr[28:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_awaddr[28:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_arlen">
-      <obj_property name="ElementShortName">s0_arlen[7:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_arlen[7:0]</obj_property>
+   <wvobject type="logic" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_wvalid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_wvalid</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_wvalid</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_arsize">
-      <obj_property name="ElementShortName">s0_arsize[2:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_arsize[2:0]</obj_property>
+   <wvobject type="logic" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_wready">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_wready</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_wready</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_arburst">
-      <obj_property name="ElementShortName">s0_arburst[1:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_arburst[1:0]</obj_property>
+   <wvobject type="array" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_wdata">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_wdata[127:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_wdata[127:0]</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_arlock">
-      <obj_property name="ElementShortName">s0_arlock</obj_property>
-      <obj_property name="ObjectShortName">s0_arlock</obj_property>
+   <wvobject type="logic" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_wlast">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_wlast</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_wlast</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_arcache">
-      <obj_property name="ElementShortName">s0_arcache[3:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_arcache[3:0]</obj_property>
+   <wvobject type="logic" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_bready">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_bready</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_bready</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_arprot">
-      <obj_property name="ElementShortName">s0_arprot[2:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_arprot[2:0]</obj_property>
+   <wvobject type="array" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_bid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_bid[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_bid[3:0]</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_arqos">
-      <obj_property name="ElementShortName">s0_arqos[3:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_arqos[3:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_arvalid">
-      <obj_property name="ElementShortName">s0_arvalid</obj_property>
-      <obj_property name="ObjectShortName">s0_arvalid</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_arready">
-      <obj_property name="ElementShortName">s0_arready</obj_property>
-      <obj_property name="ObjectShortName">s0_arready</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_rid">
-      <obj_property name="ElementShortName">s0_rid[0:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_rid[0:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_rdata">
-      <obj_property name="ElementShortName">s0_rdata[127:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_rdata[127:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_rresp">
-      <obj_property name="ElementShortName">s0_rresp[1:0]</obj_property>
-      <obj_property name="ObjectShortName">s0_rresp[1:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_rlast">
-      <obj_property name="ElementShortName">s0_rlast</obj_property>
-      <obj_property name="ObjectShortName">s0_rlast</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_rvalid">
-      <obj_property name="ElementShortName">s0_rvalid</obj_property>
-      <obj_property name="ObjectShortName">s0_rvalid</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s0_rready">
-      <obj_property name="ElementShortName">s0_rready</obj_property>
-      <obj_property name="ObjectShortName">s0_rready</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_awid">
-      <obj_property name="ElementShortName">s1_awid[0:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_awid[0:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_awaddr">
-      <obj_property name="ElementShortName">s1_awaddr[28:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_awaddr[28:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_awlen">
-      <obj_property name="ElementShortName">s1_awlen[7:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_awlen[7:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_awsize">
-      <obj_property name="ElementShortName">s1_awsize[2:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_awsize[2:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_awburst">
-      <obj_property name="ElementShortName">s1_awburst[1:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_awburst[1:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_awlock">
-      <obj_property name="ElementShortName">s1_awlock</obj_property>
-      <obj_property name="ObjectShortName">s1_awlock</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_awcache">
-      <obj_property name="ElementShortName">s1_awcache[3:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_awcache[3:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_awprot">
-      <obj_property name="ElementShortName">s1_awprot[2:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_awprot[2:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_awqos">
-      <obj_property name="ElementShortName">s1_awqos[3:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_awqos[3:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_awvalid">
-      <obj_property name="ElementShortName">s1_awvalid</obj_property>
-      <obj_property name="ObjectShortName">s1_awvalid</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_awready">
-      <obj_property name="ElementShortName">s1_awready</obj_property>
-      <obj_property name="ObjectShortName">s1_awready</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_wdata">
-      <obj_property name="ElementShortName">s1_wdata[127:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_wdata[127:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_wstrb">
-      <obj_property name="ElementShortName">s1_wstrb[15:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_wstrb[15:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_wlast">
-      <obj_property name="ElementShortName">s1_wlast</obj_property>
-      <obj_property name="ObjectShortName">s1_wlast</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_wvalid">
-      <obj_property name="ElementShortName">s1_wvalid</obj_property>
-      <obj_property name="ObjectShortName">s1_wvalid</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_wready">
-      <obj_property name="ElementShortName">s1_wready</obj_property>
-      <obj_property name="ObjectShortName">s1_wready</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_bid">
-      <obj_property name="ElementShortName">s1_bid[0:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_bid[0:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_bresp">
-      <obj_property name="ElementShortName">s1_bresp[1:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_bresp[1:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_bvalid">
-      <obj_property name="ElementShortName">s1_bvalid</obj_property>
-      <obj_property name="ObjectShortName">s1_bvalid</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_bready">
-      <obj_property name="ElementShortName">s1_bready</obj_property>
-      <obj_property name="ObjectShortName">s1_bready</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_arid">
-      <obj_property name="ElementShortName">s1_arid[0:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_arid[0:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_araddr">
-      <obj_property name="ElementShortName">s1_araddr[28:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_araddr[28:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_arlen">
-      <obj_property name="ElementShortName">s1_arlen[7:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_arlen[7:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_arsize">
-      <obj_property name="ElementShortName">s1_arsize[2:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_arsize[2:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_arburst">
-      <obj_property name="ElementShortName">s1_arburst[1:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_arburst[1:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_arlock">
-      <obj_property name="ElementShortName">s1_arlock</obj_property>
-      <obj_property name="ObjectShortName">s1_arlock</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_arcache">
-      <obj_property name="ElementShortName">s1_arcache[3:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_arcache[3:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_arprot">
-      <obj_property name="ElementShortName">s1_arprot[2:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_arprot[2:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_arqos">
-      <obj_property name="ElementShortName">s1_arqos[3:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_arqos[3:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_arvalid">
-      <obj_property name="ElementShortName">s1_arvalid</obj_property>
-      <obj_property name="ObjectShortName">s1_arvalid</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_arready">
-      <obj_property name="ElementShortName">s1_arready</obj_property>
-      <obj_property name="ObjectShortName">s1_arready</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_rid">
-      <obj_property name="ElementShortName">s1_rid[0:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_rid[0:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_rdata">
-      <obj_property name="ElementShortName">s1_rdata[127:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_rdata[127:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_rresp">
-      <obj_property name="ElementShortName">s1_rresp[1:0]</obj_property>
-      <obj_property name="ObjectShortName">s1_rresp[1:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_rlast">
-      <obj_property name="ElementShortName">s1_rlast</obj_property>
-      <obj_property name="ObjectShortName">s1_rlast</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_rvalid">
-      <obj_property name="ElementShortName">s1_rvalid</obj_property>
-      <obj_property name="ObjectShortName">s1_rvalid</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_loop_back_tb/dut/u_axi_interconnect/s1_rready">
-      <obj_property name="ElementShortName">s1_rready</obj_property>
-      <obj_property name="ObjectShortName">s1_rready</obj_property>
+   <wvobject type="array" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_bresp">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_bresp[1:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_bresp[1:0]</obj_property>
    </wvobject>
    <wvobject fp_name="divider1846" type="divider">
       <obj_property name="label">----------------------------</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
-   <wvobject fp_name="divider1846" type="divider">
-      <obj_property name="label">----------------------------</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
+   <wvobject type="array" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_arid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arid[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arid[3:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="divider1846" type="divider">
-      <obj_property name="label">----------------------------</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
+   <wvobject type="array" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_araddr">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_araddr[28:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_araddr[28:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_arvalid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arvalid</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_arready">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_arready</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_arready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_rready">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_rready</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_rready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_rid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_rid[3:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_rid[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_rdata">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_rdata[127:0]</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_rdata[127:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/top_loop_back_tb/ddr4_intf_inst/c0_ddr4_s_axi_rvalid">
+      <obj_property name="ElementShortName">c0_ddr4_s_axi_rvalid</obj_property>
+      <obj_property name="ObjectShortName">c0_ddr4_s_axi_rvalid</obj_property>
    </wvobject>
    <wvobject fp_name="divider1846" type="divider">
       <obj_property name="label">----------------------------</obj_property>

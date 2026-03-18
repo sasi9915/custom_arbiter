@@ -25,9 +25,9 @@ module top_loop_back_tb;
     reg             demod_frame_tlast;
 
 
-    // AXI Stream Master Interface (frame_deintrlvd)
+    // Interleaver stream observed hierarchically for simulation debug only
     wire            frame_intrlvd_tvalid;
-    reg             frame_intrlvd_tready;
+    wire            frame_intrlvd_tready;
     wire [15:0]     frame_intrlvd_tuser;
     wire [31:0]     frame_intrlvd_tdata;
     wire [3:0]      frame_intrlvd_tkeep;
@@ -121,6 +121,30 @@ module top_loop_back_tb;
 
     localparam real DDR_REF_FREQ_HZ   = 75_000_000.0; // 75 MHz
     localparam real DDR_REF_PERIOD_NS = 1e9 / DDR_REF_FREQ_HZ;
+    localparam int  NUM_INPUT_WORDS   = 128;
+    localparam int  RX_WORDS_PER_TX   = 16;
+    localparam int  EXPECTED_RX_WORDS = NUM_INPUT_WORDS * RX_WORDS_PER_TX;
+
+    reg [31:0] tx_words [0:NUM_INPUT_WORDS - 1];
+    integer    tx_count;
+    integer    intrlv_count;
+    integer    rx_count;
+    integer    error_count;
+
+    function automatic [15:0] llr16_from_bit(input bit bit_value);
+        begin
+            llr16_from_bit = bit_value ? 16'h7FFF : 16'h8001;
+        end
+    endfunction
+
+    function automatic [31:0] expected_rx_word(input [31:0] source_word, input integer pair_idx);
+        begin
+            expected_rx_word = {
+                llr16_from_bit(source_word[pair_idx * 2 + 1]),
+                llr16_from_bit(source_word[pair_idx * 2])
+            };
+        end
+    endfunction
 
 
     // Instantiate DUT top
@@ -135,14 +159,6 @@ module top_loop_back_tb;
         .mod_frame_tdata  (mod_frame_tdata),
         .mod_frame_tkeep  (mod_frame_tkeep),
         .mod_frame_tlast  (mod_frame_tlast),
-
-        // // Interleaver output
-        // .frame_intrlvd_tvalid (frame_intrlvd_tvalid),
-        // .frame_intrlvd_tready (frame_intrlvd_tready),
-        // .frame_intrlvd_tuser  (frame_intrlvd_tuser),
-        // .frame_intrlvd_tdata  (frame_intrlvd_tdata),
-        // .frame_intrlvd_tkeep  (frame_intrlvd_tkeep),
-        // .frame_intrlvd_tlast  (frame_intrlvd_tlast),
 
         // // DEMOD input stream
         // .demod_frame_tvalid (demod_frame_tvalid),
@@ -203,6 +219,13 @@ module top_loop_back_tb;
         .M_AXI_RVALID  (M_AXI_RVALID),
         .M_AXI_RREADY  (M_AXI_RREADY)
     );
+
+    // assign frame_intrlvd_tready = dut.w_frame_intrlvd_tready;
+    // assign frame_intrlvd_tvalid = dut.w_frame_intrlvd_tvalid;
+    // assign frame_intrlvd_tuser  = dut.w_frame_intrlvd_tuser;
+    // assign frame_intrlvd_tdata  = dut.w_frame_intrlvd_tdata;
+    // assign frame_intrlvd_tkeep  = dut.w_frame_intrlvd_tkeep;
+    // assign frame_intrlvd_tlast  = dut.w_frame_intrlvd_tlast;
 
 
     // Instantiate DDR4 Interface
@@ -329,6 +352,11 @@ module top_loop_back_tb;
     reg test_done;
 
     initial begin
+        test_done = 1'b0;
+        tx_count = 0;
+        intrlv_count = 0;
+        rx_count = 0;
+        error_count = 0;
 
         mod_frame_tvalid = 0;
         mod_frame_tuser  = 16'h0000;
@@ -337,7 +365,6 @@ module top_loop_back_tb;
         mod_frame_tlast  = 0;
 
         frame_deintrlvd_tready = 1'b1;
-        frame_intrlvd_tready   = 1'b1;
 
         demod_frame_tvalid = 0;
         demod_frame_tuser  = 0;
@@ -348,6 +375,16 @@ module top_loop_back_tb;
         fork
             test_axi_stream();
         join
+
+        wait(test_done === 1'b1);
+        repeat (10) @(posedge axis_clk);
+
+        if (error_count == 0 && rx_count == EXPECTED_RX_WORDS) begin
+            $display("PASS: loopback produced %0d checked RX words with no mismatches.", rx_count);
+        end else begin
+            $display("FAIL: rx_count=%0d expected=%0d error_count=%0d", rx_count, EXPECTED_RX_WORDS, error_count);
+        end
+        $finish;
     end
 
     task test_axi_stream;
@@ -372,10 +409,11 @@ module top_loop_back_tb;
 
             // Send 10-word packet with counter
             mod_frame_tvalid = 1'b1;
-            for (i = 0; i < 156250; i = i + 1) begin
-                mod_frame_tdata = 32'h00000000 + i;
+            for (i = 0; i < NUM_INPUT_WORDS; i = i + 1) begin
+                tx_words[i] = 32'h00000000 + i;
+                mod_frame_tdata = tx_words[i];
                 mod_frame_tuser = 16'hABCD;
-                if (i == 156249) begin
+                if (i == NUM_INPUT_WORDS - 1) begin
                     mod_frame_tlast = 1'b1;
                 end else begin
                     mod_frame_tlast = 1'b0;
@@ -386,6 +424,7 @@ module top_loop_back_tb;
             end
 
             mod_frame_tvalid = 1'b0;
+            mod_frame_tlast = 1'b0;
 
         end
     endtask
@@ -393,13 +432,18 @@ module top_loop_back_tb;
 
 
     integer outfile;
+    integer intrlv_outfile;
 
     // Open the file at the start of simulation
     initial begin
         outfile = $fopen("misc/demod_deintrlv_output.txt", "w");
         if (outfile == 0) begin
             $display("ERROR: Could not open file for writing!");
-            //        $finish;
+        end
+
+        intrlv_outfile = $fopen("misc/interleaver_output.txt", "w");
+        if (intrlv_outfile == 0) begin
+            $display("ERROR: Could not open interleaver output file for writing!");
         end
     end
 
@@ -411,14 +455,40 @@ module top_loop_back_tb;
             // nothing
         end else begin
             if (frame_deintrlvd_tvalid && frame_deintrlvd_tready) begin
-                // Log exactly one transfer
+                integer rx_word_idx;
+                reg [31:0] expected_word;
+
+                rx_word_idx = rx_count;
+                expected_word = expected_rx_word(tx_words[rx_word_idx / RX_WORDS_PER_TX], rx_word_idx % RX_WORDS_PER_TX);
                 $fdisplay(outfile, "%h", frame_deintrlvd_tdata);
                 $fflush(outfile);
+                $display("RX[%0d]: %h", rx_word_idx, frame_deintrlvd_tdata);
+
+                if (frame_deintrlvd_tdata !== expected_word) begin
+                    error_count = error_count + 1;
+                    $display("RX mismatch at word %0d: got=%h expected=%h",
+                        rx_word_idx,
+                        frame_deintrlvd_tdata,
+                        expected_word);
+                end
+
+                if ((rx_word_idx == EXPECTED_RX_WORDS - 1) && !frame_deintrlvd_tlast) begin
+                    error_count = error_count + 1;
+                    $display("RX mismatch: final word arrived without TLAST.");
+                end
+
+                if ((rx_word_idx != EXPECTED_RX_WORDS - 1) && frame_deintrlvd_tlast) begin
+                    error_count = error_count + 1;
+                    $display("RX mismatch: unexpected TLAST at word %0d.", rx_word_idx);
+                end
+
+                rx_count = rx_count + 1;
 
                 if (frame_deintrlvd_tlast) begin
                     $display("Packet complete at time %0t ns, last word received: 0x%h",
                         $time, frame_deintrlvd_tdata);
                     $fclose(outfile);
+                    $fclose(intrlv_outfile);
                     test_done <= 1'b1;
                 end
             end
@@ -426,15 +496,19 @@ module top_loop_back_tb;
     end
 
     always @(posedge axis_clk) begin
-    if(mod_frame_tvalid && mod_frame_tready)
-        $display("TX: %h", mod_frame_tdata);
-end
+        if (mod_frame_tvalid && mod_frame_tready) begin
+            tx_count = tx_count + 1;
+            $display("TX[%0d]: %h", tx_count - 1, mod_frame_tdata);
+        end
+    end
 
     always @(posedge axis_clk) begin
-    if(frame_deintrlvd_tvalid && frame_deintrlvd_tready)
-        $display("RX: %h", frame_deintrlvd_tdata);
-        
+        if (frame_intrlvd_tvalid && frame_intrlvd_tready) begin
+            intrlv_count = intrlv_count + 1;
+            $fdisplay(intrlv_outfile, "%h %h %b", frame_intrlvd_tdata, frame_intrlvd_tkeep, frame_intrlvd_tlast);
+            $fflush(intrlv_outfile);
+            $display("INT[%0d]: data=%h keep=%h last=%b", intrlv_count - 1, frame_intrlvd_tdata, frame_intrlvd_tkeep, frame_intrlvd_tlast);
+        end
     end
-    
 
 endmodule

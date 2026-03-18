@@ -267,7 +267,7 @@ begin
     -- Drive ready signals based on FIFO full status.
     S00_AXI_AWREADY <= w_s0_awready_i;
     S01_AXI_AWREADY <= w_s1_awready_i;
-    S01_AXI_ARREADY <= w_s0_arready_i;
+    S00_AXI_ARREADY <= w_s0_arready_i;
     S01_AXI_ARREADY <= w_s1_arready_i;
 
     process(S00_AXI_ACLK, S00_AXI_ARESETN)
