@@ -188,9 +188,14 @@ begin
                     end if;
 
                 when send_aw =>
-                    r_avmm_s_busy       <= '1';
-                    r_axi_m_axi_awaddr  <= r_avmm_s_address;
-                    r_axi_m_axi_awvalid <= '1';
+                    r_avmm_s_busy      <= '1';
+                    r_axi_m_axi_awaddr <= r_avmm_s_address;
+
+                    if r_axi_m_axi_awvalid = '0' then
+                        r_axi_m_axi_awvalid <= '1';
+                    elsif w_axi_m_axi_awready = '1' then
+                        r_axi_m_axi_awvalid <= '0';
+                    end if;
 
                 when send_w =>
                     r_avmm_s_busy      <= '1';
@@ -199,7 +204,7 @@ begin
                     -- Advance beat index only on real W handshake.
                     if r_axi_m_axi_wvalid = '1' and w_axi_m_axi_wready = '1' then
                         if r_beat_cnt /= "111" then
-                            r_beat_cnt   <= r_beat_cnt + 1;
+                            r_beat_cnt        <= r_beat_cnt + 1;
                             r_axi_m_axi_wdata <= buf_burst(to_integer(r_beat_cnt + 1));
                             if r_beat_cnt = "110" then
                                 r_axi_m_axi_wlast <= '1';
