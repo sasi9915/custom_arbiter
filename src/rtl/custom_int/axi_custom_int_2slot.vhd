@@ -11,122 +11,119 @@ entity axi_custom_int_2slot is
         G_CMD_FIFO_DEPTH : positive := 16
     );
     port(
-        aclk       : in  std_logic;
-        aresetn    : in  std_logic;
-        -- Slot 0 (slave-side AXI input)
-        s0_awid    : in  std_logic_vector(G_S_ID_WIDTH - 1 downto 0);
-        s0_awaddr  : in  std_logic_vector(G_ADDR_WIDTH - 1 downto 0);
-        s0_awlen   : in  std_logic_vector(7 downto 0);
-        s0_awsize  : in  std_logic_vector(2 downto 0);
-        s0_awburst : in  std_logic_vector(1 downto 0);
-        s0_awlock  : in  std_logic;
-        s0_awcache : in  std_logic_vector(3 downto 0);
-        s0_awprot  : in  std_logic_vector(2 downto 0);
-        s0_awqos   : in  std_logic_vector(3 downto 0);
-        s0_awvalid : in  std_logic;
-        s0_awready : out std_logic;
-        s0_wdata   : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);
-        s0_wstrb   : in  std_logic_vector(G_DATA_WIDTH / 8 - 1 downto 0);
-        s0_wlast   : in  std_logic;
-        s0_wvalid  : in  std_logic;
-        s0_wready  : out std_logic;
-        s0_bid     : out std_logic_vector(G_S_ID_WIDTH - 1 downto 0);
-        s0_bresp   : out std_logic_vector(1 downto 0);
-        s0_bvalid  : out std_logic;
-        s0_bready  : in  std_logic;
-        s0_arid    : in  std_logic_vector(G_S_ID_WIDTH - 1 downto 0);
-        s0_araddr  : in  std_logic_vector(G_ADDR_WIDTH - 1 downto 0);
-        s0_arlen   : in  std_logic_vector(7 downto 0);
-        s0_arsize  : in  std_logic_vector(2 downto 0);
-        s0_arburst : in  std_logic_vector(1 downto 0);
-        s0_arlock  : in  std_logic;
-        s0_arcache : in  std_logic_vector(3 downto 0);
-        s0_arprot  : in  std_logic_vector(2 downto 0);
-        s0_arqos   : in  std_logic_vector(3 downto 0);
-        s0_arvalid : in  std_logic;
-        s0_arready : out std_logic;
-        s0_rid     : out std_logic_vector(G_S_ID_WIDTH - 1 downto 0);
-        s0_rdata   : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);
-        s0_rresp   : out std_logic_vector(1 downto 0);
-        s0_rlast   : out std_logic;
-        s0_rvalid  : out std_logic;
-        s0_rready  : in  std_logic;
-        -- Slot 1 (slave-side AXI input)
-        s1_awid    : in  std_logic_vector(G_S_ID_WIDTH - 1 downto 0);
-        s1_awaddr  : in  std_logic_vector(G_ADDR_WIDTH - 1 downto 0);
-        s1_awlen   : in  std_logic_vector(7 downto 0);
-        s1_awsize  : in  std_logic_vector(2 downto 0);
-        s1_awburst : in  std_logic_vector(1 downto 0);
-        s1_awlock  : in  std_logic;
-        s1_awcache : in  std_logic_vector(3 downto 0);
-        s1_awprot  : in  std_logic_vector(2 downto 0);
-        s1_awqos   : in  std_logic_vector(3 downto 0);
-        s1_awvalid : in  std_logic;
-        s1_awready : out std_logic;
-        s1_wdata   : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);
-        s1_wstrb   : in  std_logic_vector(G_DATA_WIDTH / 8 - 1 downto 0);
-        s1_wlast   : in  std_logic;
-        s1_wvalid  : in  std_logic;
-        s1_wready  : out std_logic;
-        s1_bid     : out std_logic_vector(G_S_ID_WIDTH - 1 downto 0);
-        s1_bresp   : out std_logic_vector(1 downto 0);
-        s1_bvalid  : out std_logic;
-        s1_bready  : in  std_logic;
-        s1_arid    : in  std_logic_vector(G_S_ID_WIDTH - 1 downto 0);
-        s1_araddr  : in  std_logic_vector(G_ADDR_WIDTH - 1 downto 0);
-        s1_arlen   : in  std_logic_vector(7 downto 0);
-        s1_arsize  : in  std_logic_vector(2 downto 0);
-        s1_arburst : in  std_logic_vector(1 downto 0);
-        s1_arlock  : in  std_logic;
-        s1_arcache : in  std_logic_vector(3 downto 0);
-        s1_arprot  : in  std_logic_vector(2 downto 0);
-        s1_arqos   : in  std_logic_vector(3 downto 0);
-        s1_arvalid : in  std_logic;
-        s1_arready : out std_logic;
-        s1_rid     : out std_logic_vector(G_S_ID_WIDTH - 1 downto 0);
-        s1_rdata   : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);
-        s1_rresp   : out std_logic_vector(1 downto 0);
-        s1_rlast   : out std_logic;
-        s1_rvalid  : out std_logic;
-        s1_rready  : in  std_logic;
-        -- DDR-side AXI master output
-        m_awid     : out std_logic_vector(G_M_ID_WIDTH - 1 downto 0);
-        m_awaddr   : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0);
-        m_awlen    : out std_logic_vector(7 downto 0);
-        m_awsize   : out std_logic_vector(2 downto 0);
-        m_awburst  : out std_logic_vector(1 downto 0);
-        m_awlock   : out std_logic;
-        m_awcache  : out std_logic_vector(3 downto 0);
-        m_awprot   : out std_logic_vector(2 downto 0);
-        m_awqos    : out std_logic_vector(3 downto 0);
-        m_awvalid  : out std_logic;
-        m_awready  : in  std_logic;
-        m_wdata    : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);
-        m_wstrb    : out std_logic_vector(G_DATA_WIDTH / 8 - 1 downto 0);
-        m_wlast    : out std_logic;
-        m_wvalid   : out std_logic;
-        m_wready   : in  std_logic;
-        m_bid      : in  std_logic_vector(G_M_ID_WIDTH - 1 downto 0);
-        m_bresp    : in  std_logic_vector(1 downto 0);
-        m_bvalid   : in  std_logic;
-        m_bready   : out std_logic;
-        m_arid     : out std_logic_vector(G_M_ID_WIDTH - 1 downto 0);
-        m_araddr   : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0);
-        m_arlen    : out std_logic_vector(7 downto 0);
-        m_arsize   : out std_logic_vector(2 downto 0);
-        m_arburst  : out std_logic_vector(1 downto 0);
-        m_arlock   : out std_logic;
-        m_arcache  : out std_logic_vector(3 downto 0);
-        m_arprot   : out std_logic_vector(2 downto 0);
-        m_arqos    : out std_logic_vector(3 downto 0);
-        m_arvalid  : out std_logic;
-        m_arready  : in  std_logic;
-        m_rid      : in  std_logic_vector(G_M_ID_WIDTH - 1 downto 0);
-        m_rdata    : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);
-        m_rresp    : in  std_logic_vector(1 downto 0);
-        m_rlast    : in  std_logic;
-        m_rvalid   : in  std_logic;
-        m_rready   : out std_logic
+        S00_AXI_ACLK    : in  std_logic;
+        S00_AXI_ARESETN : in  std_logic;
+        S00_AXI_AWID    : in  std_logic_vector(G_S_ID_WIDTH - 1 downto 0);
+        S00_AXI_AWADDR  : in  std_logic_vector(G_ADDR_WIDTH - 1 downto 0);
+        S00_AXI_AWLEN   : in  std_logic_vector(7 downto 0);
+        S00_AXI_AWSIZE  : in  std_logic_vector(2 downto 0);
+        S00_AXI_AWBURST : in  std_logic_vector(1 downto 0);
+        S00_AXI_AWLOCK  : in  std_logic;
+        S00_AXI_AWCACHE : in  std_logic_vector(3 downto 0);
+        S00_AXI_AWPROT  : in  std_logic_vector(2 downto 0);
+        S00_AXI_AWQOS   : in  std_logic_vector(3 downto 0);
+        S00_AXI_AWVALID : in  std_logic;
+        S00_AXI_AWREADY : out std_logic;
+        S00_AXI_WDATA   : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);
+        S00_AXI_WSTRB   : in  std_logic_vector(G_DATA_WIDTH / 8 - 1 downto 0);
+        S00_AXI_WLAST   : in  std_logic;
+        S00_AXI_WVALID  : in  std_logic;
+        S00_AXI_WREADY  : out std_logic;
+        S00_AXI_BID     : out std_logic_vector(G_S_ID_WIDTH - 1 downto 0);
+        S00_AXI_BRESP   : out std_logic_vector(1 downto 0);
+        S00_AXI_BVALID  : out std_logic;
+        S00_AXI_BREADY  : in  std_logic;
+        S00_AXI_ARID    : in  std_logic_vector(G_S_ID_WIDTH - 1 downto 0);
+        S00_AXI_ARADDR  : in  std_logic_vector(G_ADDR_WIDTH - 1 downto 0);
+        S00_AXI_ARLEN   : in  std_logic_vector(7 downto 0);
+        S00_AXI_ARSIZE  : in  std_logic_vector(2 downto 0);
+        S00_AXI_ARBURST : in  std_logic_vector(1 downto 0);
+        S00_AXI_ARLOCK  : in  std_logic;
+        S00_AXI_ARCACHE : in  std_logic_vector(3 downto 0);
+        S00_AXI_ARPROT  : in  std_logic_vector(2 downto 0);
+        S00_AXI_ARQOS   : in  std_logic_vector(3 downto 0);
+        S00_AXI_ARVALID : in  std_logic;
+        S00_AXI_ARREADY : out std_logic;
+        S00_AXI_RID     : out std_logic_vector(G_S_ID_WIDTH - 1 downto 0);
+        S00_AXI_RDATA   : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);
+        S00_AXI_RRESP   : out std_logic_vector(1 downto 0);
+        S00_AXI_RLAST   : out std_logic;
+        S00_AXI_RVALID  : out std_logic;
+        S00_AXI_RREADY  : in  std_logic;
+        S01_AXI_AWID    : in  std_logic_vector(G_S_ID_WIDTH - 1 downto 0);
+        S01_AXI_AWADDR  : in  std_logic_vector(G_ADDR_WIDTH - 1 downto 0);
+        S01_AXI_AWLEN   : in  std_logic_vector(7 downto 0);
+        S01_AXI_AWSIZE  : in  std_logic_vector(2 downto 0);
+        S01_AXI_AWBURST : in  std_logic_vector(1 downto 0);
+        S01_AXI_AWLOCK  : in  std_logic;
+        S01_AXI_AWCACHE : in  std_logic_vector(3 downto 0);
+        S01_AXI_AWPROT  : in  std_logic_vector(2 downto 0);
+        S01_AXI_AWQOS   : in  std_logic_vector(3 downto 0);
+        S01_AXI_AWVALID : in  std_logic;
+        S01_AXI_AWREADY : out std_logic;
+        S01_AXI_WDATA   : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);
+        S01_AXI_WSTRB   : in  std_logic_vector(G_DATA_WIDTH / 8 - 1 downto 0);
+        S01_AXI_WLAST   : in  std_logic;
+        S01_AXI_WVALID  : in  std_logic;
+        S01_AXI_WREADY  : out std_logic;
+        S01_AXI_BID     : out std_logic_vector(G_S_ID_WIDTH - 1 downto 0);
+        S01_AXI_BRESP   : out std_logic_vector(1 downto 0);
+        S01_AXI_BVALID  : out std_logic;
+        S01_AXI_BREADY  : in  std_logic;
+        S01_AXI_ARID    : in  std_logic_vector(G_S_ID_WIDTH - 1 downto 0);
+        S01_AXI_ARADDR  : in  std_logic_vector(G_ADDR_WIDTH - 1 downto 0);
+        S01_AXI_ARLEN   : in  std_logic_vector(7 downto 0);
+        S01_AXI_ARSIZE  : in  std_logic_vector(2 downto 0);
+        S01_AXI_ARBURST : in  std_logic_vector(1 downto 0);
+        S01_AXI_ARLOCK  : in  std_logic;
+        S01_AXI_ARCACHE : in  std_logic_vector(3 downto 0);
+        S01_AXI_ARPROT  : in  std_logic_vector(2 downto 0);
+        S01_AXI_ARQOS   : in  std_logic_vector(3 downto 0);
+        S01_AXI_ARVALID : in  std_logic;
+        S01_AXI_ARREADY : out std_logic;
+        S01_AXI_RID     : out std_logic_vector(G_S_ID_WIDTH - 1 downto 0);
+        S01_AXI_RDATA   : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);
+        S01_AXI_RRESP   : out std_logic_vector(1 downto 0);
+        S01_AXI_RLAST   : out std_logic;
+        S01_AXI_RVALID  : out std_logic;
+        S01_AXI_RREADY  : in  std_logic;
+        M_AXI_AWID      : out std_logic_vector(G_M_ID_WIDTH - 1 downto 0);
+        M_AXI_AWADDR    : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0);
+        M_AXI_AWLEN     : out std_logic_vector(7 downto 0);
+        M_AXI_AWSIZE    : out std_logic_vector(2 downto 0);
+        M_AXI_AWBURST   : out std_logic_vector(1 downto 0);
+        M_AXI_AWLOCK    : out std_logic;
+        M_AXI_AWCACHE   : out std_logic_vector(3 downto 0);
+        M_AXI_AWPROT    : out std_logic_vector(2 downto 0);
+        M_AXI_AWQOS     : out std_logic_vector(3 downto 0);
+        M_AXI_AWVALID   : out std_logic;
+        M_AXI_AWREADY   : in  std_logic;
+        M_AXI_WDATA     : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);
+        M_AXI_WSTRB     : out std_logic_vector(G_DATA_WIDTH / 8 - 1 downto 0);
+        M_AXI_WLAST     : out std_logic;
+        M_AXI_WVALID    : out std_logic;
+        M_AXI_WREADY    : in  std_logic;
+        M_AXI_BID       : in  std_logic_vector(G_M_ID_WIDTH - 1 downto 0);
+        M_AXI_BRESP     : in  std_logic_vector(1 downto 0);
+        M_AXI_BVALID    : in  std_logic;
+        M_AXI_BREADY    : out std_logic;
+        M_AXI_ARID      : out std_logic_vector(G_M_ID_WIDTH - 1 downto 0);
+        M_AXI_ARADDR    : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0);
+        M_AXI_ARLEN     : out std_logic_vector(7 downto 0);
+        M_AXI_ARSIZE    : out std_logic_vector(2 downto 0);
+        M_AXI_ARBURST   : out std_logic_vector(1 downto 0);
+        M_AXI_ARLOCK    : out std_logic;
+        M_AXI_ARCACHE   : out std_logic_vector(3 downto 0);
+        M_AXI_ARPROT    : out std_logic_vector(2 downto 0);
+        M_AXI_ARQOS     : out std_logic_vector(3 downto 0);
+        M_AXI_ARVALID   : out std_logic;
+        M_AXI_ARREADY   : in  std_logic;
+        M_AXI_RID       : in  std_logic_vector(G_M_ID_WIDTH - 1 downto 0);
+        M_AXI_RDATA     : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);
+        M_AXI_RRESP     : in  std_logic_vector(1 downto 0);
+        M_AXI_RLAST     : in  std_logic;
+        M_AXI_RVALID    : in  std_logic;
+        M_AXI_RREADY    : out std_logic
     );
 end entity axi_custom_int_2slot;
 
@@ -248,10 +245,12 @@ begin
     severity failure;
 
     -- Pack incoming AW/AR metadata (ID + attributes) before enqueue.
-    w_aw0_fifo_din <= s0_awid & s0_awaddr & s0_awlen & s0_awsize & s0_awburst & s0_awlock & s0_awcache & s0_awprot & s0_awqos;
-    w_aw1_fifo_din <= s1_awid & s1_awaddr & s1_awlen & s1_awsize & s1_awburst & s1_awlock & s1_awcache & s1_awprot & s1_awqos;
-    w_ar0_fifo_din <= s0_arid & s0_araddr & s0_arlen & s0_arsize & s0_arburst & s0_arlock & s0_arcache & s0_arprot & s0_arqos;
-    w_ar1_fifo_din <= s1_arid & s1_araddr & s1_arlen & s1_arsize & s1_arburst & s1_arlock & s1_arcache & s1_arprot & s1_arqos;
+    w_aw0_fifo_din <= S00_AXI_AWID & S00_AXI_AWADDR & S00_AXI_AWLEN & S00_AXI_AWSIZE & S00_AXI_AWBURST & S00_AXI_AWLOCK & S00_AXI_AWCACHE & S00_AXI_AWPROT & S00_AXI_AWQOS;
+    w_aw1_fifo_din <= S01_AXI_AWID & S01_AXI_AWADDR & S01_AXI_AWLEN & S01_AXI_AWSIZE & S01_AXI_AWBURST & S01_AXI_AWLOCK & S01_AXI_AWCACHE & S01_AXI_AWPROT & S01_AXI_AWQOS;
+    w_ar0_fifo_din <= S00_AXI_ARID & S00_AXI_ARADDR & S00_AXI_ARLEN & S00_AXI_ARSIZE & S00_AXI_ARBURST & S00_AXI_ARLOCK & S00_AXI_ARCACHE & S00_AXI_ARPROT & S00_AXI_ARQOS;
+    w_ar1_fifo_din <= S01_AXI_ARID & S01_AXI_ARADDR & S01_AXI_ARLEN & S01_AXI_ARSIZE & S01_AXI_ARBURST & S01_AXI_ARLOCK & S01_AXI_ARCACHE & S01_AXI_ARPROT & S01_AXI_ARQOS;
+
+    -- Instantiate AW FIFOs for each slot.
 
     -- Backpressure slave AW/AR ready when respective FIFO is not full.
     w_s0_awready_i <= not w_aw0_fifo_full;
@@ -260,20 +259,20 @@ begin
     w_s1_arready_i <= not w_ar1_fifo_full;
 
     -- Enqueue AW/AR commands when valid and accepted by ready handshake.
-    w_aw0_fifo_wrreq <= s0_awvalid and w_s0_awready_i;
-    w_aw1_fifo_wrreq <= s1_awvalid and w_s1_awready_i;
-    w_ar0_fifo_wrreq <= s0_arvalid and w_s0_arready_i;
-    w_ar1_fifo_wrreq <= s1_arvalid and w_s1_arready_i;
+    w_aw0_fifo_wrreq <= S00_AXI_AWVALID and w_s0_awready_i;
+    w_aw1_fifo_wrreq <= S01_AXI_AWVALID and w_s1_awready_i;
+    w_ar0_fifo_wrreq <= S00_AXI_ARVALID and w_s0_arready_i;
+    w_ar1_fifo_wrreq <= S01_AXI_ARVALID and w_s1_arready_i;
 
     -- Drive ready signals based on FIFO full status.
-    s0_awready <= w_s0_awready_i;
-    s1_awready <= w_s1_awready_i;
-    s0_arready <= w_s0_arready_i;
-    s1_arready <= w_s1_arready_i;
+    S00_AXI_AWREADY <= w_s0_awready_i;
+    S01_AXI_AWREADY <= w_s1_awready_i;
+    S01_AXI_ARREADY <= w_s0_arready_i;
+    S01_AXI_ARREADY <= w_s1_arready_i;
 
-    process(aclk, aresetn)
+    process(S00_AXI_ACLK, S00_AXI_ARESETN)
     begin
-        if aresetn = '0' then
+        if S00_AXI_ARESETN = '0' then
             r_wr_state       <= WR_IDLE;
             r_rd_state       <= RD_IDLE;
             r_wr_rr_sel      <= '0';
@@ -286,7 +285,7 @@ begin
             r_aw1_fifo_rdreq <= '0';
             r_ar0_fifo_rdreq <= '0';
             r_ar1_fifo_rdreq <= '0';
-        elsif rising_edge(aclk) then
+        elsif rising_edge(S00_AXI_ACLK) then
             r_aw0_fifo_rdreq <= '0';
             r_aw1_fifo_rdreq <= '0';
             r_ar0_fifo_rdreq <= '0';
@@ -318,24 +317,24 @@ begin
                     end if;
 
                 when WR_SEND_AW =>
-                    if m_awready = '1' then
+                    if M_AXI_AWREADY = '1' then
                         r_wr_rr_sel <= not r_wr_slot_sel; --* chnage the grant access for next round after address accepted
                         r_wr_state  <= WR_SEND_W;
                     end if;
 
                 when WR_SEND_W =>
                     if r_wr_slot_sel = '0' then
-                        if (s0_wvalid = '1') and (m_wready = '1') and (s0_wlast = '1') then
+                        if (S00_AXI_WVALID = '1') and (M_AXI_WREADY = '1') and (S00_AXI_WLAST = '1') then
                             r_wr_state <= WR_WAIT_B;
                         end if;
                     else
-                        if (s1_wvalid = '1') and (m_wready = '1') and (s1_wlast = '1') then
+                        if (S01_AXI_WVALID = '1') and (M_AXI_WREADY = '1') and (S01_AXI_WLAST = '1') then
                             r_wr_state <= WR_WAIT_B;
                         end if;
                     end if;
 
                 when WR_WAIT_B =>
-                    if (m_bvalid = '1') and (w_bready_sel = '1') then
+                    if (M_AXI_BVALID = '1') and (w_bready_sel = '1') then
                         r_wr_state <= WR_IDLE;
                     end if;
             end case;
@@ -366,7 +365,7 @@ begin
                     end if;
 
                 when RD_SEND_AR =>
-                    if m_arready = '1' then
+                    if M_AXI_ARREADY = '1' then
                         r_rd_rr_sel <= not r_rd_slot_sel; -- * change the grant access for next round after address accepted
                         -- Return to IDLE after each accepted AR command. The next command
                         -- is fetched from FIFO in RD_IDLE to avoid re-latching stale FIFO q.
@@ -379,22 +378,22 @@ begin
     -- Write address channel (AW): send selected queued command with remapped ID.
     process(r_wr_state, r_wr_slot_sel, r_wr_cmd_reg)
     begin
-        m_awvalid                         <= '0';
+        M_AXI_AWVALID                         <= '0';
         -- ID remap format for 2 slots:
         --   M_ID[MSB] = slot index bit
         --   M_ID[LSB +: G_S_ID_WIDTH] = original slave ID
         --   Middle bits (if any) = 0
-        m_awid                            <= (others => '0');
-        m_awid(G_M_ID_WIDTH - 1)          <= r_wr_slot_sel;
-        m_awid(G_S_ID_WIDTH - 1 downto 0) <= r_wr_cmd_reg(C_ID_MSB downto C_ID_LSB);
-        m_awaddr                          <= r_wr_cmd_reg(C_ADDR_MSB downto C_ADDR_LSB);
-        m_awlen                           <= r_wr_cmd_reg(C_LEN_MSB downto C_LEN_LSB);
-        m_awsize                          <= r_wr_cmd_reg(C_SIZE_MSB downto C_SIZE_LSB);
-        m_awburst                         <= r_wr_cmd_reg(C_BURST_MSB downto C_BURST_LSB);
-        m_awlock                          <= r_wr_cmd_reg(C_LOCK_LSB);
-        m_awcache                         <= r_wr_cmd_reg(C_CACHE_MSB downto C_CACHE_LSB);
-        m_awprot                          <= r_wr_cmd_reg(C_PROT_MSB downto C_PROT_LSB);
-        m_awqos                           <= r_wr_cmd_reg(C_QOS_MSB downto C_QOS_LSB);
+        M_AXI_AWID                            <= (others => '0');
+        M_AXI_AWID(G_M_ID_WIDTH - 1)          <= r_wr_slot_sel;
+        M_AXI_AWID(G_S_ID_WIDTH - 1 downto 0) <= r_wr_cmd_reg(C_ID_MSB downto C_ID_LSB);
+        M_AXI_AWADDR                          <= r_wr_cmd_reg(C_ADDR_MSB downto C_ADDR_LSB);
+        M_AXI_AWLEN                           <= r_wr_cmd_reg(C_LEN_MSB downto C_LEN_LSB);
+        M_AXI_AWSIZE                          <= r_wr_cmd_reg(C_SIZE_MSB downto C_SIZE_LSB);
+        M_AXI_AWBURST                         <= r_wr_cmd_reg(C_BURST_MSB downto C_BURST_LSB);
+        M_AXI_AWLOCK                          <= r_wr_cmd_reg(C_LOCK_LSB);
+        M_AXI_AWCACHE                         <= r_wr_cmd_reg(C_CACHE_MSB downto C_CACHE_LSB);
+        M_AXI_AWPROT                          <= r_wr_cmd_reg(C_PROT_MSB downto C_PROT_LSB);
+        M_AXI_AWQOS                           <= r_wr_cmd_reg(C_QOS_MSB downto C_QOS_LSB);
 
         -- Note: AWVALID is held until address handshake completes, 
         -- but the command register is only guaranteed to hold the valid command until the next state transition. 
@@ -402,71 +401,72 @@ begin
         -- which guarantees the command has been accepted by the slave and won't be changed by the master.
 
         if r_wr_state = WR_SEND_AW then
-            m_awvalid <= '1';
+            M_AXI_AWVALID <= '1';
         end if;
     end process;
 
     -- * Write data channel (W): lock to granted slot until WLAST.
-    process(r_wr_state, r_wr_slot_sel, s0_wvalid, s1_wvalid, s0_wdata, s1_wdata, s0_wstrb, s1_wstrb, s0_wlast, s1_wlast, m_wready)
+    process(r_wr_state, r_wr_slot_sel, S00_AXI_WVALID, S01_AXI_WVALID, S00_AXI_WDATA, S01_AXI_WDATA, S00_AXI_WSTRB, S01_AXI_WSTRB, S00_AXI_WLAST, S01_AXI_WLAST, M_AXI_WREADY)
     begin
-        m_wvalid  <= '0';
-        m_wdata   <= (others => '0');
-        m_wstrb   <= (others => '0');
-        m_wlast   <= '0';
-        s0_wready <= '0';
-        s1_wready <= '0';
+        M_AXI_WVALID   <= '0';
+        M_AXI_WDATA    <= (others => '0');
+        M_AXI_WSTRB    <= (others => '0');
+        M_AXI_WLAST    <= '0';
+        S00_AXI_WREADY <= '0';
+        S01_AXI_WREADY <= '0';
 
         if r_wr_state = WR_SEND_W then
             if r_wr_slot_sel = '0' then
-                m_wvalid  <= s0_wvalid;
-                m_wdata   <= s0_wdata;
-                m_wstrb   <= s0_wstrb;
-                m_wlast   <= s0_wlast;
-                s0_wready <= m_wready;
+                M_AXI_WVALID   <= S00_AXI_WVALID;
+                M_AXI_WDATA    <= S00_AXI_WDATA;
+                M_AXI_WSTRB    <= S00_AXI_WSTRB;
+                M_AXI_WLAST    <= S00_AXI_WLAST;
+                S00_AXI_WREADY <= M_AXI_WREADY;
             else
-                m_wvalid  <= s1_wvalid;
-                m_wdata   <= s1_wdata;
-                m_wstrb   <= s1_wstrb;
-                m_wlast   <= s1_wlast;
-                s1_wready <= m_wready;
+                M_AXI_WVALID   <= S01_AXI_WVALID;
+                M_AXI_WDATA    <= S01_AXI_WDATA;
+                M_AXI_WSTRB    <= S01_AXI_WSTRB;
+                M_AXI_WLAST    <= S01_AXI_WLAST;
+                S01_AXI_WREADY <= M_AXI_WREADY;
             end if;
         end if;
     end process;
 
     -- Write response channel (B): decode BID MSB to return slot.
-    w_bid_slot <= m_bid(G_M_ID_WIDTH - 1);
-    s0_bid     <= m_bid(G_S_ID_WIDTH - 1 downto 0);
-    s1_bid     <= m_bid(G_S_ID_WIDTH - 1 downto 0);
-    s0_bresp   <= m_bresp;
-    s1_bresp   <= m_bresp;
+
+    w_bid_slot    <= M_AXI_BID(G_M_ID_WIDTH - 1);
+    S00_AXI_BID   <= M_AXI_BID(G_S_ID_WIDTH - 1 downto 0);
+    S01_AXI_BID   <= M_AXI_BID(G_S_ID_WIDTH - 1 downto 0);
+    S00_AXI_BRESP <= M_AXI_BRESP;
+    S01_AXI_BRESP <= M_AXI_BRESP;
 
     -- Drive BREADY based on returned slot and master BVALID.
-    process(w_bid_slot, s0_bready, s1_bready)
+    process(w_bid_slot, S00_AXI_BREADY, S01_AXI_BREADY)
     begin
         w_bready_sel <= '0';
         if w_bid_slot = '0' then
-            w_bready_sel <= s0_bready;
+            w_bready_sel <= S00_AXI_BREADY;
         else
-            w_bready_sel <= s1_bready;
+            w_bready_sel <= S01_AXI_BREADY;
         end if;
     end process;
 
     -- Drive BVALID to the correct slot based on returned BID MSB.
-    process(w_bid_slot, m_bvalid, s0_bready, s1_bready, r_wr_state)
+    process(w_bid_slot, M_AXI_BVALID, S00_AXI_BREADY, S01_AXI_BREADY, r_wr_state)
     begin
-        s0_bvalid <= '0';
-        s1_bvalid <= '0';
-        m_bready  <= '0';
+        S00_AXI_BVALID <= '0';
+        S01_AXI_BVALID <= '0';
+        M_AXI_BREADY   <= '0';
 
         if w_bid_slot = '0' then
-            s0_bvalid <= m_bvalid;
+            S00_AXI_BVALID <= M_AXI_BVALID;
             if r_wr_state = WR_WAIT_B then
-                m_bready <= s0_bready;
+                M_AXI_BREADY <= S00_AXI_BREADY;
             end if;
         else
-            s1_bvalid <= m_bvalid;
+            S01_AXI_BVALID <= M_AXI_BVALID;
             if r_wr_state = WR_WAIT_B then
-                m_bready <= s1_bready;
+                M_AXI_BREADY <= S01_AXI_BREADY;
             end if;
         end if;
     end process;
@@ -474,76 +474,70 @@ begin
     -- Read address channel (AR): send selected queued command with remapped ID.
     process(r_rd_state, r_rd_slot_sel, r_rd_cmd_reg)
     begin
-        m_arvalid                         <= '0';
-        m_arid                            <= (others => '0');
-        m_arid(G_M_ID_WIDTH - 1)          <= r_rd_slot_sel;
-        m_arid(G_S_ID_WIDTH - 1 downto 0) <= r_rd_cmd_reg(C_ID_MSB downto C_ID_LSB);
-        m_araddr                          <= r_rd_cmd_reg(C_ADDR_MSB downto C_ADDR_LSB);
-        m_arlen                           <= r_rd_cmd_reg(C_LEN_MSB downto C_LEN_LSB);
-        m_arsize                          <= r_rd_cmd_reg(C_SIZE_MSB downto C_SIZE_LSB);
-        m_arburst                         <= r_rd_cmd_reg(C_BURST_MSB downto C_BURST_LSB);
-        m_arlock                          <= r_rd_cmd_reg(C_LOCK_LSB);
-        m_arcache                         <= r_rd_cmd_reg(C_CACHE_MSB downto C_CACHE_LSB);
-        m_arprot                          <= r_rd_cmd_reg(C_PROT_MSB downto C_PROT_LSB);
-        m_arqos                           <= r_rd_cmd_reg(C_QOS_MSB downto C_QOS_LSB);
+        M_AXI_ARVALID                         <= '0';
+        M_AXI_ARID                            <= (others => '0');
+        M_AXI_ARID(G_M_ID_WIDTH - 1)          <= r_rd_slot_sel;
+        M_AXI_ARID(G_S_ID_WIDTH - 1 downto 0) <= r_rd_cmd_reg(C_ID_MSB downto C_ID_LSB);
+        M_AXI_ARADDR                          <= r_rd_cmd_reg(C_ADDR_MSB downto C_ADDR_LSB);
+        M_AXI_ARLEN                           <= r_rd_cmd_reg(C_LEN_MSB downto C_LEN_LSB);
+        M_AXI_ARSIZE                          <= r_rd_cmd_reg(C_SIZE_MSB downto C_SIZE_LSB);
+        M_AXI_ARBURST                         <= r_rd_cmd_reg(C_BURST_MSB downto C_BURST_LSB);
+        M_AXI_ARLOCK                          <= r_rd_cmd_reg(C_LOCK_LSB);
+        M_AXI_ARCACHE                         <= r_rd_cmd_reg(C_CACHE_MSB downto C_CACHE_LSB);
+        M_AXI_ARPROT                          <= r_rd_cmd_reg(C_PROT_MSB downto C_PROT_LSB);
+        M_AXI_ARQOS                           <= r_rd_cmd_reg(C_QOS_MSB downto C_QOS_LSB);
 
         -- Similar to AWVALID, ARVALID is held until handshake, but command register is only guaranteed valid until
         -- next state transition.
         if r_rd_state = RD_SEND_AR then
-            m_arvalid <= '1';
+            M_AXI_ARVALID <= '1';
         end if;
     end process;
 
     -- * Read response channel (R): decode RID MSB to return slot.
-    w_rid_slot <= m_rid(G_M_ID_WIDTH - 1);
+    w_rid_slot <= M_AXI_RID(G_M_ID_WIDTH - 1);
 
-    -- Decode slot from RID MSB
-    w_rid_slot <= m_rid(G_M_ID_WIDTH - 1);
-
-    process(w_rid_slot, m_rvalid, m_rdata, m_rresp, m_rlast, m_rid, s0_rready, s1_rready)
+    process(w_rid_slot, M_AXI_RVALID, M_AXI_RDATA, M_AXI_RRESP, M_AXI_RLAST, M_AXI_RID, S00_AXI_RREADY, S01_AXI_RREADY, r_rd_state)
     begin
-        -- defaults
-        s0_rvalid <= '0';
-        s1_rvalid <= '0';
-
-        s0_rdata <= (others => '0');
-        s1_rdata <= (others => '0');
-
-        s0_rresp <= (others => '0');
-        s1_rresp <= (others => '0');
-
-        s0_rlast <= '0';
-        s1_rlast <= '0';
-
-        s0_rid <= (others => '0');
-        s1_rid <= (others => '0');
+        S00_AXI_RVALID <= '0';
+        S01_AXI_RVALID <= '0';
+        S00_AXI_RDATA  <= (others => '0');
+        S01_AXI_RDATA  <= (others => '0');
+        S00_AXI_RRESP  <= (others => '0');
+        S01_AXI_RRESP  <= (others => '0');
+        S00_AXI_RLAST  <= '0';
+        S01_AXI_RLAST  <= '0';
+        S00_AXI_RID    <= (others => '0');
+        S01_AXI_RID    <= (others => '0');
 
         -- default backpressure (only asserted when valid)
-        m_rready <= '0';
+        M_AXI_RREADY <= '0';
 
         if w_rid_slot = '0' then
             -- route to slot 0
-            s0_rvalid <= m_rvalid;
-            s0_rdata  <= m_rdata;
-            s0_rresp  <= m_rresp;
-            s0_rlast  <= m_rlast;
-            s0_rid    <= m_rid(G_S_ID_WIDTH - 1 downto 0);
 
-            if m_rvalid = '1' then
-                m_rready <= s0_rready;
+            S00_AXI_RVALID <= M_AXI_RVALID;
+            S00_AXI_RDATA  <= M_AXI_RDATA;
+            S00_AXI_RRESP  <= M_AXI_RRESP;
+            S00_AXI_RLAST  <= M_AXI_RLAST;
+            S00_AXI_RID    <= M_AXI_RID(G_S_ID_WIDTH - 1 downto 0);
+
+            if M_AXI_RVALID = '1' then
+                M_AXI_RREADY <= S00_AXI_RREADY;
             end if;
 
         else
             -- route to slot 1
-            s1_rvalid <= m_rvalid;
-            s1_rdata  <= m_rdata;
-            s1_rresp  <= m_rresp;
-            s1_rlast  <= m_rlast;
-            s1_rid    <= m_rid(G_S_ID_WIDTH - 1 downto 0);
+            S01_AXI_RVALID <= M_AXI_RVALID;
+            S01_AXI_RDATA  <= M_AXI_RDATA;
+            S01_AXI_RRESP  <= M_AXI_RRESP;
+            S01_AXI_RLAST  <= M_AXI_RLAST;
+            S01_AXI_RID    <= M_AXI_RID(G_S_ID_WIDTH - 1 downto 0);
 
-            if m_rvalid = '1' then
-                m_rready <= s1_rready;
+            if M_AXI_RVALID = '1' then
+                M_AXI_RREADY <= S01_AXI_RREADY;
             end if;
+
         end if;
     end process;
 
@@ -557,8 +551,8 @@ begin
             g_ALMOST_EMPTY_THRESHOLD => 5
         )
         port map(
-            i_resetn       => aresetn,
-            i_clk          => aclk,
+            i_resetn       => S00_AXI_ARESETN,
+            i_clk          => S00_AXI_ACLK,
             i_wrreq        => w_aw0_fifo_wrreq,
             i_data         => w_aw0_fifo_din,
             i_rdreq        => r_aw0_fifo_rdreq,
@@ -581,8 +575,8 @@ begin
             g_ALMOST_EMPTY_THRESHOLD => 5
         )
         port map(
-            i_resetn       => aresetn,
-            i_clk          => aclk,
+            i_resetn       => S00_AXI_ARESETN,
+            i_clk          => S00_AXI_ACLK,
             i_wrreq        => w_aw1_fifo_wrreq,
             i_data         => w_aw1_fifo_din,
             i_rdreq        => r_aw1_fifo_rdreq,
@@ -605,8 +599,8 @@ begin
             g_ALMOST_EMPTY_THRESHOLD => 5
         )
         port map(
-            i_resetn       => aresetn,
-            i_clk          => aclk,
+            i_resetn       => S00_AXI_ARESETN,
+            i_clk          => S00_AXI_ACLK,
             i_wrreq        => w_ar0_fifo_wrreq,
             i_data         => w_ar0_fifo_din,
             i_rdreq        => r_ar0_fifo_rdreq,
@@ -629,8 +623,8 @@ begin
             g_ALMOST_EMPTY_THRESHOLD => 5
         )
         port map(
-            i_resetn       => aresetn,
-            i_clk          => aclk,
+            i_resetn       => S00_AXI_ARESETN,
+            i_clk          => S00_AXI_ACLK,
             i_wrreq        => w_ar1_fifo_wrreq,
             i_data         => w_ar1_fifo_din,
             i_rdreq        => r_ar1_fifo_rdreq,
