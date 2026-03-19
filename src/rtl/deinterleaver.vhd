@@ -182,8 +182,7 @@ architecture arc_demod_deintrlv of demod_deintrlv is
     component avmm_to_axi4_rd
         generic(
             g_ADDR_WIDTH : integer := 29;
-            g_DATA_WIDTH : integer := 128;
-            g_MAX_OUTSTANDING : positive := 16
+            g_DATA_WIDTH : integer := 128
         );
         port(
             axi_aresetn         : in  std_logic;
@@ -240,6 +239,8 @@ architecture arc_demod_deintrlv of demod_deintrlv is
     signal r_write_ddr_address         : unsigned(28 downto 0)          := (others => '0');
     signal r_out_last                  : std_logic                      := '0';
     signal r_tkeep                     : std_logic_vector(3 downto 0)   := (others => '0');
+    signal r_burst_cnt                 : unsigned(2 downto 0)           := (others => '0');
+    signal r_read_count                : unsigned(12 downto 0)          := (others => '0');
 
     -- Registered Outputs
     signal w_frame_tready           : std_logic;
@@ -250,13 +251,11 @@ architecture arc_demod_deintrlv of demod_deintrlv is
     signal r_frame_deintrlvd_tlast  : std_logic;
 
     -- FIFO signals
-    signal fifo_din   : std_logic_vector(2 downto 0);
-    signal fifo_dout  : std_logic_vector(2 downto 0);
-    signal fifo_wr_en : std_logic;
-    signal fifo_rd_en : std_logic;
-    signal fifo_rst   : std_logic;
-
-    signal r_burst_cnt : unsigned(2 downto 0) := (others => '0');
+    signal fifo_din   : std_logic_vector(2 downto 0) := (others => '0');
+    signal fifo_dout  : std_logic_vector(2 downto 0) := (others => '0');
+    signal fifo_wr_en : std_logic                    := '0';
+    signal fifo_rd_en : std_logic                    := '0';
+    signal fifo_rst   : std_logic                    := '0';
 
     type buf_burst_t is array (0 to to_integer(C_BURST_LEN) - 1) of std_logic_vector(127 downto 0);
 
@@ -269,7 +268,7 @@ architecture arc_demod_deintrlv of demod_deintrlv is
     signal next_state, current_state : state_type;
 
 begin
-    
+
     process(axis_resetn, axis_clk) is
     begin
         if axis_resetn = '0' then
@@ -289,19 +288,26 @@ begin
             r_avmm_to_axi4_rd_avmm_address     <= (others => '0');
             r_avmm_to_axi4_rd_avmm_address_val <= '0';
 
+            fifo_din   <= (others => '0');
+            fifo_wr_en <= '0';
+
             current_state <= wr_idle;
 
             -- Registers
-            r_byte_idx          <= (others => '0');
-            sr_frame_data       <= (others => '0');
-            r_out_data          <= (others => '0');
-            r_ddr_offset        <= (others => '0');
-            r_write_ddr_address <= (others => '0');
-            r_out_last          <= '0';
-            r_bit_idx           <= (others => '0');
-            r_tkeep             <= (others => '0');
-            r_burst_cnt         <= (others => '0');
-            buf_burst           <= (others => (others => '0'));
+            r_byte_idx                  <= (others => '0');
+            sr_frame_data               <= (others => '0');
+            r_out_data                  <= (others => '0');
+            r_ddr_offset                <= (others => '0');
+            r_write_ddr_address         <= (others => '0');
+            r_rd_address_current_column <= (others => '0');
+            r_rd_address_current_row    <= (others => '0');
+            r_bit_idx                   <= (others => '0');
+            r_tkeep                     <= (others => '0');
+            r_burst_cnt                 <= (others => '0');
+            buf_burst                   <= (others => (others => '0'));
+            r_rd_address_gen            <= '0';
+            r_out_last                  <= '0';
+            r_read_count                <= (others => '0');
 
         elsif axis_clk'event and axis_clk = '1' then
 
@@ -310,7 +316,6 @@ begin
             r_avmm_to_axi4_wr_avmm_write <= '0';
             r_frame_deintrlvd_tlast      <= '0';
             r_frame_deintrlvd_tvalid     <= '0';
-
 
             case current_state is
 
@@ -417,9 +422,11 @@ begin
                             r_bit_idx <= r_bit_idx + 1;
                         end if;
 
-                        r_write_ddr_address <= r_write_ddr_address + 1;
+                        -- r_write_ddr_address <= r_write_ddr_address + 1;
+                        r_read_count <= r_read_count + 1;
 
-                        if r_write_ddr_address = C_COLS * C_ROWS - 1 then
+                        --if r_write_ddr_address = C_COLS * C_ROWS - 1 then
+                        if r_read_count = C_COLS * C_ROWS - 2 then
                             r_out_last <= '1';
                             case r_bit_idx is
                                 when "0"    => r_tkeep <= "0001";
@@ -435,7 +442,8 @@ begin
                     end if;
 
                     -- send the data and associated sideband signals out over AXI4-Stream
-                    if (r_bit_idx = "000000" and (r_write_ddr_address > 0)) then
+                    -- if (r_bit_idx = "0" and (r_write_ddr_address > 0)) then
+                    if (r_bit_idx = "0" and r_read_count > 0) then
                         if (frame_deintrlvd_tready = '1') and (r_frame_deintrlvd_tvalid = '0') then
                             r_frame_deintrlvd_tdata  <= r_out_data;
                             r_frame_deintrlvd_tuser  <= frame_tuser;
@@ -449,9 +457,10 @@ begin
                             r_frame_deintrlvd_tdata  <= (others => '0');
                             r_frame_deintrlvd_tuser  <= (others => '0');
 
-                            if r_write_ddr_address = C_COLS * C_ROWS then
-                                r_write_ddr_address <= (others => '0');
-                            end if;
+                            -- if r_write_ddr_address = C_COLS * C_ROWS then
+                            --     r_write_ddr_address <= (others => '0');
+                            -- end if;
+
                         end if;
 
                     end if;
@@ -459,10 +468,14 @@ begin
             end case;
             current_state <= next_state;
 
+            if current_state = rd_phase and next_state = wr_idle then
+                r_read_count <= (others => '0');
+            end if;
+
         end if;
     end process;
 
-    process(current_state, r_byte_idx, r_burst_cnt, w_avmm_to_axi4_wr_avmm_busy, frame_deintrlvd_tready, r_frame_deintrlvd_tvalid, r_write_ddr_address, r_bit_idx, r_write_limit)
+    process(current_state, r_byte_idx, r_burst_cnt, w_avmm_to_axi4_wr_avmm_busy, frame_deintrlvd_tready, r_frame_deintrlvd_tvalid, r_read_count, r_bit_idx, r_write_limit)
     begin
         case current_state is
 
@@ -506,7 +519,8 @@ begin
             when rd_phase =>
 
                 if r_frame_deintrlvd_tvalid = '1' and frame_deintrlvd_tready = '1' then
-                    if r_write_ddr_address = C_COLS * C_ROWS then
+                    -- if r_write_ddr_address = C_COLS * C_ROWS then
+                    if r_read_count = C_COLS * C_ROWS-1 then
                         next_state <= wr_idle;
                     else
                         next_state <= rd_phase;
@@ -527,7 +541,7 @@ begin
     frame_deintrlvd_tvalid <= r_frame_deintrlvd_tvalid;
 
     fifo_rd_en <= w_avmm_to_axi4_rd_avmm_readdata_val;
-    fifo_rst <= not axis_resetn;
+    fifo_rst   <= not axis_resetn;
 
     r_write_limit <= resize((C_COLS * C_ROWS) / 8 - 1, 29);
 
@@ -536,6 +550,7 @@ begin
             CASCADE_HEIGHT      => 0,   -- DECIMAL
             DOUT_RESET_VALUE    => "0", -- String
             ECC_MODE            => "no_ecc", -- String
+            --  EN_SIM_ASSERT_ERR   => "warning", -- String
             FIFO_MEMORY_TYPE    => "auto", -- String
             FIFO_READ_LATENCY   => 0,   -- DECIMAL
             FIFO_WRITE_DEPTH    => 128, -- DECIMAL
