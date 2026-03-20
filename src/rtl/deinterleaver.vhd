@@ -65,9 +65,9 @@ end entity;
 architecture arc_demod_deintrlv of demod_deintrlv is
 
     -- Constants
-    constant C_ROWS         : unsigned(9 downto 0)  := to_unsigned(64, 10);
-    constant C_COLS         : unsigned(9 downto 0)  := to_unsigned(64, 10);
-    constant C_base_address : unsigned(28 downto 0) := to_unsigned(1000, 29);
+    constant C_ROWS         : unsigned(12 downto 0) := to_unsigned(64, 13);
+    constant C_COLS         : unsigned(12 downto 0) := to_unsigned(64, 13);
+    constant C_base_address : unsigned(28 downto 0) := to_unsigned(100, 29);
     constant C_BURST_LEN    : unsigned(3 downto 0)  := to_unsigned(8, 4);
 
     -- Clocks & Resets
@@ -182,8 +182,7 @@ architecture arc_demod_deintrlv of demod_deintrlv is
     component avmm_to_axi4_rd
         generic(
             g_ADDR_WIDTH : integer := 29;
-            g_DATA_WIDTH : integer := 128;
-            g_MAX_OUTSTANDING : positive := 16
+            g_DATA_WIDTH : integer := 128
         );
         port(
             axi_aresetn         : in  std_logic;
@@ -229,8 +228,8 @@ architecture arc_demod_deintrlv of demod_deintrlv is
 
     -- Temp Signals
     signal r_write_limit               : unsigned(28 downto 0)          := (others => '0');
-    signal r_rd_address_current_row    : unsigned(9 downto 0)           := (others => '0');
-    signal r_rd_address_current_column : unsigned(9 downto 0)           := (others => '0');
+    signal r_rd_address_current_row    : unsigned(12 downto 0)          := (others => '0');
+    signal r_rd_address_current_column : unsigned(12 downto 0)          := (others => '0');
     signal r_rd_address_gen            : std_logic                      := '0';
     signal sr_frame_data               : std_logic_vector(127 downto 0) := (others => '0');
     signal r_out_data                  : std_logic_vector(31 downto 0)  := (others => '0');
@@ -248,6 +247,11 @@ architecture arc_demod_deintrlv of demod_deintrlv is
     signal r_frame_deintrlvd_tdata  : std_logic_vector(31 downto 00);
     signal r_frame_deintrlvd_tkeep  : std_logic_vector(03 downto 00);
     signal r_frame_deintrlvd_tlast  : std_logic;
+    signal r_pending_tvalid         : std_logic                      := '0';
+    signal r_pending_tuser          : std_logic_vector(15 downto 00) := (others => '0');
+    signal r_pending_tdata          : std_logic_vector(31 downto 00) := (others => '0');
+    signal r_pending_tkeep          : std_logic_vector(03 downto 00) := (others => '0');
+    signal r_pending_tlast          : std_logic                      := '0';
 
     -- FIFO signals
     signal fifo_din   : std_logic_vector(2 downto 0);
@@ -269,7 +273,7 @@ architecture arc_demod_deintrlv of demod_deintrlv is
     signal next_state, current_state : state_type;
 
 begin
-    
+
     process(axis_resetn, axis_clk) is
     begin
         if axis_resetn = '0' then
@@ -280,6 +284,11 @@ begin
             r_frame_deintrlvd_tdata  <= (others => '0');
             r_frame_deintrlvd_tkeep  <= (others => '0');
             r_frame_deintrlvd_tlast  <= '0';
+            r_pending_tvalid         <= '0';
+            r_pending_tuser          <= (others => '0');
+            r_pending_tdata          <= (others => '0');
+            r_pending_tkeep          <= (others => '0');
+            r_pending_tlast          <= '0';
 
             r_avmm_to_axi4_wr_avmm_write     <= '0';
             r_avmm_to_axi4_wr_avmm_address   <= (others => '0');
@@ -302,34 +311,49 @@ begin
             r_tkeep             <= (others => '0');
             r_burst_cnt         <= (others => '0');
             buf_burst           <= (others => (others => '0'));
+            w_frame_tready <= '0';
 
         elsif axis_clk'event and axis_clk = '1' then
 
             -- defaults every cycle 
             r_avmm_to_axi4_rd_avmm_read  <= '0';
             r_avmm_to_axi4_wr_avmm_write <= '0';
-            r_frame_deintrlvd_tlast      <= '0';
-            r_frame_deintrlvd_tvalid     <= '0';
+            w_frame_tready               <= '0';
 
+            if (r_frame_deintrlvd_tvalid = '1') and (frame_deintrlvd_tready = '1') then
+                if r_pending_tvalid = '1' then
+                    r_frame_deintrlvd_tdata  <= r_pending_tdata;
+                    r_frame_deintrlvd_tuser  <= r_pending_tuser;
+                    r_frame_deintrlvd_tlast  <= r_pending_tlast;
+                    r_frame_deintrlvd_tkeep  <= r_pending_tkeep;
+                    r_frame_deintrlvd_tvalid <= '1';
+                    r_pending_tvalid         <= '0';
+                    r_pending_tlast          <= '0';
+                else
+                    r_frame_deintrlvd_tvalid <= '0';
+                    r_frame_deintrlvd_tlast  <= '0';
+                    r_frame_deintrlvd_tkeep  <= (others => '0');
+                    r_frame_deintrlvd_tdata  <= (others => '0');
+                    r_frame_deintrlvd_tuser  <= (others => '0');
+                end if;
+            end if;
 
             case current_state is
 
                 -- Once we have 128 bits of data, store it in the burst buffer
                 when wr_idle =>
-
-                    if frame_tvalid = '1' then
+                    w_frame_tready <= '1';
+                    if frame_tvalid = '1'  then
                         sr_frame_data(to_integer(r_byte_idx) * 32 + 31 downto to_integer(r_byte_idx) * 32) <= frame_tdata;
 
-                        if r_byte_idx = "11" then
-                            r_byte_idx <= (others => '0');
-                        else
-                            r_byte_idx <= r_byte_idx + 1;
-                        end if;
-                    end if;
+                        r_byte_idx <= r_byte_idx + 1;
+--                     
+                    end if; 
 
                 -- Once we have 128 bits of data, store it in the burst buffer
                 when wr_store_buffer =>
                     buf_burst(to_integer(r_burst_cnt)) <= sr_frame_data;
+                  r_byte_idx <= (others => '0');
 
                     if r_burst_cnt = "111" then
                         r_burst_cnt <= (others => '0');
@@ -408,11 +432,39 @@ begin
 
                     -- Capture read data from DDR and send it out over AXI4-Stream after reordering
                     if w_avmm_to_axi4_rd_avmm_readdata_val = '1' then
-
-                        r_out_data(to_integer(r_bit_idx) * 16 + 15 downto to_integer(r_bit_idx) * 16) <= w_avmm_to_axi4_rd_avmm_readdata(to_integer(unsigned(fifo_dout)) * 16 + 15 downto to_integer(unsigned(fifo_dout)) * 16);
+                        r_out_data(to_integer(r_bit_idx) * 16 + 15 downto to_integer(r_bit_idx) * 16) <=
+                            w_avmm_to_axi4_rd_avmm_readdata(to_integer(unsigned(fifo_dout)) * 16 + 15 downto to_integer(unsigned(fifo_dout)) * 16);
 
                         if r_bit_idx = "1" then
                             r_bit_idx <= (others => '0');
+
+                            if (r_frame_deintrlvd_tvalid = '0') or
+                               ((r_frame_deintrlvd_tvalid = '1') and (frame_deintrlvd_tready = '1') and (r_pending_tvalid = '0')) then
+                                r_frame_deintrlvd_tdata  <=
+                                    w_avmm_to_axi4_rd_avmm_readdata(to_integer(unsigned(fifo_dout)) * 16 + 15 downto to_integer(unsigned(fifo_dout)) * 16) &
+                                    r_out_data(15 downto 0);
+                                r_frame_deintrlvd_tuser  <= frame_tuser;
+                                if r_write_ddr_address = C_COLS * C_ROWS - 1 then
+                                    r_frame_deintrlvd_tlast <= '1';
+                                else
+                                    r_frame_deintrlvd_tlast <= '0';
+                                end if;
+                                r_frame_deintrlvd_tkeep  <= "1111";
+                                r_frame_deintrlvd_tvalid <= '1';
+                            elsif (r_pending_tvalid = '0') or
+                                  ((r_frame_deintrlvd_tvalid = '1') and (frame_deintrlvd_tready = '1') and (r_pending_tvalid = '1')) then
+                                r_pending_tdata  <=
+                                    w_avmm_to_axi4_rd_avmm_readdata(to_integer(unsigned(fifo_dout)) * 16 + 15 downto to_integer(unsigned(fifo_dout)) * 16) &
+                                    r_out_data(15 downto 0);
+                                r_pending_tuser  <= frame_tuser;
+                                if r_write_ddr_address = C_COLS * C_ROWS - 1 then
+                                    r_pending_tlast <= '1';
+                                else
+                                    r_pending_tlast <= '0';
+                                end if;
+                                r_pending_tkeep  <= "1111";
+                                r_pending_tvalid <= '1';
+                            end if;
                         else
                             r_bit_idx <= r_bit_idx + 1;
                         end if;
@@ -434,26 +486,9 @@ begin
 
                     end if;
 
-                    -- send the data and associated sideband signals out over AXI4-Stream
-                    if (r_bit_idx = "000000" and (r_write_ddr_address > 0)) then
-                        if (frame_deintrlvd_tready = '1') and (r_frame_deintrlvd_tvalid = '0') then
-                            r_frame_deintrlvd_tdata  <= r_out_data;
-                            r_frame_deintrlvd_tuser  <= frame_tuser;
-                            r_frame_deintrlvd_tlast  <= r_out_last;
-                            r_frame_deintrlvd_tkeep  <= r_tkeep;
-                            r_frame_deintrlvd_tvalid <= '1';
-                        elsif (frame_deintrlvd_tready = '1') and (r_frame_deintrlvd_tvalid = '1') then
-                            r_frame_deintrlvd_tvalid <= '0';
-                            r_frame_deintrlvd_tlast  <= '0';
-                            r_frame_deintrlvd_tkeep  <= (others => '0');
-                            r_frame_deintrlvd_tdata  <= (others => '0');
-                            r_frame_deintrlvd_tuser  <= (others => '0');
-
-                            if r_write_ddr_address = C_COLS * C_ROWS then
-                                r_write_ddr_address <= (others => '0');
-                            end if;
-                        end if;
-
+                    if (r_frame_deintrlvd_tvalid = '1') and (frame_deintrlvd_tready = '1') and
+                       (r_pending_tvalid = '0') and (r_write_ddr_address = C_COLS * C_ROWS) then
+                        r_write_ddr_address <= (others => '0');
                     end if;
 
             end case;
@@ -518,7 +553,7 @@ begin
     end process;
 
     -- Output assignments
-    w_frame_tready         <= '1' when current_state = wr_idle and axis_resetn = '1' else '0';
+
     frame_tready           <= w_frame_tready;
     frame_deintrlvd_tdata  <= r_frame_deintrlvd_tdata;
     frame_deintrlvd_tlast  <= r_frame_deintrlvd_tlast;
@@ -527,7 +562,7 @@ begin
     frame_deintrlvd_tvalid <= r_frame_deintrlvd_tvalid;
 
     fifo_rd_en <= w_avmm_to_axi4_rd_avmm_readdata_val;
-    fifo_rst <= not axis_resetn;
+    fifo_rst   <= not axis_resetn;
 
     r_write_limit <= resize((C_COLS * C_ROWS) / 8 - 1, 29);
 
@@ -536,6 +571,7 @@ begin
             CASCADE_HEIGHT      => 0,   -- DECIMAL
             DOUT_RESET_VALUE    => "0", -- String
             ECC_MODE            => "no_ecc", -- String
+       --     EN_SIM_ASSERT_ERR   => "warning", -- String
             FIFO_MEMORY_TYPE    => "auto", -- String
             FIFO_READ_LATENCY   => 0,   -- DECIMAL
             FIFO_WRITE_DEPTH    => 128, -- DECIMAL

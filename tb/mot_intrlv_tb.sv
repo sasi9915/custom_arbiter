@@ -1,14 +1,14 @@
 `timescale 1ns/1ps
 
 module mod_intrlv_tb;
-    
+
     // Mod Interleaver Signals
 
     // /AXI Clock and reset signals
     wire            axis_resetn;
     wire            axis_clk;
-    
-    
+
+
     // AXI Stream Slave Interface (frame)
     reg             frame_tvalid;
     wire            frame_tready;
@@ -16,15 +16,15 @@ module mod_intrlv_tb;
     reg [31:0]      frame_tdata;
     reg [3:0]       frame_tkeep;
     reg             frame_tlast;
-    
+
     // AXI Stream Master Interface (frame_intrlvd)
-    wire            frame_intrlvd_tvalid;
-    reg             frame_intrlvd_tready;
-    wire [15:0]     frame_intrlvd_tuser;
-    wire [31:0]     frame_intrlvd_tdata;
-    wire [3:0]      frame_intrlvd_tkeep;
-    wire            frame_intrlvd_tlast;
-    
+    wire            frame_deintrlvd_tvalid;
+    reg             frame_deintrlvd_tready;
+    wire [15:0]     frame_deintrlvd_tuser;
+    wire [31:0]     frame_deintrlvd_tdata;
+    wire [3:0]      frame_deintrlvd_tkeep;
+    wire            frame_deintrlvd_tlast;
+
     // AXI4 Master Interface (DDR4)
     wire [3:0]      ddr4_m_axi_awid;
     wire [28:0]     ddr4_m_axi_awaddr;
@@ -37,18 +37,18 @@ module mod_intrlv_tb;
     wire [3:0]      ddr4_m_axi_awqos;
     wire            ddr4_m_axi_awvalid;
     wire            ddr4_m_axi_awready;
-    
+
     wire [127:0]    ddr4_m_axi_wdata;
     wire [15:0]     ddr4_m_axi_wstrb;
     wire            ddr4_m_axi_wlast;
     wire            ddr4_m_axi_wvalid;
     wire            ddr4_m_axi_wready;
-    
+
     wire            ddr4_m_axi_bready;
     wire [3:0]      ddr4_m_axi_bid;
     wire [1:0]      ddr4_m_axi_bresp;
     wire            ddr4_m_axi_bvalid;
-    
+
     wire [3:0]      ddr4_m_axi_arid;
     wire [28:0]     ddr4_m_axi_araddr;
     wire [7:0]      ddr4_m_axi_arlen;
@@ -60,7 +60,7 @@ module mod_intrlv_tb;
     wire [3:0]      ddr4_m_axi_arqos;
     wire            ddr4_m_axi_arvalid;
     wire            ddr4_m_axi_arready;
-    
+
     wire            ddr4_m_axi_rready;
     wire            ddr4_m_axi_rlast;
     wire            ddr4_m_axi_rvalid;
@@ -80,7 +80,7 @@ module mod_intrlv_tb;
     reg             ddr4_intf_c0_sys_clk_p;
     wire            ddr4_intf_c0_sys_clk_n;
     wire [511:0]    ddr4_intf_dbg_bus;
-        
+
     // DDR4 Memory Interface
     reg             ddr4_intf_c0_ddr4_aresetn;
     wire [16:0]     ddr4_intf_c0_ddr4_adr;
@@ -99,43 +99,43 @@ module mod_intrlv_tb;
     wire [0:0]      ddr4_intf_c0_ddr4_ck_t;
     wire            ddr4_intf_c0_ddr4_ui_clk;
     wire            ddr4_intf_c0_ddr4_ui_clk_sync_rst;
-    
 
-    
 
-    
 
-    
-    localparam real CLK_FREQ_HZ   = 100_000_000.0;              // 100 MHz
+
+
+
+
+    localparam real CLK_FREQ_HZ   = 100_000_000.0; // 100 MHz
     localparam real CLK_PERIOD_NS = 1e9 / CLK_FREQ_HZ;
 
-    localparam real DDR_REF_FREQ_HZ   = 75_000_000.0;           // 75 MHz
+    localparam real DDR_REF_FREQ_HZ   = 75_000_000.0; // 75 MHz
     localparam real DDR_REF_PERIOD_NS = 1e9 / DDR_REF_FREQ_HZ;
-    localparam int  FRAME_WORDS       = 1024;
+    localparam int  FRAME_WORDS       = 2048;
     localparam int  STARTUP_CYCLES    = 8;
     localparam int  SIM_TIMEOUT_CYCLES = 50000;
 
     integer outfile_2;
 
-    
+
     // Instantiate top (includes custom AXI interconnect + mod_intrlv)
     top top_inst (
         .axis_resetn            (axis_resetn),
         .axis_clk               (axis_clk),
 
-        .mod_frame_tready       (frame_tready),
-        .mod_frame_tvalid       (frame_tvalid),
-        .mod_frame_tuser        (frame_tuser),
-        .mod_frame_tdata        (frame_tdata),
-        .mod_frame_tkeep        (frame_tkeep),
-        .mod_frame_tlast        (frame_tlast),
+        .demod_frame_tready       (frame_tready),
+        .demod_frame_tvalid       (frame_tvalid),
+        .demod_frame_tuser        (frame_tuser),
+        .demod_frame_tdata        (frame_tdata),
+        .demod_frame_tkeep        (frame_tkeep),
+        .demod_frame_tlast        (frame_tlast),
 
-        .frame_intrlvd_tready   (frame_intrlvd_tready),
-        .frame_intrlvd_tvalid   (frame_intrlvd_tvalid),
-        .frame_intrlvd_tuser    (frame_intrlvd_tuser),
-        .frame_intrlvd_tdata    (frame_intrlvd_tdata),
-        .frame_intrlvd_tkeep    (frame_intrlvd_tkeep),
-        .frame_intrlvd_tlast    (frame_intrlvd_tlast),
+        .frame_deintrlvd_tready   (frame_deintrlvd_tready),
+        .frame_deintrlvd_tvalid   (frame_deintrlvd_tvalid),
+        .frame_deintrlvd_tuser    (frame_deintrlvd_tuser),
+        .frame_deintrlvd_tdata    (frame_deintrlvd_tdata),
+        .frame_deintrlvd_tkeep    (frame_deintrlvd_tkeep),
+        .frame_deintrlvd_tlast    (frame_deintrlvd_tlast),
 
         .M_AXI_AWID             (ddr4_m_axi_awid),
         .M_AXI_AWADDR           (ddr4_m_axi_awaddr),
@@ -175,7 +175,7 @@ module mod_intrlv_tb;
         .M_AXI_RVALID           (ddr4_m_axi_rvalid),
         .M_AXI_RREADY           (ddr4_m_axi_rready)
     );
-    
+
 
     // Instantiate DDR4 Interface
     ddr4_intf ddr4_intf_inst (
@@ -188,7 +188,7 @@ module mod_intrlv_tb;
         .c0_sys_clk_p             (ddr4_intf_c0_sys_clk_p),
         .c0_sys_clk_n             (ddr4_intf_c0_sys_clk_n),
         .dbg_bus                  (ddr4_intf_dbg_bus),
-        
+
         // DDR4 Memory Interface
         .c0_ddr4_aresetn          (ddr4_intf_c0_ddr4_aresetn),
         .c0_ddr4_ui_clk_sync_rst  (ddr4_intf_c0_ddr4_ui_clk_sync_rst),
@@ -208,7 +208,7 @@ module mod_intrlv_tb;
         .c0_ddr4_act_n            (ddr4_intf_c0_ddr4_act_n),
         .c0_ddr4_ck_c             (ddr4_intf_c0_ddr4_ck_c),
         .c0_ddr4_ck_t             (ddr4_intf_c0_ddr4_ck_t),
-        
+
         // AXI Slave Interface (Connected to mod_intrlv)
         .c0_ddr4_s_axi_awid       (ddr4_m_axi_awid),
         .c0_ddr4_s_axi_awaddr     (ddr4_m_axi_awaddr),
@@ -251,31 +251,31 @@ module mod_intrlv_tb;
 
 
     ddr4_module_sim ddr4_module_sim_inst (
-    .c0_ddr4_adr          (ddr4_intf_c0_ddr4_adr),
-    .c0_ddr4_ba           (ddr4_intf_c0_ddr4_ba),
-    .c0_ddr4_cke          (ddr4_intf_c0_ddr4_cke),
-    .c0_ddr4_cs_n         (ddr4_intf_c0_ddr4_cs_n),
-    .c0_ddr4_dm_dbi_n     (ddr4_intf_c0_ddr4_dm_dbi_n),
-    .c0_ddr4_dq           (ddr4_intf_c0_ddr4_dq),
-    .c0_ddr4_dqs_c        (ddr4_intf_c0_ddr4_dqs_c),
-    .c0_ddr4_dqs_t        (ddr4_intf_c0_ddr4_dqs_t),
-    .c0_ddr4_odt          (ddr4_intf_c0_ddr4_odt),
-    .c0_ddr4_bg           (ddr4_intf_c0_ddr4_bg),
-    .c0_ddr4_reset_n      (ddr4_intf_c0_ddr4_reset_n),
-    .c0_ddr4_act_n        (ddr4_intf_c0_ddr4_act_n),
-    .c0_ddr4_ck_c         (ddr4_intf_c0_ddr4_ck_c),
-    .c0_ddr4_ck_t         (ddr4_intf_c0_ddr4_ck_t)
+        .c0_ddr4_adr          (ddr4_intf_c0_ddr4_adr),
+        .c0_ddr4_ba           (ddr4_intf_c0_ddr4_ba),
+        .c0_ddr4_cke          (ddr4_intf_c0_ddr4_cke),
+        .c0_ddr4_cs_n         (ddr4_intf_c0_ddr4_cs_n),
+        .c0_ddr4_dm_dbi_n     (ddr4_intf_c0_ddr4_dm_dbi_n),
+        .c0_ddr4_dq           (ddr4_intf_c0_ddr4_dq),
+        .c0_ddr4_dqs_c        (ddr4_intf_c0_ddr4_dqs_c),
+        .c0_ddr4_dqs_t        (ddr4_intf_c0_ddr4_dqs_t),
+        .c0_ddr4_odt          (ddr4_intf_c0_ddr4_odt),
+        .c0_ddr4_bg           (ddr4_intf_c0_ddr4_bg),
+        .c0_ddr4_reset_n      (ddr4_intf_c0_ddr4_reset_n),
+        .c0_ddr4_act_n        (ddr4_intf_c0_ddr4_act_n),
+        .c0_ddr4_ck_c         (ddr4_intf_c0_ddr4_ck_c),
+        .c0_ddr4_ck_t         (ddr4_intf_c0_ddr4_ck_t)
     );
 
 
-    
+
     // ------------------------------------------------------------------
     // DDR4 Reest & Clock
     // ------------------------------------------------------------------
     initial ddr4_intf_c0_sys_clk_p = 1'b1;
     always #(DDR_REF_PERIOD_NS/2.0) ddr4_intf_c0_sys_clk_p = ~ddr4_intf_c0_sys_clk_p;
     assign ddr4_intf_c0_sys_clk_n = ~ddr4_intf_c0_sys_clk_p;
-    
+
     initial begin
         ddr4_intf_c0_ddr4_aresetn = 0;
         repeat (100) @(posedge ddr4_intf_c0_sys_clk_p);
@@ -290,12 +290,12 @@ module mod_intrlv_tb;
     // ------------------------------------------------------------------
     assign axis_resetn = ~ddr4_intf_c0_ddr4_ui_clk_sync_rst;
     assign axis_clk    = ddr4_intf_c0_ddr4_ui_clk;
-    
+
 
 
     // Testbench initial block
     initial begin
-        frame_intrlvd_tready = 1'b1;
+        frame_deintrlvd_tready = 1'b1;
 
         wait (ddr4_intf_c0_init_calib_complete === 1'b1);
         wait (axis_resetn === 1'b1);
@@ -316,7 +316,7 @@ module mod_intrlv_tb;
         end
         $finish;
     end
-    
+    integer rd_addr_file;
     // Test AXI Stream interface
     task test_axi_stream;
         integer i;
@@ -327,10 +327,10 @@ module mod_intrlv_tb;
             frame_tdata = 32'h00000000;
             frame_tkeep = 4'b1111;
             frame_tlast = 1'b0;
-            
+
             // Wait for reset to be asserted
             @(posedge axis_clk);
-            
+
             // Send one FRAME_WORDS packet with a counter payload.
             frame_tvalid = 1'b1;
             for (i = 0; i < FRAME_WORDS; i = i + 1) begin
@@ -341,11 +341,11 @@ module mod_intrlv_tb;
                 end else begin
                     frame_tlast = 1'b0;
                 end
-                
+
                 @(posedge axis_clk);
                 while (!frame_tready) @(posedge axis_clk);
             end
-            
+
             frame_tvalid = 1'b0;
             frame_tlast  = 1'b0;
         end
@@ -353,10 +353,10 @@ module mod_intrlv_tb;
 
     // Open the file at the start of simulation
     initial begin
-        outfile_2 = $fopen("/home/sasindu/work/custom_arbitor/custom_arbiter/misc/mod_intrlv_output.txt", "w");
+        outfile_2 = $fopen("/home/sasindu/work/custom_arbitor/custom_arbiter/misc/mod_deintrlv_output.txt", "w");
         if (outfile_2 == 0) begin
             $display("ERROR: Could not open file for writing!");
-//            $finish;
+            //            $finish;
         end
     end
 
@@ -367,32 +367,58 @@ module mod_intrlv_tb;
         if (!axis_resetn) begin
             // nothing
         end else begin
-            if (frame_intrlvd_tvalid && frame_intrlvd_tready) begin
+            if (frame_deintrlvd_tvalid && frame_deintrlvd_tready) begin
                 // Log exactly one transfer
-                $fdisplay(outfile_2, "%h", frame_intrlvd_tdata);
+                $fdisplay(outfile_2, "%h", frame_deintrlvd_tdata);
                 $fflush(outfile_2);
 
-                if (frame_intrlvd_tlast) begin
+                if (frame_deintrlvd_tlast) begin
                     $display("Packet complete at time %0t ns, last word received: 0x%h",
-                             $time, frame_intrlvd_tdata);
+                        $time, frame_deintrlvd_tdata);
                     if (outfile_2 != 0) begin
                         $fclose(outfile_2);
                         outfile_2 = 0;
                     end
+
+                    if (rd_addr_file != 0) begin
+                        $fclose(rd_addr_file);
+                        rd_addr_file = 0;
+                    end
+
                     $finish;
                 end
             end
         end
     end
 
+    integer count = 0;
+
+    always @(posedge axis_clk) begin
+        if (frame_deintrlvd_tvalid && frame_deintrlvd_tready)
+            count++;
+
+        if (frame_deintrlvd_tlast)
+            $display("FINAL COUNT = %0d", count);
+    end
 
 
-    
-//  // Monitor signals for verification
-//  initial begin
-//      $monitor("Time=%0t: frame_tvalid=%b, frame_tready=%b, frame_tdata=0x%h, frame_intrlvd_tvalid=%b, frame_intrlvd_tready=%b, frame_intrlvd_tdata=0x%h",
-//               $time, frame_tvalid, frame_tready, frame_tdata, 
-//               frame_intrlvd_tvalid, frame_intrlvd_tready, frame_intrlvd_tdata);
-//  end
+
+    initial begin
+        rd_addr_file = $fopen("/home/sasindu/work/custom_arbitor/custom_arbiter/misc/read_addresses.txt", "w");
+        if (rd_addr_file == 0) begin
+            $display("ERROR: Could not open read address file!");
+        end
+    end
+
+    always @(posedge axis_clk) begin
+        if (axis_resetn) begin
+            if (ddr4_m_axi_arvalid && ddr4_m_axi_arready) begin
+                $fdisplay(rd_addr_file, "%h", ddr4_m_axi_araddr);
+                $fflush(rd_addr_file);
+            end
+        end
+    end
+
+
 
 endmodule
