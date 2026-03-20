@@ -111,6 +111,11 @@ module mod_intrlv_tb;
 
     localparam real DDR_REF_FREQ_HZ   = 75_000_000.0;           // 75 MHz
     localparam real DDR_REF_PERIOD_NS = 1e9 / DDR_REF_FREQ_HZ;
+    localparam int  FRAME_WORDS       = 1024;
+    localparam int  STARTUP_CYCLES    = 8;
+    localparam int  SIM_TIMEOUT_CYCLES = 50000;
+
+    integer outfile_2;
 
     
     // Instantiate top (includes custom AXI interconnect + mod_intrlv)
@@ -290,17 +295,26 @@ module mod_intrlv_tb;
 
     // Testbench initial block
     initial begin
-        
-        assign frame_intrlvd_tready = 1'b1;
+        frame_intrlvd_tready = 1'b1;
 
-        
-        // Test AXI Stream interface
+        wait (ddr4_intf_c0_init_calib_complete === 1'b1);
+        wait (axis_resetn === 1'b1);
+        repeat (STARTUP_CYCLES) @(posedge axis_clk);
+
+        // Test AXI Stream interface after DDR/UI reset is cleanly released.
         test_axi_stream();
+    end
 
-        
-        
-        // End simulation
-//      #1000 $finish;
+    initial begin
+        wait (axis_resetn === 1'b1);
+        repeat (SIM_TIMEOUT_CYCLES) @(posedge axis_clk);
+
+        $display("ERROR: Simulation timed out waiting for output packet completion.");
+        if (outfile_2 != 0) begin
+            $fclose(outfile_2);
+            outfile_2 = 0;
+        end
+        $finish;
     end
     
     // Test AXI Stream interface
@@ -317,12 +331,12 @@ module mod_intrlv_tb;
             // Wait for reset to be asserted
             @(posedge axis_clk);
             
-            // Send 10-word packet with counter
+            // Send one FRAME_WORDS packet with a counter payload.
             frame_tvalid = 1'b1;
-            for (i = 0; i < 1024; i = i + 1) begin
+            for (i = 0; i < FRAME_WORDS; i = i + 1) begin
                 frame_tdata = 32'h00000000 + i;
                 frame_tuser = 16'hABCD;
-                if (i == 999999) begin
+                if (i == FRAME_WORDS - 1) begin
                     frame_tlast = 1'b1;
                 end else begin
                     frame_tlast = 1'b0;
@@ -333,14 +347,13 @@ module mod_intrlv_tb;
             end
             
             frame_tvalid = 1'b0;
+            frame_tlast  = 1'b0;
         end
     endtask
 
-integer outfile_2;
-
     // Open the file at the start of simulation
     initial begin
-        outfile_2 = $fopen("/home/satanya/Documents/Reading Materials/documents_20260109/ddr_tb_example/src/rtl/mod_intrlv_output.txt", "w");
+        outfile_2 = $fopen("/home/sasindu/work/custom_arbitor/custom_arbiter/misc/mod_intrlv_output.txt", "w");
         if (outfile_2 == 0) begin
             $display("ERROR: Could not open file for writing!");
 //            $finish;
@@ -362,8 +375,11 @@ integer outfile_2;
                 if (frame_intrlvd_tlast) begin
                     $display("Packet complete at time %0t ns, last word received: 0x%h",
                              $time, frame_intrlvd_tdata);
-                    $fclose(outfile_2);
-//                    $finish;
+                    if (outfile_2 != 0) begin
+                        $fclose(outfile_2);
+                        outfile_2 = 0;
+                    end
+                    $finish;
                 end
             end
         end
