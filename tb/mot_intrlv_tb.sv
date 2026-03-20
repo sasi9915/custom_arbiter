@@ -1,14 +1,14 @@
 `timescale 1ns/1ps
 
 module mod_intrlv_tb;
-    
+
     // Mod Interleaver Signals
 
     // /AXI Clock and reset signals
     wire            axis_resetn;
     wire            axis_clk;
-    
-    
+
+
     // AXI Stream Slave Interface (frame)
     reg             frame_tvalid;
     wire            frame_tready;
@@ -16,7 +16,7 @@ module mod_intrlv_tb;
     reg [31:0]      frame_tdata;
     reg [3:0]       frame_tkeep;
     reg             frame_tlast;
-    
+
     // AXI Stream Master Interface (frame_intrlvd)
     wire            frame_intrlvd_tvalid;
     reg             frame_intrlvd_tready;
@@ -40,7 +40,7 @@ module mod_intrlv_tb;
     wire [31:0]     frame_deintrlvd_tdata;
     wire [3:0]      frame_deintrlvd_tkeep;
     wire            frame_deintrlvd_tlast;
-    
+
     // AXI4 Master Interface (DDR4)
     wire [3:0]      ddr4_m_axi_awid;
     wire [28:0]     ddr4_m_axi_awaddr;
@@ -53,18 +53,18 @@ module mod_intrlv_tb;
     wire [3:0]      ddr4_m_axi_awqos;
     wire            ddr4_m_axi_awvalid;
     wire            ddr4_m_axi_awready;
-    
+
     wire [127:0]    ddr4_m_axi_wdata;
     wire [15:0]     ddr4_m_axi_wstrb;
     wire            ddr4_m_axi_wlast;
     wire            ddr4_m_axi_wvalid;
     wire            ddr4_m_axi_wready;
-    
+
     wire            ddr4_m_axi_bready;
     wire [3:0]      ddr4_m_axi_bid;
     wire [1:0]      ddr4_m_axi_bresp;
     wire            ddr4_m_axi_bvalid;
-    
+
     wire [3:0]      ddr4_m_axi_arid;
     wire [28:0]     ddr4_m_axi_araddr;
     wire [7:0]      ddr4_m_axi_arlen;
@@ -76,7 +76,7 @@ module mod_intrlv_tb;
     wire [3:0]      ddr4_m_axi_arqos;
     wire            ddr4_m_axi_arvalid;
     wire            ddr4_m_axi_arready;
-    
+
     wire            ddr4_m_axi_rready;
     wire            ddr4_m_axi_rlast;
     wire            ddr4_m_axi_rvalid;
@@ -96,7 +96,7 @@ module mod_intrlv_tb;
     reg             ddr4_intf_c0_sys_clk_p;
     wire            ddr4_intf_c0_sys_clk_n;
     wire [511:0]    ddr4_intf_dbg_bus;
-        
+
     // DDR4 Memory Interface
     reg             ddr4_intf_c0_ddr4_aresetn;
     wire [16:0]     ddr4_intf_c0_ddr4_adr;
@@ -115,22 +115,22 @@ module mod_intrlv_tb;
     wire [0:0]      ddr4_intf_c0_ddr4_ck_t;
     wire            ddr4_intf_c0_ddr4_ui_clk;
     wire            ddr4_intf_c0_ddr4_ui_clk_sync_rst;
-    
 
-    
 
-    
 
-    
-    localparam real CLK_FREQ_HZ   = 100_000_000.0;              // 100 MHz
+
+
+
+
+    localparam real CLK_FREQ_HZ   = 100_000_000.0; // 100 MHz
     localparam real CLK_PERIOD_NS = 1e9 / CLK_FREQ_HZ;
 
-    localparam real DDR_REF_FREQ_HZ   = 75_000_000.0;           // 75 MHz
+    localparam real DDR_REF_FREQ_HZ   = 75_000_000.0; // 75 MHz
     localparam real DDR_REF_PERIOD_NS = 1e9 / DDR_REF_FREQ_HZ;
 
-    
+
     // Instantiate top (includes custom AXI interconnect + mod_intrlv)
-    top top_inst (
+    top_loop_back top_inst (
         .axis_resetn            (axis_resetn),
         .axis_clk               (axis_clk),
 
@@ -154,6 +154,7 @@ module mod_intrlv_tb;
         .demod_frame_tdata      (demod_frame_tdata),
         .demod_frame_tkeep      (demod_frame_tkeep),
         .demod_frame_tlast      (demod_frame_tlast),
+
         .frame_deintrlvd_tready (frame_deintrlvd_tready),
         .frame_deintrlvd_tvalid (frame_deintrlvd_tvalid),
         .frame_deintrlvd_tuser  (frame_deintrlvd_tuser),
@@ -199,7 +200,7 @@ module mod_intrlv_tb;
         .M_AXI_RVALID           (ddr4_m_axi_rvalid),
         .M_AXI_RREADY           (ddr4_m_axi_rready)
     );
-    
+
 
     // Instantiate DDR4 Interface
     ddr4_intf ddr4_intf_inst (
@@ -212,7 +213,7 @@ module mod_intrlv_tb;
         .c0_sys_clk_p             (ddr4_intf_c0_sys_clk_p),
         .c0_sys_clk_n             (ddr4_intf_c0_sys_clk_n),
         .dbg_bus                  (ddr4_intf_dbg_bus),
-        
+
         // DDR4 Memory Interface
         .c0_ddr4_aresetn          (ddr4_intf_c0_ddr4_aresetn),
         .c0_ddr4_ui_clk_sync_rst  (ddr4_intf_c0_ddr4_ui_clk_sync_rst),
@@ -232,7 +233,7 @@ module mod_intrlv_tb;
         .c0_ddr4_act_n            (ddr4_intf_c0_ddr4_act_n),
         .c0_ddr4_ck_c             (ddr4_intf_c0_ddr4_ck_c),
         .c0_ddr4_ck_t             (ddr4_intf_c0_ddr4_ck_t),
-        
+
         // AXI Slave Interface (Connected to mod_intrlv)
         .c0_ddr4_s_axi_awid       (ddr4_m_axi_awid),
         .c0_ddr4_s_axi_awaddr     (ddr4_m_axi_awaddr),
@@ -275,34 +276,34 @@ module mod_intrlv_tb;
 
 
     ddr4_module_sim ddr4_module_sim_inst (
-    .c0_ddr4_adr          (ddr4_intf_c0_ddr4_adr),
-    .c0_ddr4_ba           (ddr4_intf_c0_ddr4_ba),
-    .c0_ddr4_cke          (ddr4_intf_c0_ddr4_cke),
-    .c0_ddr4_cs_n         (ddr4_intf_c0_ddr4_cs_n),
-    .c0_ddr4_dm_dbi_n     (ddr4_intf_c0_ddr4_dm_dbi_n),
-    .c0_ddr4_dq           (ddr4_intf_c0_ddr4_dq),
-    .c0_ddr4_dqs_c        (ddr4_intf_c0_ddr4_dqs_c),
-    .c0_ddr4_dqs_t        (ddr4_intf_c0_ddr4_dqs_t),
-    .c0_ddr4_odt          (ddr4_intf_c0_ddr4_odt),
-    .c0_ddr4_bg           (ddr4_intf_c0_ddr4_bg),
-    .c0_ddr4_reset_n      (ddr4_intf_c0_ddr4_reset_n),
-    .c0_ddr4_act_n        (ddr4_intf_c0_ddr4_act_n),
-    .c0_ddr4_ck_c         (ddr4_intf_c0_ddr4_ck_c),
-    .c0_ddr4_ck_t         (ddr4_intf_c0_ddr4_ck_t)
+        .c0_ddr4_adr          (ddr4_intf_c0_ddr4_adr),
+        .c0_ddr4_ba           (ddr4_intf_c0_ddr4_ba),
+        .c0_ddr4_cke          (ddr4_intf_c0_ddr4_cke),
+        .c0_ddr4_cs_n         (ddr4_intf_c0_ddr4_cs_n),
+        .c0_ddr4_dm_dbi_n     (ddr4_intf_c0_ddr4_dm_dbi_n),
+        .c0_ddr4_dq           (ddr4_intf_c0_ddr4_dq),
+        .c0_ddr4_dqs_c        (ddr4_intf_c0_ddr4_dqs_c),
+        .c0_ddr4_dqs_t        (ddr4_intf_c0_ddr4_dqs_t),
+        .c0_ddr4_odt          (ddr4_intf_c0_ddr4_odt),
+        .c0_ddr4_bg           (ddr4_intf_c0_ddr4_bg),
+        .c0_ddr4_reset_n      (ddr4_intf_c0_ddr4_reset_n),
+        .c0_ddr4_act_n        (ddr4_intf_c0_ddr4_act_n),
+        .c0_ddr4_ck_c         (ddr4_intf_c0_ddr4_ck_c),
+        .c0_ddr4_ck_t         (ddr4_intf_c0_ddr4_ck_t)
     );
 
 
-    
+
     // ------------------------------------------------------------------
     // DDR4 Reest & Clock
     // ------------------------------------------------------------------
     initial ddr4_intf_c0_sys_clk_p = 1'b1;
     always #(DDR_REF_PERIOD_NS/2.0) ddr4_intf_c0_sys_clk_p = ~ddr4_intf_c0_sys_clk_p;
     assign ddr4_intf_c0_sys_clk_n = ~ddr4_intf_c0_sys_clk_p;
-    
+
     initial begin
         ddr4_intf_c0_ddr4_aresetn = 0;
-        repeat (100) @(posedge ddr4_intf_c0_sys_clk_p);
+        repeat (300) @(posedge ddr4_intf_c0_sys_clk_p);
         ddr4_intf_c0_ddr4_aresetn = 1;
     end
 
@@ -314,13 +315,13 @@ module mod_intrlv_tb;
     // ------------------------------------------------------------------
     assign axis_resetn = ~ddr4_intf_c0_ddr4_ui_clk_sync_rst;
     assign axis_clk    = ddr4_intf_c0_ddr4_ui_clk;
-    
+
 
 
     // Testbench initial block
     initial begin
-        
-        assign frame_intrlvd_tready = 1'b1;
+
+        frame_deintrlvd_tready = 1'b1;
         demod_frame_tvalid          = 1'b0;
         demod_frame_tuser           = 16'h0000;
         demod_frame_tdata           = 32'h00000000;
@@ -328,16 +329,24 @@ module mod_intrlv_tb;
         demod_frame_tlast           = 1'b0;
         frame_deintrlvd_tready      = 1'b1;
 
-        
+        frame_intrlvd_tready = 1'b1;
+        frame_tvalid = 1'b0;
+        frame_tuser = 16'h0000;
+        frame_tdata = 32'h00000000;
+        frame_tkeep = 4'b1111;
+        frame_tlast = 1'b0;
+        frame_intrlvd_tready = 1'b1;
+
+
         // Test AXI Stream interface
+        test_axi_stream_demod();
         test_axi_stream();
 
-        
-        
+      
         // End simulation
-//      #1000 $finish;
+        //      #1000 $finish;
     end
-    
+
     // Test AXI Stream interface
     task test_axi_stream;
         integer i;
@@ -348,57 +357,124 @@ module mod_intrlv_tb;
             frame_tdata = 32'h00000000;
             frame_tkeep = 4'b1111;
             frame_tlast = 1'b0;
-            
+
             // Wait for reset to be asserted
             @(posedge axis_clk);
-            
+
             // Send 10-word packet with counter
             frame_tvalid = 1'b1;
             for (i = 0; i < 1024; i = i + 1) begin
                 frame_tdata = 32'h00000000 + i;
                 frame_tuser = 16'hABCD;
-                if (i == 999999) begin
+                if (i == 1023) begin
                     frame_tlast = 1'b1;
                 end else begin
                     frame_tlast = 1'b0;
                 end
-                
+
                 @(posedge axis_clk);
                 while (!frame_tready) @(posedge axis_clk);
             end
-            
+
             frame_tvalid = 1'b0;
         end
     endtask
 
-integer outfile_2;
+    task test_axi_stream_demod;
+        integer j;
+        begin
+            // Drive valid signals
+            demod_frame_tvalid = 1'b0;
+            demod_frame_tuser = 16'h0000;
+            demod_frame_tdata = 32'h00000000;
+            demod_frame_tkeep = 4'b1111;
+            demod_frame_tlast = 1'b0;
 
-    // Open the file at the start of simulation
+            // Wait for reset to be asserted
+            @(posedge axis_clk);
+
+            repeat (20) @(posedge axis_clk);
+
+            // Send 10-word packet with counter
+            demod_frame_tvalid = 1'b1;
+            for (j = 0; j < 2048; j = j + 1) begin
+                demod_frame_tdata = 32'h00000000 + j;
+                demod_frame_tuser = 16'hDCBA;
+                if (j == 2047) begin
+                    demod_frame_tlast = 1'b1;
+                end else begin
+                    demod_frame_tlast = 1'b0;
+                end
+
+                @(posedge axis_clk);
+                while (!demod_frame_tready) @(posedge axis_clk);
+            end
+
+            demod_frame_tvalid = 1'b0;
+        end
+    endtask
+
+
+    integer outfile_1;
+    integer outfile_2;
+
+    // Open the file at the start of simulation for the interlever
     initial begin
-        outfile_2 = $fopen("/home/satanya/Documents/Reading Materials/documents_20260109/ddr_tb_example/src/rtl/mod_intrlv_output.txt", "w");
-        if (outfile_2 == 0) begin
+        outfile_1 = $fopen("/home/sasindu/work/custom_arbitor/custom_arbiter/misc/mod_intrlv_output.txt", "w");
+        if (outfile_1 == 0) begin
             $display("ERROR: Could not open file for writing!");
-//            $finish;
+            //            $finish;
         end
     end
 
-    // ------------------------------------------------------------------
-    // Monitor frame_deintrlvd signals and write to file
-    // ------------------------------------------------------------------
+
+    // Open the file at the start of simulation for the deinterleaver
+    initial begin
+        outfile_2 = $fopen("/home/sasindu/work/custom_arbitor/custom_arbiter/misc/demod_deintrlv_output.txt", "w");
+        if (outfile_2 == 0) begin
+            $display("ERROR: Could not open file for writing!");
+            //            $finish;
+        end
+    end
+
+
+    // Monitor frame_intrlvd signals and write to file
+
     always @(posedge axis_clk) begin
         if (!axis_resetn) begin
             // nothing
         end else begin
             if (frame_intrlvd_tvalid && frame_intrlvd_tready) begin
                 // Log exactly one transfer
-                $fdisplay(outfile_2, "%h", frame_intrlvd_tdata);
-                $fflush(outfile_2);
+                $fdisplay(outfile_1, "%h", frame_intrlvd_tdata);
+                $fflush(outfile_1);
 
                 if (frame_intrlvd_tlast) begin
                     $display("Packet complete at time %0t ns, last word received: 0x%h",
-                             $time, frame_intrlvd_tdata);
+                        $time, frame_intrlvd_tdata);
+                    $fclose(outfile_1);
+                    //                    $finish;
+                end
+            end
+        end
+    end
+
+
+    // Monitor frame_deintrlvd signals and write to file
+    always @(posedge axis_clk) begin
+        if (!axis_resetn) begin
+            // nothing
+        end else begin
+            if (frame_deintrlvd_tvalid && frame_deintrlvd_tready) begin
+                // Log exactly one transfer
+                $fdisplay(outfile_2, "%h", frame_deintrlvd_tdata);
+                $fflush(outfile_2);
+
+                if (frame_deintrlvd_tlast) begin
+                    $display("Deinterleaved packet complete at time %0t ns, last word received: 0x%h",
+                        $time, frame_deintrlvd_tdata);
                     $fclose(outfile_2);
-//                    $finish;
+                    //                  $finish;
                 end
             end
         end
@@ -406,12 +482,5 @@ integer outfile_2;
 
 
 
-    
-//  // Monitor signals for verification
-//  initial begin
-//      $monitor("Time=%0t: frame_tvalid=%b, frame_tready=%b, frame_tdata=0x%h, frame_intrlvd_tvalid=%b, frame_intrlvd_tready=%b, frame_intrlvd_tdata=0x%h",
-//               $time, frame_tvalid, frame_tready, frame_tdata, 
-//               frame_intrlvd_tvalid, frame_intrlvd_tready, frame_intrlvd_tdata);
-//  end
 
 endmodule
