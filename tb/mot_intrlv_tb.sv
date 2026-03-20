@@ -316,7 +316,7 @@ module mod_intrlv_tb;
         end
         $finish;
     end
-
+    integer rd_addr_file;
     // Test AXI Stream interface
     task test_axi_stream;
         integer i;
@@ -401,7 +401,7 @@ module mod_intrlv_tb;
             $display("FINAL COUNT = %0d", count);
     end
 
-    integer rd_addr_file;
+
 
     initial begin
         rd_addr_file = $fopen("/home/sasindu/work/custom_arbitor/custom_arbiter/misc/read_addresses.txt", "w");
@@ -414,6 +414,7 @@ module mod_intrlv_tb;
         if (axis_resetn) begin
             if (ddr4_m_axi_arvalid && ddr4_m_axi_arready) begin
                 $fdisplay(rd_addr_file, "%h", ddr4_m_axi_araddr);
+                $fflush(rd_addr_file);
             end
         end
     end

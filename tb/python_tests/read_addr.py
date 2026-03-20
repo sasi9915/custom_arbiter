@@ -1,6 +1,6 @@
 ROWS = 64
 COLS = 64
-BASE_ADDR = 1000  # same as RTL
+BASE_ADDR = 100  # same as RTL
 
 output_file = "ref_read_addresses.txt"
 
