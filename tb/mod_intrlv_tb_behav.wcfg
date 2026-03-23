@@ -14,15 +14,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="260600001fs"></ZoomEndTime>
-      <Cursor1Time time="72620297fs"></Cursor1Time>
+      <ZoomStartTime time="48640000fs"></ZoomStartTime>
+      <ZoomEndTime time="56460001fs"></ZoomEndTime>
+      <Cursor1Time time="51200000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="226"></NameColumnWidth>
-      <ValueColumnWidth column_width="65"></ValueColumnWidth>
+      <ValueColumnWidth column_width="61"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="126" />
+   <WVObjectSize size="129" />
    <wvobject type="group" fp_name="group1589">
       <obj_property name="label">so_write</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -493,6 +493,19 @@
    <wvobject fp_name="divider1846" type="divider">
       <obj_property name="label">----------------------------</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/r_bit_idx">
+      <obj_property name="ElementShortName">r_bit_idx[4:0]</obj_property>
+      <obj_property name="ObjectShortName">r_bit_idx[4:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/r_output_state">
+      <obj_property name="ElementShortName">r_output_state</obj_property>
+      <obj_property name="ObjectShortName">r_output_state</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mod_intrlv_tb/top_inst/u_mod_intrlv/r_out_last">
+      <obj_property name="ElementShortName">r_out_last</obj_property>
+      <obj_property name="ObjectShortName">r_out_last</obj_property>
    </wvobject>
    <wvobject fp_name="divider1846" type="divider">
       <obj_property name="label">----------------------------</obj_property>
