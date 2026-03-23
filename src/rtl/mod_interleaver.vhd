@@ -234,7 +234,7 @@ architecture arc_mod_intrlv of mod_intrlv is
     signal sr_frame_data               : std_logic_vector(127 downto 0) := (others => '0');
     signal r_out_data                  : std_logic_vector(31 downto 0)  := (others => '0');
     signal r_byte_idx                  : unsigned(1 downto 0)           := (others => '0');
-    signal r_bit_idx                   : unsigned(4 downto 0)           := (others => '0');
+    signal r_bit_idx                   : unsigned(5 downto 0)           := (others => '0');
     signal r_ddr_offset                : unsigned(28 downto 0)          := (others => '0');
     signal r_write_ddr_address         : unsigned(28 downto 0)          := (others => '0');
     signal r_out_last                  : std_logic                      := '0';
@@ -270,7 +270,6 @@ architecture arc_mod_intrlv of mod_intrlv is
 
 begin
     process(axis_resetn, axis_clk) is
-        variable v_word_complete : std_logic;
     begin
         if axis_resetn = '0' then
 
@@ -306,7 +305,6 @@ begin
             buf_burst           <= (others => (others => '0'));
 
         elsif axis_clk'event and axis_clk = '1' then
-            v_word_complete := '0';
 
             -- defaults every cycle 
             r_frame_tready               <= '0';
@@ -382,17 +380,7 @@ begin
                         fifo_din     <= std_logic_vector(resize(r_rd_address_current_row * C_COLS + r_rd_address_current_column, 7));
 
                         if w_avmm_to_axi4_rd_avmm_busy = '0' and r_avmm_to_axi4_rd_avmm_address_val = '0' then
-                            -- Build address from current row/column directly.
-                            r_avmm_to_axi4_rd_avmm_address     <= std_logic_vector(
-                                C_base_address +
-                                shift_left(
-                                    resize(
-                                        resize(r_rd_address_current_row * C_COLS + r_rd_address_current_column, 29)(28 downto 7),
-                                        29
-                                    ),
-                                    4
-                                )
-                            );
+                            r_avmm_to_axi4_rd_avmm_address     <= std_logic_vector(resize(C_base_address + r_ddr_offset * 16, 29));
                             r_avmm_to_axi4_rd_avmm_address_val <= '1';
                             fifo_wr_en                         <= '1';
 
@@ -425,10 +413,9 @@ begin
 
                         r_out_data(to_integer(r_bit_idx)) <= w_avmm_to_axi4_rd_avmm_readdata(to_integer(unsigned(fifo_dout)));
 
-                        if r_bit_idx = to_unsigned(31, r_bit_idx'length) then
+                        if r_bit_idx = "011111" then
                             r_bit_idx      <= (others => '0');
                             r_output_state <= '1';
-                            v_word_complete := '1';
                         else
                             r_bit_idx <= r_bit_idx + 1;
                         end if;
@@ -438,9 +425,9 @@ begin
                         if r_write_ddr_address = C_COLS * C_ROWS - 1 then
                             r_out_last <= '1';
                             case r_bit_idx is
-                                when "00111" => r_tkeep <= "0001";
-                                when "01111" => r_tkeep <= "0011";
-                                when "10111" => r_tkeep <= "0111";
+                                when "000111" => r_tkeep <= "0001";
+                                when "001111" => r_tkeep <= "0011";
+                                when "010111" => r_tkeep <= "0111";
                                 when others   => r_tkeep <= "1111";
 
                             end case;
@@ -452,29 +439,27 @@ begin
 
                     end if;
 
-                    -- Hold output valid until the AXI sink accepts it.
-                    if (r_frame_intrlvd_tvalid = '1') and (frame_intrlvd_tready = '1') then
-                        r_frame_intrlvd_tvalid <= '0';
-                        r_frame_intrlvd_tlast  <= '0';
-                        r_frame_intrlvd_tkeep  <= (others => '0');
-                        r_frame_intrlvd_tdata  <= (others => '0');
-                        r_frame_intrlvd_tuser  <= (others => '0');
-                        -- Preserve a newly completed word in this same cycle.
-                        r_output_state         <= v_word_complete;
-
-                        if r_write_ddr_address = C_COLS * C_ROWS then
-                            r_write_ddr_address <= (others => '0');
-                        end if;
-
                     -- send the data and associated sideband signals out over AXI4-Stream
-                    elsif (r_output_state = '1') and (r_frame_intrlvd_tvalid = '0') then
-                        if frame_intrlvd_tready = '1' then
+                    if r_output_state = '1' then
+                        if (frame_intrlvd_tready = '1') and (r_frame_intrlvd_tvalid = '0') then
                             r_frame_intrlvd_tdata  <= r_out_data;
                             r_frame_intrlvd_tuser  <= frame_tuser;
                             r_frame_intrlvd_tlast  <= r_out_last;
                             r_frame_intrlvd_tkeep  <= r_tkeep;
                             r_frame_intrlvd_tvalid <= '1';
+                        elsif (frame_intrlvd_tready = '1') and (r_frame_intrlvd_tvalid = '1') then
+                            r_frame_intrlvd_tvalid <= '0';
+                            r_frame_intrlvd_tlast  <= '0';
+                            r_output_state         <= '0';
+                            r_frame_intrlvd_tkeep  <= (others => '0');
+                            r_frame_intrlvd_tdata  <= (others => '0');
+                            r_frame_intrlvd_tuser  <= (others => '0');
+
+                            if r_write_ddr_address = C_COLS * C_ROWS then
+                                r_write_ddr_address <= (others => '0');
+                            end if;
                         end if;
+
                     end if;
 
             end case;
