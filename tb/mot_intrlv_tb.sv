@@ -425,7 +425,7 @@ module mod_intrlv_tb;
 
     // Open the file at the start of simulation for the interlever
     initial begin
-        outfile_1 = $fopen("/home/sasindu/work/custom_arbitor/custom_arbiter/misc/mod_intrlv_output.txt", "w");
+        outfile_1 = $fopen("/home/sasindu/work/custom_arbitor/custom_arbiter/misc/mod_interlv_output.txt", "w");
         if (outfile_1 == 0) begin
             $display("ERROR: Could not open file for writing!");
             //            $finish;
