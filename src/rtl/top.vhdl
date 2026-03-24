@@ -209,49 +209,7 @@ architecture rtl of top_loop_back is
         end loop;
         return result;
     end function;
-
-    -- function fetch_keep_valid(
-    --     fetch_idx : natural;
-    --     tkeep     : std_logic_vector(3 downto 0)
-    -- ) return std_logic is
-    -- begin
-    --     case fetch_idx is
-    --         when 0 | 1 | 2 | 3 =>
-    --             return tkeep(0);
-    --         when 4 | 5 | 6 | 7 =>
-    --             return tkeep(1);
-    --         when 8 | 9 | 10 | 11 =>
-    --             return tkeep(2);
-    --         when others =>
-    --             return tkeep(3);
-    --     end case;
-    -- end function;
-
-    -- subtype t_fetch_idx is unsigned(4 downto 0);
-
-    -- function last_fetch_index(tkeep : std_logic_vector(3 downto 0)) return t_fetch_idx is
-    -- begin
-    --     if tkeep(3) = '1' then
-    --         return to_unsigned(15, 5);
-    --     elsif tkeep(2) = '1' then
-    --         return to_unsigned(11, 5);
-    --     elsif tkeep(1) = '1' then
-    --         return to_unsigned(7, 5);
-    --     else
-    --         return to_unsigned(3, 5);
-    --     end if;
-    -- end function;
-
-    -- function fetch_is_last(
-    --     fetch_idx : t_fetch_idx;
-    --     tkeep     : std_logic_vector(3 downto 0)
-    -- ) return std_logic is
-    -- begin
-    --     if fetch_idx = last_fetch_index(tkeep) then
-    --         return '1';
-    --     end if;
-    --     return '0';
-    -- end function;
+  
 
     -- Internal signals for connecting mod_intrlv to AXI interconnect
     signal slot0_awid    : std_logic_vector(3 downto 0);
