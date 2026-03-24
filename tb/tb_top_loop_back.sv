@@ -436,12 +436,12 @@ module top_loop_back_tb;
 
     // Open the file at the start of simulation
     initial begin
-        outfile = $fopen("misc/demod_deintrlv_output.txt", "w");
+        outfile = $fopen("/home/sasindu/work/custom_arbitor/custom_arbiter/misc/demod_deintrlv_output.txt", "w");
         if (outfile == 0) begin
             $display("ERROR: Could not open file for writing!");
         end
 
-        intrlv_outfile = $fopen("misc/interleaver_output.txt", "w");
+        intrlv_outfile = $fopen("/home/sasindu/work/custom_arbitor/custom_arbiter/misc/mod_interlv_output.txt", "w");
         if (intrlv_outfile == 0) begin
             $display("ERROR: Could not open interleaver output file for writing!");
         end
