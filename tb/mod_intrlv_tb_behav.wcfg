@@ -320,6 +320,10 @@
       <obj_property name="ElementShortName">S01_AXI_BREADY</obj_property>
       <obj_property name="ObjectShortName">S01_AXI_BREADY</obj_property>
    </wvobject>
+   <wvobject type="array" fp_name="/mod_intrlv_tb/ddr4_m_axi_rid">
+      <obj_property name="ElementShortName">ddr4_m_axi_rid[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr4_m_axi_rid[3:0]</obj_property>
+   </wvobject>
    <wvobject fp_name="divider1846" type="divider">
       <obj_property name="label">----------------------------</obj_property>
       <obj_property name="DisplayName">label</obj_property>

@@ -127,6 +127,12 @@ module mod_intrlv_tb;
 
     localparam real DDR_REF_FREQ_HZ   = 75_000_000.0; // 75 MHz
     localparam real DDR_REF_PERIOD_NS = 1e9 / DDR_REF_FREQ_HZ;
+    localparam int  FRAME_WORDS       = 2048;
+    localparam int  STARTUP_CYCLES    = 8;
+    localparam int  SIM_TIMEOUT_CYCLES = 50000;
+
+    integer outfile_2;
+
 
 
     // Instantiate top (includes custom AXI interconnect + mod_intrlv)
@@ -134,19 +140,19 @@ module mod_intrlv_tb;
         .axis_resetn            (axis_resetn),
         .axis_clk               (axis_clk),
 
-        .mod_frame_tready       (frame_tready),
-        .mod_frame_tvalid       (frame_tvalid),
-        .mod_frame_tuser        (frame_tuser),
-        .mod_frame_tdata        (frame_tdata),
-        .mod_frame_tkeep        (frame_tkeep),
-        .mod_frame_tlast        (frame_tlast),
+        .demod_frame_tready       (frame_tready),
+        .demod_frame_tvalid       (frame_tvalid),
+        .demod_frame_tuser        (frame_tuser),
+        .demod_frame_tdata        (frame_tdata),
+        .demod_frame_tkeep        (frame_tkeep),
+        .demod_frame_tlast        (frame_tlast),
 
-        .frame_intrlvd_tready   (frame_intrlvd_tready),
-        .frame_intrlvd_tvalid   (frame_intrlvd_tvalid),
-        .frame_intrlvd_tuser    (frame_intrlvd_tuser),
-        .frame_intrlvd_tdata    (frame_intrlvd_tdata),
-        .frame_intrlvd_tkeep    (frame_intrlvd_tkeep),
-        .frame_intrlvd_tlast    (frame_intrlvd_tlast),
+        .frame_deintrlvd_tready   (frame_deintrlvd_tready),
+        .frame_deintrlvd_tvalid   (frame_deintrlvd_tvalid),
+        .frame_deintrlvd_tuser    (frame_deintrlvd_tuser),
+        .frame_deintrlvd_tdata    (frame_deintrlvd_tdata),
+        .frame_deintrlvd_tkeep    (frame_deintrlvd_tkeep),
+        .frame_deintrlvd_tlast    (frame_deintrlvd_tlast),
 
         .demod_frame_tready     (demod_frame_tready),
         .demod_frame_tvalid     (demod_frame_tvalid),
@@ -382,6 +388,7 @@ module mod_intrlv_tb;
             end
 
             frame_tvalid = 1'b0;
+            frame_tlast  = 1'b0;
         end
     endtask
 
@@ -449,12 +456,12 @@ module mod_intrlv_tb;
         if (!axis_resetn) begin
             // nothing
         end else begin
-            if (frame_intrlvd_tvalid && frame_intrlvd_tready) begin
+            if (frame_deintrlvd_tvalid && frame_deintrlvd_tready) begin
                 // Log exactly one transfer
                 $fdisplay(outfile_1, "%h", frame_intrlvd_tdata);
                 $fflush(outfile_1);
 
-                if (frame_intrlvd_tlast) begin
+                if (frame_deintrlvd_tlast) begin
                     $display("Packet complete at time %0t ns, last word received: 0x%h",
                         $time, frame_intrlvd_tdata);
                     $fclose(outfile_1);
@@ -485,6 +492,33 @@ module mod_intrlv_tb;
         end
     end
 
+    integer count = 0;
+
+    always @(posedge axis_clk) begin
+        if (frame_deintrlvd_tvalid && frame_deintrlvd_tready)
+            count++;
+
+        if (frame_deintrlvd_tlast)
+            $display("FINAL COUNT = %0d", count);
+    end
+
+
+
+    initial begin
+        rd_addr_file = $fopen("/home/sasindu/work/custom_arbitor/custom_arbiter/misc/read_addresses.txt", "w");
+        if (rd_addr_file == 0) begin
+            $display("ERROR: Could not open read address file!");
+        end
+    end
+
+    always @(posedge axis_clk) begin
+        if (axis_resetn) begin
+            if (ddr4_m_axi_arvalid && ddr4_m_axi_arready) begin
+                $fdisplay(rd_addr_file, "%h", ddr4_m_axi_araddr);
+                $fflush(rd_addr_file);
+            end
+        end
+    end
 
 
 
