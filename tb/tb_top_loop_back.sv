@@ -447,6 +447,28 @@ module top_loop_back_tb;
         end
     end
 
+
+
+    always @(posedge axis_clk) begin
+        if (!axis_resetn) begin
+            // nothing
+        end else begin
+            if (frame_intrlvd_tvalid && frame_intrlvd_tready) begin
+                // Log exactly one transfer
+                $fdisplay(intrlv_outfile, "%h", frame_intrlvd_tdata);
+                $fflush(intrlv_outfile);
+
+                if (frame_intrlvd_tlast) begin
+                    $display("Packet complete at time %0t ns, last word received: 0x%h",
+                        $time, frame_intrlvd_tdata);
+                    $fclose(intrlv_outfile);
+                    //                    $finish;
+                end
+            end
+        end
+    end
+
+
     // ------------------------------------------------------------------
     // Monitor frame_deintrlvd signals and write to file
     // ------------------------------------------------------------------
