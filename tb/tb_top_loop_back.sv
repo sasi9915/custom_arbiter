@@ -361,7 +361,7 @@ module top_loop_back_tb;
         mod_frame_tvalid = 0;
         mod_frame_tuser  = 16'h0000;
         mod_frame_tdata  = 32'h00000000;
-        mod_frame_tkeep  = 4'hF;
+        mod_frame_tkeep  = 4'b1111;
         mod_frame_tlast  = 0;
 
         frame_deintrlvd_tready = 1'b1;

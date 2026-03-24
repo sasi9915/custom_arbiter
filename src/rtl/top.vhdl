@@ -17,20 +17,20 @@ entity top_loop_back is
         mod_frame_tdata        : in  std_logic_vector(31 downto 00);
         mod_frame_tkeep        : in  std_logic_vector(03 downto 00);
         mod_frame_tlast        : in  std_logic;
-        -- mod_intrlv AXI Master Interface (to connect to AXI Interconnect)
-        frame_intrlvd_tready : in  std_logic;
-        frame_intrlvd_tvalid : out std_logic;
-        frame_intrlvd_tuser  : out std_logic_vector(15 downto 00);
-        frame_intrlvd_tdata  : out std_logic_vector(31 downto 00);
-        frame_intrlvd_tkeep  : out std_logic_vector(03 downto 00);
-        frame_intrlvd_tlast  : out std_logic;
+        -- -- mod_intrlv AXI Master Interface (to connect to AXI Interconnect)
+        -- frame_intrlvd_tready : in  std_logic;
+        -- frame_intrlvd_tvalid : out std_logic;
+        -- frame_intrlvd_tuser  : out std_logic_vector(15 downto 00);
+        -- frame_intrlvd_tdata  : out std_logic_vector(31 downto 00);
+        -- frame_intrlvd_tkeep  : out std_logic_vector(03 downto 00);
+        -- frame_intrlvd_tlast  : out std_logic;
         -- demodulator AXI-Stream Interface
-        demod_frame_tready       : out std_logic;
-        demod_frame_tvalid       : in  std_logic;
-        demod_frame_tuser        : in  std_logic_vector(15 downto 0);
-        demod_frame_tdata        : in  std_logic_vector(31 downto 0);
-        demod_frame_tkeep        : in  std_logic_vector(3 downto 0);
-        demod_frame_tlast        : in  std_logic;
+        -- demod_frame_tready       : out std_logic;
+        -- demod_frame_tvalid       : in  std_logic;
+        -- demod_frame_tuser        : in  std_logic_vector(15 downto 0);
+        -- demod_frame_tdata        : in  std_logic_vector(31 downto 0);
+        -- demod_frame_tkeep        : in  std_logic_vector(3 downto 0);
+        -- demod_frame_tlast        : in  std_logic;
         -- demod_deintrlv AXI Master Interface (to connect to AXI Interconnect)
         frame_deintrlvd_tready : in  std_logic;
         frame_deintrlvd_tvalid : out std_logic;
@@ -194,21 +194,21 @@ architecture rtl of top_loop_back is
         );
     end component demod_deintrlv;
 
-    -- -- Function declaration for LLR mapping
-    -- function llr_mapper(input_bits : std_logic_vector(1 downto 0)) return std_logic_vector is
-    --     variable result : std_logic_vector(31 downto 0);
-    --     variable temp   : signed(15 downto 0);
-    -- begin
-    --     for i in 0 to 1 loop
-    --         if input_bits(i) = '1' then
-    --             temp := to_signed(32767, 16); -- +127
-    --         else
-    --             temp := to_signed(-32767, 16); -- -127
-    --         end if;
-    --         result((i * 16 + 15) downto (i * 16)) := std_logic_vector(temp);
-    --     end loop;
-    --     return result;
-    -- end function;
+    -- Function declaration for LLR mapping
+    function llr_mapper(input_bits : std_logic_vector(1 downto 0)) return std_logic_vector is
+        variable result : std_logic_vector(31 downto 0);
+        variable temp   : signed(15 downto 0);
+    begin
+        for i in 0 to 1 loop
+            if input_bits(i) = '1' then
+                temp := to_signed(32767, 16); -- +127
+            else
+                temp := to_signed(-32767, 16); -- -127
+            end if;
+            result((i * 16 + 15) downto (i * 16)) := std_logic_vector(temp);
+        end loop;
+        return result;
+    end function;
 
     -- function fetch_keep_valid(
     --     fetch_idx : natural;
@@ -310,6 +310,7 @@ architecture rtl of top_loop_back is
 
     -- Internal signals for fetch counter and control
     signal r_fetch_counter : unsigned(4 downto 0) := (others => '0');
+    signal r_fetch_req     : std_logic            := 'U';
     signal r_tvalid        : std_logic            := '0';
     signal r_intrlvd_tuser : std_logic_vector(15 downto 0);
     signal r_intrlvd_tkeep : std_logic_vector(3 downto 0);
@@ -357,131 +358,158 @@ architecture rtl of top_loop_back is
 
 begin
 
-    -- main_processs : process(axis_clk, axis_resetn)
-    -- begin
-    --     if axis_resetn = '0' then
-    --         r_fetch_counter      <= (others => '0');
-    --         r_demod_frame_tdata  <= (others => '0');
-    --         r_demod_frame_tuser  <= (others => '0');
-    --         r_demod_frame_tkeep  <= (others => '0');
-    --         r_demod_frame_tlast  <= ('0');
-    --         r_demod_frame_tvalid <= ('0');
+    main_processs : process(axis_clk, axis_resetn)
+    begin
+        if axis_resetn = '0' then
+            r_fetch_counter      <= (others => '0');
+            r_fetch_req          <= '0';
+            r_demod_frame_tdata  <= (others => '0');
+            r_demod_frame_tuser  <= (others => '0');
+            r_demod_frame_tkeep  <= (others => '0');
+            r_demod_frame_tlast  <= ('0');
+            r_demod_frame_tvalid <= ('0');
 
-    --         r_intrlvd_tuser <= (others => '0');
-    --         r_intrlvd_tkeep <= (others => '0');
-    --         r_intrlvd_tlast <= '0';
-    --         r_intrlvd_tdata <= (others => '0');
-    --         r_tvalid        <= '0';
+            r_intrlvd_tuser <= (others => '0');
+            r_intrlvd_tkeep <= (others => '0');
+            r_intrlvd_tlast <= '0';
+            r_intrlvd_tdata <= (others => '0');
+            r_tvalid        <= '0';
 
-    --     elsif (rising_edge(axis_clk)) then
-    --         r_demod_frame_tkeep <= (others => '1');
-    --         r_demod_frame_tvalid <= '0';
-    --         r_demod_frame_tlast  <= '0';
+        elsif (rising_edge(axis_clk)) then
+            r_demod_frame_tkeep <= (others => '1');
+            -- r_demod_frame_tvalid <= '0';
+            -- r_demod_frame_tlast  <= '0';
 
-    --         if w_frame_intrlvd_tvalid = '1' and w_frame_intrlvd_tready = '1' and w_frame_intrlvd_tlast = '1' then
-    --             r_intrlvd_tlast <= '1';
-    --         elsif w_frame_intrlvd_tvalid = '1' and w_frame_intrlvd_tready = '1' then
-    --             r_intrlvd_tlast <= '0';
-    --         end if;
+            if w_frame_intrlvd_tvalid = '1' and w_frame_intrlvd_tready = '1' and w_frame_intrlvd_tlast = '1' then
+                r_intrlvd_tlast <= '1';
+            elsif w_frame_intrlvd_tvalid = '1' and w_frame_intrlvd_tready = '1' then
+                r_intrlvd_tlast <= '0';
+            end if;
 
-    --         if w_frame_intrlvd_tvalid = '1' and w_frame_intrlvd_tready = '1' then
-    --             r_intrlvd_tuser <= w_frame_intrlvd_tuser;
-    --             r_intrlvd_tkeep <= w_frame_intrlvd_tkeep;
-    --             r_intrlvd_tdata <= w_frame_intrlvd_tdata;
-    --             r_fetch_counter <= (others => '0');
-    --             r_tvalid        <= '1';
-    --         elsif r_tvalid = '1' and w_demod_frame_tready = '1' then
+            if w_frame_intrlvd_tvalid = '1' and w_frame_intrlvd_tready = '1' then
+                -- r_intrlvd_tuser <= w_frame_intrlvd_tuser;
+                -- r_intrlvd_tkeep <= w_frame_intrlvd_tkeep;
+                r_intrlvd_tdata <= w_frame_intrlvd_tdata;
+                -- r_fetch_counter <= (others => '0');
+                r_tvalid        <= '1';
 
-    --             r_demod_frame_tuser <= r_intrlvd_tuser;
+            elsif r_tvalid = '1' and w_demod_frame_tready = '1' then
+                r_demod_frame_tuser <= r_intrlvd_tuser;
 
-    --             case to_integer(r_fetch_counter) is
+                case to_integer(r_fetch_counter) is
 
-    --                 when 0 =>
-    --                     r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(1 downto 0));
-    --                     r_demod_frame_tlast  <= '0';
-    --                     r_demod_frame_tvalid <= fetch_keep_valid(0, r_intrlvd_tkeep);
-    --                 when 1 =>
-    --                     r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(3 downto 2));
-    --                     r_demod_frame_tlast  <= '0';
-    --                     r_demod_frame_tvalid <= fetch_keep_valid(1, r_intrlvd_tkeep);
-    --                 when 2 =>
-    --                     r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(5 downto 4));
-    --                     r_demod_frame_tlast  <= '0';
-    --                     r_demod_frame_tvalid <= fetch_keep_valid(2, r_intrlvd_tkeep);
-    --                 when 3 =>
-    --                     r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(7 downto 6));
-    --                     r_demod_frame_tlast  <= '0';
-    --                     r_demod_frame_tvalid <= fetch_keep_valid(3, r_intrlvd_tkeep);
-    --                 when 4 =>
-    --                     r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(9 downto 8));
-    --                     r_demod_frame_tlast  <= '0';
-    --                     r_demod_frame_tvalid <= fetch_keep_valid(4, r_intrlvd_tkeep);
-    --                 when 5 =>
-    --                     r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(11 downto 10));
-    --                     r_demod_frame_tlast  <= '0';
-    --                     r_demod_frame_tvalid <= fetch_keep_valid(5, r_intrlvd_tkeep);
-    --                 when 6 =>
-    --                     r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(13 downto 12));
-    --                     r_demod_frame_tlast  <= '0';
-    --                     r_demod_frame_tvalid <= fetch_keep_valid(6, r_intrlvd_tkeep);
-    --                 when 7 =>
-    --                     r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(15 downto 14));
-    --                     r_demod_frame_tlast  <= r_intrlvd_tlast and fetch_is_last(r_fetch_counter, r_intrlvd_tkeep);
-    --                     r_demod_frame_tvalid <= fetch_keep_valid(7, r_intrlvd_tkeep);
-    --                 when 8 =>
-    --                     r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(17 downto 16));
-    --                     r_demod_frame_tlast  <= r_intrlvd_tlast and fetch_is_last(r_fetch_counter, r_intrlvd_tkeep);
-    --                     r_demod_frame_tvalid <= fetch_keep_valid(8, r_intrlvd_tkeep);
-    --                 when 9 =>
-    --                     r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(19 downto 18));
-    --                     r_demod_frame_tlast  <= r_intrlvd_tlast and fetch_is_last(r_fetch_counter, r_intrlvd_tkeep);
-    --                     r_demod_frame_tvalid <= fetch_keep_valid(9, r_intrlvd_tkeep);
-    --                 when 10 =>
-    --                     r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(21 downto 20));
-    --                     r_demod_frame_tlast  <= r_intrlvd_tlast and fetch_is_last(r_fetch_counter, r_intrlvd_tkeep);
-    --                     r_demod_frame_tvalid <= fetch_keep_valid(10, r_intrlvd_tkeep);
-    --                 when 11 =>
-    --                     r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(23 downto 22));
-    --                     r_demod_frame_tlast  <= r_intrlvd_tlast and fetch_is_last(r_fetch_counter, r_intrlvd_tkeep);
-    --                     r_demod_frame_tvalid <= fetch_keep_valid(11, r_intrlvd_tkeep);
-    --                 when 12 =>
-    --                     r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(25 downto 24));
-    --                     r_demod_frame_tlast  <= r_intrlvd_tlast and fetch_is_last(r_fetch_counter, r_intrlvd_tkeep);
-    --                     r_demod_frame_tvalid <= fetch_keep_valid(12, r_intrlvd_tkeep);
-    --                 when 13 =>
-    --                     r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(27 downto 26));
-    --                     r_demod_frame_tlast  <= r_intrlvd_tlast and fetch_is_last(r_fetch_counter, r_intrlvd_tkeep);
-    --                     r_demod_frame_tvalid <= fetch_keep_valid(13, r_intrlvd_tkeep);
-    --                 when 14 =>
-    --                     r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(29 downto 28));
-    --                     r_demod_frame_tlast  <= r_intrlvd_tlast and fetch_is_last(r_fetch_counter, r_intrlvd_tkeep);
-    --                     r_demod_frame_tvalid <= fetch_keep_valid(14, r_intrlvd_tkeep);
-    --                 when 15 =>
-    --                     r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(31 downto 30));
-    --                     r_demod_frame_tlast  <= r_intrlvd_tlast and fetch_is_last(r_fetch_counter, r_intrlvd_tkeep);
-    --                     r_demod_frame_tvalid <= fetch_keep_valid(15, r_intrlvd_tkeep);
-    --                 when others =>
-    --                     r_demod_frame_tdata  <= (others => '0');
-    --                     r_demod_frame_tvalid <= '0';
-    --                     r_demod_frame_tlast  <= '0';
+                    when 0 =>
+                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(1 downto 0));
+                        r_fetch_req          <= '0';
+                        r_demod_frame_tlast  <= '0';
+                        r_demod_frame_tvalid <= r_tvalid and w_frame_intrlvd_tkeep(0);
+                    when 1 =>
+                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(3 downto 2));
+                        r_fetch_req          <= '0';
+                        r_demod_frame_tlast  <= '0';
+                        r_demod_frame_tvalid <= r_tvalid and w_frame_intrlvd_tkeep(0);
+                    when 2 =>
+                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(5 downto 4));
+                        r_fetch_req     <= '0';
+                        r_demod_frame_tlast  <= '0';
+                        r_demod_frame_tvalid <= r_tvalid and w_frame_intrlvd_tkeep(1);
+                    when 3 =>
+                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(7 downto 6));
+                        r_fetch_req     <= '0';
+                        r_demod_frame_tlast  <= '0';
+                        r_demod_frame_tvalid <= r_tvalid and w_frame_intrlvd_tkeep(1);
+                    when 4 =>
+                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(9 downto 8));
+                        r_fetch_req     <= '0';
+                        r_demod_frame_tlast  <= '0';
+                        r_demod_frame_tvalid <= r_tvalid and w_frame_intrlvd_tkeep(2);
+                    when 5 =>
+                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(11 downto 10));
+                        r_fetch_req     <= '0';
+                        r_demod_frame_tlast  <= '0';
+                        r_demod_frame_tvalid <= r_tvalid and w_frame_intrlvd_tkeep(2);
+                    when 6 =>
+                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(13 downto 12));
+                        r_fetch_req     <= '0';
+                        r_demod_frame_tlast  <= '0';
+                        r_demod_frame_tvalid <= r_tvalid and w_frame_intrlvd_tkeep(3);
+                    when 7 =>
+                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(15 downto 14));
+                        r_fetch_req     <= '0';
+                        r_demod_frame_tlast  <= '0';
+                        r_demod_frame_tvalid <= r_tvalid and w_frame_intrlvd_tkeep(3);
+                    when 8 =>
+                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(17 downto 16));
+                        r_fetch_req     <= '0';
+                        r_demod_frame_tlast  <= '0';
+                        r_demod_frame_tvalid <= r_tvalid and w_frame_intrlvd_tkeep(4);
+                    when 9 =>
+                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(19 downto 18));
+                        r_fetch_req <= '0';
+                        r_demod_frame_tlast  <='0';
+                        r_demod_frame_tvalid <= r_tvalid and w_frame_intrlvd_tkeep(4);
+                    when 10 =>
+                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(21 downto 20));
+                        r_fetch_req <= '0';
+                        r_demod_frame_tlast  <= '0';
+                        r_demod_frame_tvalid <= r_tvalid and w_frame_intrlvd_tkeep(5);
+                    when 11 =>
+                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(23 downto 22));
+                        r_fetch_req <= '0';
+                        r_demod_frame_tlast  <= '0';
+                        r_demod_frame_tvalid <= r_tvalid and w_frame_intrlvd_tkeep(5);
+                    when 12 =>
+                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(25 downto 24));
+                        r_fetch_req <= '0';
+                        r_demod_frame_tlast  <= '0';
+                        r_demod_frame_tvalid <= r_tvalid and w_frame_intrlvd_tkeep(6);
+                    when 13 =>
+                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(27 downto 26));
+                        r_fetch_req <= '0';
+                        r_demod_frame_tlast  <= '0';
+                        r_demod_frame_tvalid <= r_tvalid and w_frame_intrlvd_tkeep(6);
+                    when 14 =>
+                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(29 downto 28));
+                        r_fetch_req <= '0';
+                        r_demod_frame_tlast  <= '0';
+                        r_demod_frame_tvalid <= r_tvalid and w_frame_intrlvd_tkeep(7);
+                    when 15 =>
+                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(31 downto 30));
+                        r_fetch_req <= '0';
+                        r_demod_frame_tlast  <= r_intrlvd_tlast;
+                        r_demod_frame_tvalid <= r_tvalid and w_frame_intrlvd_tkeep(7);
+                    when 16 =>
+                        r_demod_frame_tdata  <= (others => '0');
+                        r_fetch_req <= not r_fetch_req;
+                        r_demod_frame_tlast  <= '0';
+                        r_demod_frame_tvalid <= '0';
+                        r_tvalid <= w_frame_intrlvd_tvalid; 
+                    when others =>
+                        r_demod_frame_tdata  <= (others => '0');
+                        r_fetch_req <= '1';
+                        r_demod_frame_tvalid <= '0';
+                        r_demod_frame_tlast  <= '0';
 
-    --             end case;
+                end case;
 
-    --             if r_fetch_counter = last_fetch_index(r_intrlvd_tkeep) then
-    --                 r_fetch_counter <= (others => '0');
-    --                 r_tvalid        <= '0';
-    --             else
-    --                 r_fetch_counter <= r_fetch_counter + to_unsigned(1, 5);
-    --             end if;
-    --         else
-    --             r_demod_frame_tdata  <= (others => '0');
-    --         end if;
+                if r_fetch_counter = to_unsigned(16 ,5) then
+                    r_fetch_counter <= (others => '0');
+                   
+                else
+                    r_fetch_counter <= r_fetch_counter + to_unsigned(1, 5);
+                end if;
+            elsif w_demod_frame_tready = '1' then
+                r_demod_frame_tdata  <= (others => '0');
+                r_demod_frame_tvalid <= '0';
+                r_demod_frame_tlast  <= '0';   
+                r_fetch_req     <= '1';
+            end if;
 
-    --     end if;
-    -- end process;
+        end if;
+    end process;
 
     -- Ready signal for mod_intrlv
-    w_frame_intrlvd_tready <= (not r_tvalid) and w_demod_frame_tready;
+    w_frame_intrlvd_tready <= r_fetch_req and w_demod_frame_tready;
 
     -- mod_intrlv instance
     u_mod_intrlv : mod_intrlv
@@ -494,12 +522,12 @@ begin
             frame_tdata          => mod_frame_tdata,
             frame_tkeep          => mod_frame_tkeep,
             frame_tlast          => mod_frame_tlast,
-            frame_intrlvd_tready => frame_intrlvd_tready,
-            frame_intrlvd_tvalid => frame_intrlvd_tvalid,
-            frame_intrlvd_tuser  => frame_intrlvd_tuser,
-            frame_intrlvd_tdata  => frame_intrlvd_tdata,
-            frame_intrlvd_tkeep  => frame_intrlvd_tkeep,
-            frame_intrlvd_tlast  => frame_intrlvd_tlast,
+            frame_intrlvd_tready => w_frame_intrlvd_tready,
+            frame_intrlvd_tvalid => w_frame_intrlvd_tvalid,
+            frame_intrlvd_tuser  => w_frame_intrlvd_tuser,
+            frame_intrlvd_tdata  => w_frame_intrlvd_tdata,
+            frame_intrlvd_tkeep  => w_frame_intrlvd_tkeep,
+            frame_intrlvd_tlast  => w_frame_intrlvd_tlast,
             -- Connect to internal AXI signals
             ddr4_m_axi_awid      => slot0_awid,
             ddr4_m_axi_awaddr    => slot0_awaddr,
@@ -545,12 +573,12 @@ begin
         port map(
             axis_resetn            => axis_resetn,
             axis_clk               => axis_clk,
-            frame_tready           => demod_frame_tready,
-            frame_tvalid           => demod_frame_tvalid,
-            frame_tuser            => demod_frame_tuser,
-            frame_tdata            => demod_frame_tdata,
-            frame_tkeep            => demod_frame_tkeep,
-            frame_tlast            => demod_frame_tlast,
+            frame_tready           => w_demod_frame_tready,
+            frame_tvalid           => r_demod_frame_tvalid,
+            frame_tuser            => r_demod_frame_tuser,
+            frame_tdata            => r_demod_frame_tdata,
+            frame_tkeep            => r_demod_frame_tkeep,
+            frame_tlast            => r_demod_frame_tlast,
             frame_deintrlvd_tready => frame_deintrlvd_tready,
             frame_deintrlvd_tvalid => frame_deintrlvd_tvalid,
             frame_deintrlvd_tuser  => frame_deintrlvd_tuser,
