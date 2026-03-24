@@ -140,8 +140,8 @@ module top_loop_back_tb;
     function automatic [31:0] expected_rx_word(input [31:0] source_word, input integer pair_idx);
         begin
             expected_rx_word = {
-                llr16_from_bit(source_word[pair_idx * 2 + 1]),
-                llr16_from_bit(source_word[pair_idx * 2])
+            llr16_from_bit(source_word[pair_idx * 2 + 1]),
+            llr16_from_bit(source_word[pair_idx * 2])
             };
         end
     endfunction
@@ -434,6 +434,35 @@ module top_loop_back_tb;
     integer outfile;
     integer intrlv_outfile;
 
+
+    integer aw_count;
+    integer wbeat_count;
+    integer wlast_count;
+
+    always @(posedge axis_clk) begin
+        if (!axis_resetn) begin
+            aw_count    <= 0;
+            wbeat_count <= 0;
+            wlast_count <= 0;
+        end else begin
+            if (M_AXI_AWVALID && M_AXI_AWREADY) begin
+                aw_count <= aw_count + 1;
+                $display("AW[%0d] addr=%h len=%0d time=%0t",
+                    aw_count, M_AXI_AWADDR, M_AXI_AWLEN, $time);
+            end
+
+            if (M_AXI_WVALID && M_AXI_WREADY) begin
+                wbeat_count <= wbeat_count + 1;
+
+                if (M_AXI_WLAST) begin
+                    wlast_count <= wlast_count + 1;
+                    $display("WLAST[%0d] beat=%0d time=%0t",
+                        wlast_count, wbeat_count + 1, $time);
+                end
+            end
+        end
+    end
+
     // Open the file at the start of simulation
     initial begin
         outfile = $fopen("/home/sasindu/work/custom_arbitor/custom_arbiter/misc/demod_deintrlv_output.txt", "w");
@@ -449,24 +478,24 @@ module top_loop_back_tb;
 
 
 
-    always @(posedge axis_clk) begin
-        if (!axis_resetn) begin
-            // nothing
-        end else begin
-            if (frame_intrlvd_tvalid && frame_intrlvd_tready) begin
-                // Log exactly one transfer
-                $fdisplay(intrlv_outfile, "%h", frame_intrlvd_tdata);
-                $fflush(intrlv_outfile);
+    // always @(posedge axis_clk) begin
+    //     if (!axis_resetn) begin
+    //         // nothing
+    //     end else begin
+    //         if (frame_intrlvd_tvalid && frame_intrlvd_tready) begin
+    //             // Log exactly one transfer
+    //             $fdisplay(intrlv_outfile, "%h", frame_intrlvd_tdata);
+    //             $fflush(intrlv_outfile);
 
-                if (frame_intrlvd_tlast) begin
-                    $display("Packet complete at time %0t ns, last word received: 0x%h",
-                        $time, frame_intrlvd_tdata);
-                    $fclose(intrlv_outfile);
-                    //                    $finish;
-                end
-            end
-        end
-    end
+    //             if (frame_intrlvd_tlast) begin
+    //                 $display("Packet complete at time %0t ns, last word received: 0x%h",
+    //                     $time, frame_intrlvd_tdata);
+    //                 $fclose(intrlv_outfile);
+    //                 //                    $finish;
+    //             end
+    //         end
+    //     end
+    // end
 
 
     // ------------------------------------------------------------------
@@ -517,20 +546,20 @@ module top_loop_back_tb;
         end
     end
 
-    always @(posedge axis_clk) begin
-        if (mod_frame_tvalid && mod_frame_tready) begin
-            tx_count = tx_count + 1;
-            $display("TX[%0d]: %h", tx_count - 1, mod_frame_tdata);
-        end
-    end
+    // always @(posedge axis_clk) begin
+    //     if (mod_frame_tvalid && mod_frame_tready) begin
+    //         tx_count = tx_count + 1;
+    //         $display("TX[%0d]: %h", tx_count - 1, mod_frame_tdata);
+    //     end
+    // end
 
-    always @(posedge axis_clk) begin
-        if (frame_intrlvd_tvalid && frame_intrlvd_tready) begin
-            intrlv_count = intrlv_count + 1;
-            $fdisplay(intrlv_outfile, "%h %h %b", frame_intrlvd_tdata, frame_intrlvd_tkeep, frame_intrlvd_tlast);
-            $fflush(intrlv_outfile);
-            $display("INT[%0d]: data=%h keep=%h last=%b", intrlv_count - 1, frame_intrlvd_tdata, frame_intrlvd_tkeep, frame_intrlvd_tlast);
-        end
-    end
+    // always @(posedge axis_clk) begin
+    //     if (frame_intrlvd_tvalid && frame_intrlvd_tready) begin
+    //         intrlv_count = intrlv_count + 1;
+    //         $fdisplay(intrlv_outfile, "%h %h %b", frame_intrlvd_tdata, frame_intrlvd_tkeep, frame_intrlvd_tlast);
+    //         $fflush(intrlv_outfile);
+    //         $display("INT[%0d]: data=%h keep=%h last=%b", intrlv_count - 1, frame_intrlvd_tdata, frame_intrlvd_tkeep, frame_intrlvd_tlast);
+    //     end
+    // end
 
 endmodule

@@ -2,6 +2,11 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+--debug 
+library std;
+use std.textio.all;
+use ieee.std_logic_textio.all;
+
 library xpm;
 use xpm.vcomponents.all;
 
@@ -81,6 +86,9 @@ entity top_loop_back is
 end entity top_loop_back;
 
 architecture rtl of top_loop_back is
+
+    --ebug output tracker file
+    file intrlv_file : text open write_mode is "/home/sasindu/work/custom_arbitor/custom_arbiter/misc/interlever_loopback_debug.txt";
 
     component mod_intrlv is
         port(
@@ -194,6 +202,7 @@ architecture rtl of top_loop_back is
         );
     end component demod_deintrlv;
 
+   
     -- Function declaration for LLR mapping
     function llr_mapper(input_bits : std_logic_vector(1 downto 0)) return std_logic_vector is
         variable result : std_logic_vector(31 downto 0);
@@ -201,15 +210,14 @@ architecture rtl of top_loop_back is
     begin
         for i in 0 to 1 loop
             if input_bits(i) = '1' then
-                temp := to_signed(32767, 16); 
+                temp := to_signed(32767, 16);
             else
-                temp := to_signed(-32767, 16); 
+                temp := to_signed(-32767, 16);
             end if;
             result((i * 16 + 15) downto (i * 16)) := std_logic_vector(temp);
         end loop;
         return result;
     end function;
-  
 
     -- Internal signals for connecting mod_intrlv to AXI interconnect
     signal slot0_awid    : std_logic_vector(3 downto 0);
@@ -316,6 +324,17 @@ architecture rtl of top_loop_back is
 
 begin
 
+    log_intrlv_output : process(axis_clk)
+        variable L : line;
+    begin
+        if rising_edge(axis_clk) then
+            if w_frame_intrlvd_tvalid = '1' and w_frame_intrlvd_tready = '1' then
+                hwrite(L, w_frame_intrlvd_tdata); -- write only data
+                writeline(intrlv_file, L); -- new line
+            end if;
+        end if;
+    end process;
+
     main_processs : process(axis_clk, axis_resetn)
     begin
         if axis_resetn = '0' then
@@ -334,7 +353,7 @@ begin
             r_tvalid        <= '0';
 
         elsif (rising_edge(axis_clk)) then
-            r_demod_frame_tkeep <= (others => '1');
+            r_demod_frame_tkeep  <= (others => '1');
             r_demod_frame_tvalid <= '0';
             r_demod_frame_tlast  <= '0';
 
