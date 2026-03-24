@@ -18,6 +18,22 @@ module mod_intrlv_tb;
     reg             frame_tlast;
 
     // AXI Stream Master Interface (frame_intrlvd)
+    wire            frame_intrlvd_tvalid;
+    reg             frame_intrlvd_tready;
+    wire [15:0]     frame_intrlvd_tuser;
+    wire [31:0]     frame_intrlvd_tdata;
+    wire [3:0]      frame_intrlvd_tkeep;
+    wire            frame_intrlvd_tlast;
+
+    // AXI Stream Slave Interface (demod_frame)
+    reg             demod_frame_tvalid;
+    wire            demod_frame_tready;
+    reg [15:0]      demod_frame_tuser;
+    reg [31:0]      demod_frame_tdata;
+    reg [3:0]       demod_frame_tkeep;
+    reg             demod_frame_tlast;
+
+    // AXI Stream Master Interface (frame_deintrlvd)
     wire            frame_deintrlvd_tvalid;
     reg             frame_deintrlvd_tready;
     wire [15:0]     frame_deintrlvd_tuser;
@@ -118,8 +134,9 @@ module mod_intrlv_tb;
     integer outfile_2;
 
 
+
     // Instantiate top (includes custom AXI interconnect + mod_intrlv)
-    top top_inst (
+    top_loop_back top_inst (
         .axis_resetn            (axis_resetn),
         .axis_clk               (axis_clk),
 
@@ -136,6 +153,20 @@ module mod_intrlv_tb;
         .frame_deintrlvd_tdata    (frame_deintrlvd_tdata),
         .frame_deintrlvd_tkeep    (frame_deintrlvd_tkeep),
         .frame_deintrlvd_tlast    (frame_deintrlvd_tlast),
+
+        .demod_frame_tready     (demod_frame_tready),
+        .demod_frame_tvalid     (demod_frame_tvalid),
+        .demod_frame_tuser      (demod_frame_tuser),
+        .demod_frame_tdata      (demod_frame_tdata),
+        .demod_frame_tkeep      (demod_frame_tkeep),
+        .demod_frame_tlast      (demod_frame_tlast),
+
+        .frame_deintrlvd_tready (frame_deintrlvd_tready),
+        .frame_deintrlvd_tvalid (frame_deintrlvd_tvalid),
+        .frame_deintrlvd_tuser  (frame_deintrlvd_tuser),
+        .frame_deintrlvd_tdata  (frame_deintrlvd_tdata),
+        .frame_deintrlvd_tkeep  (frame_deintrlvd_tkeep),
+        .frame_deintrlvd_tlast  (frame_deintrlvd_tlast),
 
         .M_AXI_AWID             (ddr4_m_axi_awid),
         .M_AXI_AWADDR           (ddr4_m_axi_awaddr),
@@ -278,7 +309,7 @@ module mod_intrlv_tb;
 
     initial begin
         ddr4_intf_c0_ddr4_aresetn = 0;
-        repeat (100) @(posedge ddr4_intf_c0_sys_clk_p);
+        repeat (300) @(posedge ddr4_intf_c0_sys_clk_p);
         ddr4_intf_c0_ddr4_aresetn = 1;
     end
 
@@ -295,28 +326,38 @@ module mod_intrlv_tb;
 
     // Testbench initial block
     initial begin
+
         frame_deintrlvd_tready = 1'b1;
+        demod_frame_tvalid          = 1'b0;
+        demod_frame_tuser           = 16'h0000;
+        demod_frame_tdata           = 32'h00000000;
+        demod_frame_tkeep           = 4'b1111;
+        demod_frame_tlast           = 1'b0;
+        frame_deintrlvd_tready      = 1'b1;
 
-        wait (ddr4_intf_c0_init_calib_complete === 1'b1);
-        wait (axis_resetn === 1'b1);
-        repeat (STARTUP_CYCLES) @(posedge axis_clk);
+        frame_intrlvd_tready = 1'b1;
+        frame_tvalid = 1'b0;
+        frame_tuser = 16'h0000;
+        frame_tdata = 32'h00000000;
+        frame_tkeep = 4'b1111;
+        frame_tlast = 1'b0;
+        frame_intrlvd_tready = 1'b1;
 
-        // Test AXI Stream interface after DDR/UI reset is cleanly released.
-        test_axi_stream();
+
+        wait(axis_resetn == 1);
+        repeat (20) @(posedge axis_clk);
+
+        // Test AXI Stream interface
+        fork
+
+            test_axi_stream();
+            test_axi_stream_demod();
+        join
+
+        // End simulation
+        //      #1000 $finish;
     end
 
-    initial begin
-        wait (axis_resetn === 1'b1);
-        repeat (SIM_TIMEOUT_CYCLES) @(posedge axis_clk);
-
-        $display("ERROR: Simulation timed out waiting for output packet completion.");
-        if (outfile_2 != 0) begin
-            $fclose(outfile_2);
-            outfile_2 = 0;
-        end
-        $finish;
-    end
-    integer rd_addr_file;
     // Test AXI Stream interface
     task test_axi_stream;
         integer i;
@@ -331,12 +372,12 @@ module mod_intrlv_tb;
             // Wait for reset to be asserted
             @(posedge axis_clk);
 
-            // Send one FRAME_WORDS packet with a counter payload.
+            // Send 10-word packet with counter
             frame_tvalid = 1'b1;
-            for (i = 0; i < FRAME_WORDS; i = i + 1) begin
+            for (i = 0; i <128; i = i + 1) begin
                 frame_tdata = 32'h00000000 + i;
                 frame_tuser = 16'hABCD;
-                if (i == FRAME_WORDS - 1) begin
+                if (i == 127) begin
                     frame_tlast = 1'b1;
                 end else begin
                     frame_tlast = 1'b0;
@@ -351,18 +392,87 @@ module mod_intrlv_tb;
         end
     endtask
 
-    // Open the file at the start of simulation
+    task test_axi_stream_demod;
+        integer j;
+        begin
+            // Drive valid signals
+            demod_frame_tvalid = 1'b0;
+            demod_frame_tuser = 16'h0000;
+            demod_frame_tdata = 32'h00000000;
+            demod_frame_tkeep = 4'b1111;
+            demod_frame_tlast = 1'b0;
+
+            // Wait for reset to be asserted
+            @(posedge axis_clk);
+
+            repeat (20) @(posedge axis_clk);
+
+            // Send 10-word packet with counter
+            demod_frame_tvalid = 1'b1;
+            for (j = 0; j < 2048; j = j + 1) begin
+                demod_frame_tdata = 32'h00000000 + j;
+                demod_frame_tuser = 16'hDCBA;
+                if (j == 2047) begin
+                    demod_frame_tlast = 1'b1;
+                end else begin
+                    demod_frame_tlast = 1'b0;
+                end
+
+                @(posedge axis_clk);
+                while (!demod_frame_tready) @(posedge axis_clk);
+            end
+
+            demod_frame_tvalid = 1'b0;
+        end
+    endtask
+
+
+    integer outfile_1;
+    integer outfile_2;
+
+    // Open the file at the start of simulation for the interlever
     initial begin
-        outfile_2 = $fopen("/home/sasindu/work/custom_arbitor/custom_arbiter/misc/mod_deintrlv_output.txt", "w");
+        outfile_1 = $fopen("/home/sasindu/work/custom_arbitor/custom_arbiter/misc/mod_interlv_output.txt", "w");
+        if (outfile_1 == 0) begin
+            $display("ERROR: Could not open file for writing!");
+            //            $finish;
+        end
+    end
+
+
+    // Open the file at the start of simulation for the deinterleaver
+    initial begin
+        outfile_2 = $fopen("/home/sasindu/work/custom_arbitor/custom_arbiter/misc/demod_deintrlv_output.txt", "w");
         if (outfile_2 == 0) begin
             $display("ERROR: Could not open file for writing!");
             //            $finish;
         end
     end
 
-    // ------------------------------------------------------------------
+
+    // Monitor frame_intrlvd signals and write to file
+
+    always @(posedge axis_clk) begin
+        if (!axis_resetn) begin
+            // nothing
+        end else begin
+            if (frame_deintrlvd_tvalid && frame_deintrlvd_tready) begin
+                // Log exactly one transfer
+                $fdisplay(outfile_1, "%h", frame_intrlvd_tdata);
+                $fflush(outfile_1);
+
+                if (frame_deintrlvd_tlast) begin
+                    $display("Packet complete at time %0t ns, last word received: 0x%h",
+                        $time, frame_intrlvd_tdata);
+                    $fclose(outfile_1);
+                    //                    $finish;
+                end
+            end
+        end
+    end
+
+
     // Monitor frame_deintrlvd signals and write to file
-    // ------------------------------------------------------------------
     always @(posedge axis_clk) begin
         if (!axis_resetn) begin
             // nothing
@@ -373,19 +483,10 @@ module mod_intrlv_tb;
                 $fflush(outfile_2);
 
                 if (frame_deintrlvd_tlast) begin
-                    $display("Packet complete at time %0t ns, last word received: 0x%h",
+                    $display("Deinterleaved packet complete at time %0t ns, last word received: 0x%h",
                         $time, frame_deintrlvd_tdata);
-                    if (outfile_2 != 0) begin
-                        $fclose(outfile_2);
-                        outfile_2 = 0;
-                    end
-
-                    if (rd_addr_file != 0) begin
-                        $fclose(rd_addr_file);
-                        rd_addr_file = 0;
-                    end
-
-                    $finish;
+                    $fclose(outfile_2);
+                    //                  $finish;
                 end
             end
         end

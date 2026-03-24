@@ -1,6 +1,5 @@
 # Vivado Project Directories
-work_proj
-
+work_project
 
 # Sigasi Tooling
 .sigasi/
@@ -26,3 +25,8 @@ tb/ip
 e~*
 axi_custom_int_2slot_tb
 work-obj*.cf
+
+
+# Vivado logs
+*.jou
+*.backup.jou

@@ -44,8 +44,6 @@ architecture arc_avmm_to_axi4_rd of avmm_to_axi4_rd is
     -- Temp Signals
     signal r_avmm_s_readdata_val : std_logic;
     signal r_avmm_s_readdata     : std_logic_vector(g_DATA_WIDTH - 1 downto 0);
-    signal r_avmm_s_busy         : std_logic;
-    signal rd_req_pending        : std_logic;
 
     signal r_axi_m_axi_arid    : std_logic_vector(3 downto 0);
     signal r_axi_m_axi_araddr  : std_logic_vector(28 downto 0);
@@ -71,7 +69,7 @@ begin
 
     avmm_s_readdata_val <= r_avmm_s_readdata_val;
     avmm_s_readdata     <= r_avmm_s_readdata;
-    avmm_s_busy         <= r_avmm_s_busy;
+    avmm_s_busy         <= r_axi_m_axi_arvalid;
 
     axi_m_axi_arid      <= r_axi_m_axi_arid;
     axi_m_axi_araddr    <= r_axi_m_axi_araddr;
@@ -98,8 +96,6 @@ begin
             -- Reset outputs and internal signals
             r_avmm_s_readdata_val <= '0';
             r_avmm_s_readdata     <= (others => '0');
-            r_avmm_s_busy         <= '0';
-
             r_axi_m_axi_arid    <= X"0";
             r_axi_m_axi_araddr  <= (others => '0');
             r_axi_m_axi_arlen   <= (others => '0');
@@ -110,17 +106,9 @@ begin
 
         elsif rising_edge(axi_aclk) then
             
-            r_avmm_s_busy <= r_axi_m_axi_arvalid and not w_axi_m_axi_arready ;
-
-
-
-            if avmm_s_read = '1' then
-                rd_req_pending <= '1';
-            end if;
-
-          
-
-            if avmm_s_address_val = '1' and r_avmm_s_busy = '0' then
+            -- Accept a new AVMM read address only when there is no pending AR.
+            -- This avoids overwriting a request if ARREADY is briefly low.
+            if avmm_s_address_val = '1' and r_axi_m_axi_arvalid = '0' then
                 r_axi_m_axi_araddr  <= avmm_s_address;
                 r_axi_m_axi_arvalid <= '1';
             end if;
