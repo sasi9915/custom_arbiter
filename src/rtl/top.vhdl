@@ -2,48 +2,40 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
---debug 
-library std;
-use std.textio.all;
-use ieee.std_logic_textio.all;
-
 library xpm;
 use xpm.vcomponents.all;
 
-entity top_loop_back is
+entity top is
     port(
         -- AXI-Stream Interface
         axis_resetn            : in  std_logic;
         axis_clk               : in  std_logic;
-        -- mod_intrlv AXI Master Interface (to connect to AXI Interconnect)
-        mod_frame_tready       : out std_logic;
-        mod_frame_tvalid       : in  std_logic;
-        mod_frame_tuser        : in  std_logic_vector(15 downto 00);
-        mod_frame_tdata        : in  std_logic_vector(31 downto 00);
-        mod_frame_tkeep        : in  std_logic_vector(03 downto 00);
-        mod_frame_tlast        : in  std_logic;
         -- -- mod_intrlv AXI Master Interface (to connect to AXI Interconnect)
-        -- frame_intrlvd_tready : in  std_logic;
-        -- frame_intrlvd_tvalid : out std_logic;
-        -- frame_intrlvd_tuser  : out std_logic_vector(15 downto 00);
-        -- frame_intrlvd_tdata  : out std_logic_vector(31 downto 00);
-        -- frame_intrlvd_tkeep  : out std_logic_vector(03 downto 00);
-        -- frame_intrlvd_tlast  : out std_logic;
-        -- demodulator AXI-Stream Interface
-        -- demod_frame_tready       : out std_logic;
-        -- demod_frame_tvalid       : in  std_logic;
-        -- demod_frame_tuser        : in  std_logic_vector(15 downto 0);
-        -- demod_frame_tdata        : in  std_logic_vector(31 downto 0);
-        -- demod_frame_tkeep        : in  std_logic_vector(3 downto 0);
-        -- demod_frame_tlast        : in  std_logic;
+        -- mod_frame_tready       : out std_logic;
+        -- mod_frame_tvalid       : in  std_logic;
+        -- mod_frame_tuser        : in  std_logic_vector(15 downto 00);
+        -- mod_frame_tdata        : in  std_logic_vector(31 downto 00);
+        -- mod_frame_tkeep        : in  std_logic_vector(03 downto 00);
+        -- mod_frame_tlast        : in  std_logic;
+        -- frame_intrlvd_tready   : in  std_logic;
+        -- frame_intrlvd_tvalid   : out std_logic;
+        -- frame_intrlvd_tuser    : out std_logic_vector(15 downto 00);
+        -- frame_intrlvd_tdata    : out std_logic_vector(31 downto 00);
+        -- frame_intrlvd_tkeep    : out std_logic_vector(03 downto 00);
+        -- frame_intrlvd_tlast    : out std_logic;
         -- demod_deintrlv AXI Master Interface (to connect to AXI Interconnect)
+        demod_frame_tready     : out std_logic;
+        demod_frame_tvalid     : in  std_logic;
+        demod_frame_tuser      : in  std_logic_vector(15 downto 0);
+        demod_frame_tdata      : in  std_logic_vector(31 downto 0);
+        demod_frame_tkeep      : in  std_logic_vector(3 downto 0);
+        demod_frame_tlast      : in  std_logic;
         frame_deintrlvd_tready : in  std_logic;
         frame_deintrlvd_tvalid : out std_logic;
         frame_deintrlvd_tuser  : out std_logic_vector(15 downto 0);
         frame_deintrlvd_tdata  : out std_logic_vector(31 downto 0);
         frame_deintrlvd_tkeep  : out std_logic_vector(3 downto 0);
         frame_deintrlvd_tlast  : out std_logic;
-        --
         -- Exposed AXI Master Interface (to connect DDR4 externally)
         M_AXI_AWID             : out std_logic_vector(3 downto 0);
         M_AXI_AWADDR           : out std_logic_vector(28 downto 0);
@@ -83,13 +75,9 @@ entity top_loop_back is
         M_AXI_RVALID           : in  std_logic;
         M_AXI_RREADY           : out std_logic
     );
-end entity top_loop_back;
+end entity top;
 
-architecture rtl of top_loop_back is
-
-    --ebug output tracker file
-    file intrlv_file      : text open write_mode is "/home/sasindu/work/custom_arbitor/custom_arbiter/misc/interlever_loopback_debug.txt";
-    file demod_input_file : text open write_mode is "/home/sasindu/work/custom_arbitor/custom_arbiter/misc/demod_frame_actual.txt";
+architecture rtl of top is
 
     component mod_intrlv is
         port(
@@ -203,21 +191,130 @@ architecture rtl of top_loop_back is
         );
     end component demod_deintrlv;
 
-    -- Function declaration for LLR mapping
-    function llr_mapper(input_bits : std_logic_vector(1 downto 0)) return std_logic_vector is
-        variable result : std_logic_vector(31 downto 0);
-        variable temp   : signed(15 downto 0);
-    begin
-        for i in 0 to 1 loop
-            if input_bits(i) = '1' then
-                temp := to_signed(32767, 16);
-            else
-                temp := to_signed(-32767, 16);
-            end if;
-            result((i * 16 + 15) downto (i * 16)) := std_logic_vector(temp);
-        end loop;
-        return result;
-    end function;
+    COMPONENT axi_interconnect_0
+        PORT (
+          INTERCONNECT_ACLK : IN STD_LOGIC;
+          INTERCONNECT_ARESETN : IN STD_LOGIC;
+          S00_AXI_ARESET_OUT_N : OUT STD_LOGIC;
+          S00_AXI_ACLK : IN STD_LOGIC;
+          S00_AXI_AWID : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+          S00_AXI_AWADDR : IN STD_LOGIC_VECTOR(28 DOWNTO 0);
+          S00_AXI_AWLEN : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+          S00_AXI_AWSIZE : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+          S00_AXI_AWBURST : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+          S00_AXI_AWLOCK : IN STD_LOGIC;
+          S00_AXI_AWCACHE : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          S00_AXI_AWPROT : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+          S00_AXI_AWQOS : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          S00_AXI_AWVALID : IN STD_LOGIC;
+          S00_AXI_AWREADY : OUT STD_LOGIC;
+          S00_AXI_WDATA : IN STD_LOGIC_VECTOR(127 DOWNTO 0);
+          S00_AXI_WSTRB : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+          S00_AXI_WLAST : IN STD_LOGIC;
+          S00_AXI_WVALID : IN STD_LOGIC;
+          S00_AXI_WREADY : OUT STD_LOGIC;
+          S00_AXI_BID : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
+          S00_AXI_BRESP : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+          S00_AXI_BVALID : OUT STD_LOGIC;
+          S00_AXI_BREADY : IN STD_LOGIC;
+          S00_AXI_ARID : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+          S00_AXI_ARADDR : IN STD_LOGIC_VECTOR(28 DOWNTO 0);
+          S00_AXI_ARLEN : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+          S00_AXI_ARSIZE : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+          S00_AXI_ARBURST : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+          S00_AXI_ARLOCK : IN STD_LOGIC;
+          S00_AXI_ARCACHE : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          S00_AXI_ARPROT : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+          S00_AXI_ARQOS : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          S00_AXI_ARVALID : IN STD_LOGIC;
+          S00_AXI_ARREADY : OUT STD_LOGIC;
+          S00_AXI_RID : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
+          S00_AXI_RDATA : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
+          S00_AXI_RRESP : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+          S00_AXI_RLAST : OUT STD_LOGIC;
+          S00_AXI_RVALID : OUT STD_LOGIC;
+          S00_AXI_RREADY : IN STD_LOGIC;
+          S01_AXI_ARESET_OUT_N : OUT STD_LOGIC;
+          S01_AXI_ACLK : IN STD_LOGIC;
+          S01_AXI_AWID : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+          S01_AXI_AWADDR : IN STD_LOGIC_VECTOR(28 DOWNTO 0);
+          S01_AXI_AWLEN : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+          S01_AXI_AWSIZE : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+          S01_AXI_AWBURST : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+          S01_AXI_AWLOCK : IN STD_LOGIC;
+          S01_AXI_AWCACHE : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          S01_AXI_AWPROT : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+          S01_AXI_AWQOS : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          S01_AXI_AWVALID : IN STD_LOGIC;
+          S01_AXI_AWREADY : OUT STD_LOGIC;
+          S01_AXI_WDATA : IN STD_LOGIC_VECTOR(127 DOWNTO 0);
+          S01_AXI_WSTRB : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+          S01_AXI_WLAST : IN STD_LOGIC;
+          S01_AXI_WVALID : IN STD_LOGIC;
+          S01_AXI_WREADY : OUT STD_LOGIC;
+          S01_AXI_BID : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
+          S01_AXI_BRESP : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+          S01_AXI_BVALID : OUT STD_LOGIC;
+          S01_AXI_BREADY : IN STD_LOGIC;
+          S01_AXI_ARID : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+          S01_AXI_ARADDR : IN STD_LOGIC_VECTOR(28 DOWNTO 0);
+          S01_AXI_ARLEN : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+          S01_AXI_ARSIZE : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+          S01_AXI_ARBURST : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+          S01_AXI_ARLOCK : IN STD_LOGIC;
+          S01_AXI_ARCACHE : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          S01_AXI_ARPROT : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+          S01_AXI_ARQOS : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          S01_AXI_ARVALID : IN STD_LOGIC;
+          S01_AXI_ARREADY : OUT STD_LOGIC;
+          S01_AXI_RID : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
+          S01_AXI_RDATA : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
+          S01_AXI_RRESP : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+          S01_AXI_RLAST : OUT STD_LOGIC;
+          S01_AXI_RVALID : OUT STD_LOGIC;
+          S01_AXI_RREADY : IN STD_LOGIC;
+          M00_AXI_ARESET_OUT_N : OUT STD_LOGIC;
+          M00_AXI_ACLK : IN STD_LOGIC;
+          M00_AXI_AWID : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+          M00_AXI_AWADDR : OUT STD_LOGIC_VECTOR(28 DOWNTO 0);
+          M00_AXI_AWLEN : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+          M00_AXI_AWSIZE : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+          M00_AXI_AWBURST : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+          M00_AXI_AWLOCK : OUT STD_LOGIC;
+          M00_AXI_AWCACHE : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+          M00_AXI_AWPROT : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+          M00_AXI_AWQOS : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+          M00_AXI_AWVALID : OUT STD_LOGIC;
+          M00_AXI_AWREADY : IN STD_LOGIC;
+          M00_AXI_WDATA : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
+          M00_AXI_WSTRB : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+          M00_AXI_WLAST : OUT STD_LOGIC;
+          M00_AXI_WVALID : OUT STD_LOGIC;
+          M00_AXI_WREADY : IN STD_LOGIC;
+          M00_AXI_BID : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          M00_AXI_BRESP : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+          M00_AXI_BVALID : IN STD_LOGIC;
+          M00_AXI_BREADY : OUT STD_LOGIC;
+          M00_AXI_ARID : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+          M00_AXI_ARADDR : OUT STD_LOGIC_VECTOR(28 DOWNTO 0);
+          M00_AXI_ARLEN : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+          M00_AXI_ARSIZE : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+          M00_AXI_ARBURST : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+          M00_AXI_ARLOCK : OUT STD_LOGIC;
+          M00_AXI_ARCACHE : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+          M00_AXI_ARPROT : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+          M00_AXI_ARQOS : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+          M00_AXI_ARVALID : OUT STD_LOGIC;
+          M00_AXI_ARREADY : IN STD_LOGIC;
+          M00_AXI_RID : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+          M00_AXI_RDATA : IN STD_LOGIC_VECTOR(127 DOWNTO 0);
+          M00_AXI_RRESP : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+          M00_AXI_RLAST : IN STD_LOGIC;
+          M00_AXI_RVALID : IN STD_LOGIC;
+          M00_AXI_RREADY : OUT STD_LOGIC 
+        );
+      END COMPONENT;
+      
 
     -- Internal signals for connecting mod_intrlv to AXI interconnect
     signal slot0_awid    : std_logic_vector(3 downto 0);
@@ -257,31 +354,7 @@ architecture rtl of top_loop_back is
     signal slot0_rlast   : std_logic;
     signal slot0_rvalid  : std_logic;
     signal slot0_rready  : std_logic;
-
-    -- Internal signals for connecting mod_intrlv to demod_deintrlv
-    signal w_frame_intrlvd_tready : std_logic;
-    signal w_frame_intrlvd_tvalid : std_logic;
-    signal w_frame_intrlvd_tuser  : std_logic_vector(15 downto 0);
-    signal w_frame_intrlvd_tdata  : std_logic_vector(31 downto 0);
-    signal w_frame_intrlvd_tkeep  : std_logic_vector(3 downto 0);
-    signal w_frame_intrlvd_tlast  : std_logic;
-
-    -- Internal signals for connecting demod_deintrlv to output AXI-Stream
-    signal w_demod_frame_tready : std_logic;
-    signal r_demod_frame_tvalid : std_logic;
-    signal r_demod_frame_tuser  : std_logic_vector(15 downto 0);
-    signal r_demod_frame_tdata  : std_logic_vector(31 downto 0);
-    signal r_demod_frame_tkeep  : std_logic_vector(3 downto 0);
-    signal r_demod_frame_tlast  : std_logic;
-
-    -- Internal signals for fetch counter and control
-    signal r_fetch_counter : unsigned(4 downto 0) := (others => '0');
-    signal r_fetch_req     : std_logic            := 'U';
-    signal r_tvalid        : std_logic            := '0';
-    signal r_intrlvd_tuser : std_logic_vector(15 downto 0);
-    signal r_intrlvd_tkeep : std_logic_vector(3 downto 0);
-    signal r_intrlvd_tlast : std_logic;
-    signal r_intrlvd_tdata : std_logic_vector(31 downto 0);
+    signal slot0_resetn  : std_logic;
 
     -- Internal signals for connecting demod_deintrlv to AXI interconnect
     signal slot1_awid    : std_logic_vector(3 downto 0);
@@ -321,289 +394,62 @@ architecture rtl of top_loop_back is
     signal slot1_rlast   : std_logic;
     signal slot1_rvalid  : std_logic;
     signal slot1_rready  : std_logic;
+    signal slot1_resetn  : std_logic;
 
 begin
 
-    -- Function to log the interlevr o/putput for debug
-    log_intrlv_output : process(axis_clk)
-        variable L : line;
-    begin
-        if rising_edge(axis_clk) then
-            if w_frame_intrlvd_tvalid = '1' and w_frame_intrlvd_tready = '1' then
-                hwrite(L, w_frame_intrlvd_tdata); -- write only data
-                writeline(intrlv_file, L); -- new line
-            end if;
-        end if;
-    end process;
+    -- Deinterleaver-only simulation build:
+    -- keep the mod/interleaver path and slot0 completely idle.
+    -- mod_frame_tready     <= '0';
+    -- frame_intrlvd_tvalid <= '0';
+    -- frame_intrlvd_tuser  <= (others => '0');
+    -- frame_intrlvd_tdata  <= (others => '0');
+    -- frame_intrlvd_tkeep  <= (others => '0');
+    -- frame_intrlvd_tlast  <= '0';
 
-    -- Function to log the demodulator input for debug
+    slot0_awid    <= (others => '0');
+    slot0_awaddr  <= (others => '0');
+    slot0_awlen   <= (others => '0');
+    slot0_awsize  <= (others => '0');
+    slot0_awburst <= (others => '0');
+    slot0_awlock  <= (others => '0');
+    slot0_awcache <= (others => '0');
+    slot0_awprot  <= (others => '0');
+    slot0_awqos   <= (others => '0');
+    slot0_awvalid <= '0';
+    slot0_wdata   <= (others => '0');
+    slot0_wstrb   <= (others => '0');
+    slot0_wlast   <= '0';
+    slot0_wvalid  <= '0';
+    slot0_bready  <= '0';
+    slot0_arid    <= (others => '0');
+    slot0_araddr  <= (others => '0');
+    slot0_arlen   <= (others => '0');
+    slot0_arsize  <= (others => '0');
+    slot0_arburst <= (others => '0');
+    slot0_arlock  <= (others => '0');
+    slot0_arcache <= (others => '0');
+    slot0_arprot  <= (others => '0');
+    slot0_arqos   <= (others => '0');
+    slot0_arvalid <= '0';
+    slot0_rready  <= '0';
 
-    process(axis_clk)
-        variable L : line;
-    begin
-        if rising_edge(axis_clk) then
-         
-                if r_demod_frame_tvalid = '1' and w_demod_frame_tready = '1' then
-                    hwrite(L, r_demod_frame_tdata);
-                    writeline(demod_input_file, L);
-                end if;
-            end if;
-    
-    end process;
-
-
-    mmain_process : process(axis_clk, axis_resetn)
-    begin
-        if axis_resetn = '0' then
-            r_fetch_counter <= (others => '0');
-            r_fetch_req     <= '1';
-
-            r_intrlvd_tdata <= (others => '0');
-            r_intrlvd_tuser <= (others => '0');
-            r_intrlvd_tkeep <= (others => '0');
-            r_intrlvd_tlast <= '0';
-
-            r_tvalid <= '0';            -- buffered input word valid
-
-            r_demod_frame_tdata  <= (others => '0');
-            r_demod_frame_tuser  <= (others => '0');
-            r_demod_frame_tkeep  <= (others => '1');
-            r_demod_frame_tlast  <= '0';
-            r_demod_frame_tvalid <= '0';
-
-        elsif rising_edge(axis_clk) then
-
-            r_demod_frame_tkeep <= (others => '1');
-
-            -- Capture one new interleaver word only when no buffered word
-
-            if (r_tvalid = '0') and (w_frame_intrlvd_tvalid = '1') and (w_frame_intrlvd_tready = '1') then
-
-                r_intrlvd_tdata <= w_frame_intrlvd_tdata;
-                r_intrlvd_tuser <= w_frame_intrlvd_tuser;
-                r_intrlvd_tkeep <= w_frame_intrlvd_tkeep;
-                r_intrlvd_tlast <= w_frame_intrlvd_tlast;
-
-                r_tvalid        <= '1';
-                r_fetch_counter <= (others => '0');
-
-                -- no output loaded yet
-                r_demod_frame_tvalid <= '0';
-                r_fetch_req          <= '0';
-
-           
-            --  Hold output if valid is high but sink not ready
-           
-            elsif (r_demod_frame_tvalid = '1') and (w_demod_frame_tready = '0') then
-            
-                r_demod_frame_tvalid <= r_demod_frame_tvalid;
-                r_demod_frame_tdata  <= r_demod_frame_tdata;
-                r_demod_frame_tuser  <= r_demod_frame_tuser;
-                r_demod_frame_tlast  <= r_demod_frame_tlast;
-                r_fetch_counter      <= r_fetch_counter;
-                r_tvalid             <= r_tvalid;
-                r_fetch_req          <= '0';
-
-          
-            --  If output handshake happened, consume current output
-            
-            elsif (r_demod_frame_tvalid = '1') and (w_demod_frame_tready = '1') then
-
-                if r_fetch_counter = to_unsigned(15, r_fetch_counter'length) then
-                
-                    r_demod_frame_tvalid <= '0';
-                    r_demod_frame_tlast  <= '0';
-                    r_demod_frame_tdata  <= (others => '0');
-
-                    r_tvalid        <= '0'; -- buffer empty now
-                    r_fetch_counter <= (others => '0');
-                    r_fetch_req     <= '1';
-                else
-                    -- move to next mapped output
-                    r_fetch_counter      <= r_fetch_counter + 1;
-                    r_demod_frame_tvalid <= '0'; -- next one will be loaded below
-                    r_demod_frame_tlast  <= '0';
-                    r_fetch_req          <= '0';
-                end if;
-
-      
-            --  Load next mapped output when buffered word exists and no output is currently pending
-          
-            elsif (r_tvalid = '1') and (r_demod_frame_tvalid = '0') then
-
-                r_demod_frame_tuser <= r_intrlvd_tuser;
-
-                case to_integer(r_fetch_counter) is
-                    when 0 =>
-                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(1 downto 0));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(0);
-                        r_demod_frame_tlast  <= '0';
-
-                    when 1 =>
-                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(3 downto 2));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(0);
-                        r_demod_frame_tlast  <= '0';
-
-                    when 2 =>
-                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(5 downto 4));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(0);
-                        r_demod_frame_tlast  <= '0';
-
-                    when 3 =>
-                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(7 downto 6));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(0);
-                        r_demod_frame_tlast  <= '0';
-
-                    when 4 =>
-                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(9 downto 8));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(1);
-                        r_demod_frame_tlast  <= '0';
-
-                    when 5 =>
-                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(11 downto 10));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(1);
-                        r_demod_frame_tlast  <= '0';
-
-                    when 6 =>
-                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(13 downto 12));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(1);
-                        r_demod_frame_tlast  <= '0';
-
-                    when 7 =>
-                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(15 downto 14));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(1);
-                        r_demod_frame_tlast  <= '0';
-
-                    when 8 =>
-                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(17 downto 16));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(2);
-                        r_demod_frame_tlast  <= '0';
-
-                    when 9 =>
-                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(19 downto 18));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(2);
-                        r_demod_frame_tlast  <= '0';
-
-                    when 10 =>
-                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(21 downto 20));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(2);
-                        r_demod_frame_tlast  <= '0';
-
-                    when 11 =>
-                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(23 downto 22));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(2);
-                        r_demod_frame_tlast  <= '0';
-
-                    when 12 =>
-                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(25 downto 24));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(3);
-                        r_demod_frame_tlast  <= '0';
-
-                    when 13 =>
-                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(27 downto 26));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(3);
-                        r_demod_frame_tlast  <= '0';
-
-                    when 14 =>
-                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(29 downto 28));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(3);
-                        r_demod_frame_tlast  <= '0';
-
-                    when 15 =>
-                        r_demod_frame_tdata  <= llr_mapper(r_intrlvd_tdata(31 downto 30));
-                        r_demod_frame_tvalid <= r_intrlvd_tkeep(3);
-                        r_demod_frame_tlast  <= r_intrlvd_tlast;
-
-                    when others =>
-                        r_demod_frame_tdata  <= (others => '0');
-                        r_demod_frame_tvalid <= '0';
-                        r_demod_frame_tlast  <= '0';
-                end case;
-
-                r_fetch_req <= '0';
-
-            else
-                -- idle
-                if r_tvalid = '0' then
-                    r_fetch_req <= '1';
-                else
-                    r_fetch_req <= '0';
-                end if;
-            end if;
-        end if;
-    end process;
-
-    -- Ready signal for mod_intrlv
-    w_frame_intrlvd_tready <= r_fetch_req and w_demod_frame_tready;
-
-    -- mod_intrlv instance
-    u_mod_intrlv : mod_intrlv
-        port map(
-            axis_resetn          => axis_resetn,
-            axis_clk             => axis_clk,
-            frame_tready         => mod_frame_tready,
-            frame_tvalid         => mod_frame_tvalid,
-            frame_tuser          => mod_frame_tuser,
-            frame_tdata          => mod_frame_tdata,
-            frame_tkeep          => mod_frame_tkeep,
-            frame_tlast          => mod_frame_tlast,
-            frame_intrlvd_tready => w_frame_intrlvd_tready,
-            frame_intrlvd_tvalid => w_frame_intrlvd_tvalid,
-            frame_intrlvd_tuser  => w_frame_intrlvd_tuser,
-            frame_intrlvd_tdata  => w_frame_intrlvd_tdata,
-            frame_intrlvd_tkeep  => w_frame_intrlvd_tkeep,
-            frame_intrlvd_tlast  => w_frame_intrlvd_tlast,
-            -- Connect to internal AXI signals
-            ddr4_m_axi_awid      => slot0_awid,
-            ddr4_m_axi_awaddr    => slot0_awaddr,
-            ddr4_m_axi_awlen     => slot0_awlen,
-            ddr4_m_axi_awsize    => slot0_awsize,
-            ddr4_m_axi_awburst   => slot0_awburst,
-            ddr4_m_axi_awlock    => slot0_awlock,
-            ddr4_m_axi_awcache   => slot0_awcache,
-            ddr4_m_axi_awprot    => slot0_awprot,
-            ddr4_m_axi_awqos     => slot0_awqos,
-            ddr4_m_axi_awvalid   => slot0_awvalid,
-            ddr4_m_axi_awready   => slot0_awready,
-            ddr4_m_axi_wdata     => slot0_wdata,
-            ddr4_m_axi_wstrb     => slot0_wstrb,
-            ddr4_m_axi_wlast     => slot0_wlast,
-            ddr4_m_axi_wvalid    => slot0_wvalid,
-            ddr4_m_axi_wready    => slot0_wready,
-            ddr4_m_axi_bready    => slot0_bready,
-            ddr4_m_axi_bid       => slot0_bid,
-            ddr4_m_axi_bresp     => slot0_bresp,
-            ddr4_m_axi_bvalid    => slot0_bvalid,
-            ddr4_m_axi_arid      => slot0_arid,
-            ddr4_m_axi_araddr    => slot0_araddr,
-            ddr4_m_axi_arlen     => slot0_arlen,
-            ddr4_m_axi_arsize    => slot0_arsize,
-            ddr4_m_axi_arburst   => slot0_arburst,
-            ddr4_m_axi_arlock    => slot0_arlock,
-            ddr4_m_axi_arcache   => slot0_arcache,
-            ddr4_m_axi_arprot    => slot0_arprot,
-            ddr4_m_axi_arqos     => slot0_arqos,
-            ddr4_m_axi_arvalid   => slot0_arvalid,
-            ddr4_m_axi_arready   => slot0_arready,
-            ddr4_m_axi_rready    => slot0_rready,
-            ddr4_m_axi_rlast     => slot0_rlast,
-            ddr4_m_axi_rvalid    => slot0_rvalid,
-            ddr4_m_axi_rresp     => slot0_rresp,
-            ddr4_m_axi_rid       => slot0_rid,
-            ddr4_m_axi_rdata     => slot0_rdata
-        );
+    slot0_bid(3 downto 1) <= (others => '0');
+    slot0_rid(3 downto 1) <= (others => '0');
+    slot1_bid(3 downto 1) <= (others => '0');
+    slot1_rid(3 downto 1) <= (others => '0');
 
     -- demod_deintrlv instance
     u_demod_deintrlv : demod_deintrlv
         port map(
             axis_resetn            => axis_resetn,
             axis_clk               => axis_clk,
-            frame_tready           => w_demod_frame_tready,
-            frame_tvalid           => r_demod_frame_tvalid,
-            frame_tuser            => r_demod_frame_tuser,
-            frame_tdata            => r_demod_frame_tdata,
-            frame_tkeep            => r_demod_frame_tkeep,
-            frame_tlast            => r_demod_frame_tlast,
+            frame_tready           => demod_frame_tready,
+            frame_tvalid           => demod_frame_tvalid,
+            frame_tuser            => demod_frame_tuser,
+            frame_tdata            => demod_frame_tdata,
+            frame_tkeep            => demod_frame_tkeep,
+            frame_tlast            => demod_frame_tlast,
             frame_deintrlvd_tready => frame_deintrlvd_tready,
             frame_deintrlvd_tvalid => frame_deintrlvd_tvalid,
             frame_deintrlvd_tuser  => frame_deintrlvd_tuser,
@@ -649,86 +495,86 @@ begin
             ddr4_m_axi_rid         => slot1_rid,
             ddr4_m_axi_rdata       => slot1_rdata
         );
-    --
-    -- Custom AXI interconnect instance
+
+    -- AXI Interconnect instance
     u_axi_interconnect : entity work.axi_custom_int_2slot
         port map(
-            S00_AXI_ACLK    => axis_clk,
+            S00_AXI_ACLK => axis_clk,
             S00_AXI_ARESETN => axis_resetn,
-            S00_AXI_AWID    => slot0_awid(0 downto 0),
-            S00_AXI_AWADDR  => slot0_awaddr,
-            S00_AXI_AWLEN   => slot0_awlen,
-            S00_AXI_AWSIZE  => slot0_awsize,
+            S00_AXI_AWID => slot0_awid(0 downto 0),
+            S00_AXI_AWADDR => slot0_awaddr,
+            S00_AXI_AWLEN => slot0_awlen,
+            S00_AXI_AWSIZE => slot0_awsize,
             S00_AXI_AWBURST => slot0_awburst,
-            S00_AXI_AWLOCK  => slot0_awlock(0),
+            S00_AXI_AWLOCK => slot0_awlock(0),
             S00_AXI_AWCACHE => slot0_awcache,
-            S00_AXI_AWPROT  => slot0_awprot,
-            S00_AXI_AWQOS   => slot0_awqos,
+            S00_AXI_AWPROT => slot0_awprot,
+            S00_AXI_AWQOS => slot0_awqos,
             S00_AXI_AWVALID => slot0_awvalid,
             S00_AXI_AWREADY => slot0_awready,
-            S00_AXI_WDATA   => slot0_wdata,
-            S00_AXI_WSTRB   => slot0_wstrb,
-            S00_AXI_WLAST   => slot0_wlast,
-            S00_AXI_WVALID  => slot0_wvalid,
-            S00_AXI_WREADY  => slot0_wready,
-            S00_AXI_BID     => slot0_bid(0 downto 0),
-            S00_AXI_BRESP   => slot0_bresp,
-            S00_AXI_BVALID  => slot0_bvalid,
-            S00_AXI_BREADY  => slot0_bready,
-            S00_AXI_ARID    => slot0_arid(0 downto 0),
-            S00_AXI_ARADDR  => slot0_araddr,
-            S00_AXI_ARLEN   => slot0_arlen,
-            S00_AXI_ARSIZE  => slot0_arsize,
+            S00_AXI_WDATA => slot0_wdata,
+            S00_AXI_WSTRB => slot0_wstrb,
+            S00_AXI_WLAST => slot0_wlast,
+            S00_AXI_WVALID => slot0_wvalid,
+            S00_AXI_WREADY => slot0_wready,
+            S00_AXI_BID => slot0_bid(0 downto 0),    
+            S00_AXI_BRESP => slot0_bresp,
+            S00_AXI_BVALID => slot0_bvalid,
+            S00_AXI_BREADY => slot0_bready,
+            S00_AXI_ARID => slot0_arid(0 downto 0),
+            S00_AXI_ARADDR => slot0_araddr,
+            S00_AXI_ARLEN => slot0_arlen,
+            S00_AXI_ARSIZE => slot0_arsize,
             S00_AXI_ARBURST => slot0_arburst,
-            S00_AXI_ARLOCK  => slot0_arlock(0),
+            S00_AXI_ARLOCK => slot0_arlock(0),
             S00_AXI_ARCACHE => slot0_arcache,
-            S00_AXI_ARPROT  => slot0_arprot,
-            S00_AXI_ARQOS   => slot0_arqos,
+            S00_AXI_ARPROT => slot0_arprot,
+            S00_AXI_ARQOS => slot0_arqos,
             S00_AXI_ARVALID => slot0_arvalid,
             S00_AXI_ARREADY => slot0_arready,
-            S00_AXI_RID     => slot0_rid(0 downto 0),
-            S00_AXI_RDATA   => slot0_rdata,
-            S00_AXI_RRESP   => slot0_rresp,
-            S00_AXI_RLAST   => slot0_rlast,
-            S00_AXI_RVALID  => slot0_rvalid,
-            S00_AXI_RREADY  => slot0_rready,
-            S01_AXI_AWID    => slot1_awid(0 downto 0),
-            S01_AXI_AWADDR  => slot1_awaddr,
-            S01_AXI_AWLEN   => slot1_awlen,
-            S01_AXI_AWSIZE  => slot1_awsize,
+            S00_AXI_RID => slot0_rid(0 downto 0),
+            S00_AXI_RDATA => slot0_rdata,
+            S00_AXI_RRESP => slot0_rresp,
+            S00_AXI_RLAST => slot0_rlast,
+            S00_AXI_RVALID => slot0_rvalid,
+            S00_AXI_RREADY => slot0_rready,
+            S01_AXI_AWID => slot1_awid(0 downto 0),
+            S01_AXI_AWADDR => slot1_awaddr,
+            S01_AXI_AWLEN => slot1_awlen,
+            S01_AXI_AWSIZE => slot1_awsize,
             S01_AXI_AWBURST => slot1_awburst,
-            S01_AXI_AWLOCK  => slot1_awlock(0),
+            S01_AXI_AWLOCK => slot1_awlock(0),
             S01_AXI_AWCACHE => slot1_awcache,
-            S01_AXI_AWPROT  => slot1_awprot,
-            S01_AXI_AWQOS   => slot1_awqos,
+            S01_AXI_AWPROT => slot1_awprot,
+            S01_AXI_AWQOS => slot1_awqos,
             S01_AXI_AWVALID => slot1_awvalid,
             S01_AXI_AWREADY => slot1_awready,
-            S01_AXI_WDATA   => slot1_wdata,
-            S01_AXI_WSTRB   => slot1_wstrb,
-            S01_AXI_WLAST   => slot1_wlast,
-            S01_AXI_WVALID  => slot1_wvalid,
-            S01_AXI_WREADY  => slot1_wready,
-            S01_AXI_BID     => slot1_bid(0 downto 0),
-            S01_AXI_BRESP   => slot1_bresp,
-            S01_AXI_BVALID  => slot1_bvalid,
-            S01_AXI_BREADY  => slot1_bready,
-            S01_AXI_ARID    => slot1_arid(0 downto 0),
-            S01_AXI_ARADDR  => slot1_araddr,
-            S01_AXI_ARLEN   => slot1_arlen,
-            S01_AXI_ARSIZE  => slot1_arsize,
+            S01_AXI_WDATA => slot1_wdata,
+            S01_AXI_WSTRB => slot1_wstrb,
+            S01_AXI_WLAST => slot1_wlast,
+            S01_AXI_WVALID => slot1_wvalid,
+            S01_AXI_WREADY => slot1_wready,
+            S01_AXI_BID => slot1_bid(0 downto 0),
+            S01_AXI_BRESP => slot1_bresp,
+            S01_AXI_BVALID => slot1_bvalid,
+            S01_AXI_BREADY => slot1_bready,
+            S01_AXI_ARID => slot1_arid(0 downto 0),
+            S01_AXI_ARADDR => slot1_araddr,
+            S01_AXI_ARLEN => slot1_arlen,
+            S01_AXI_ARSIZE => slot1_arsize,
             S01_AXI_ARBURST => slot1_arburst,
-            S01_AXI_ARLOCK  => slot1_arlock(0),
+            S01_AXI_ARLOCK => slot1_arlock(0),
             S01_AXI_ARCACHE => slot1_arcache,
-            S01_AXI_ARPROT  => slot1_arprot,
-            S01_AXI_ARQOS   => slot1_arqos,
+            S01_AXI_ARPROT => slot1_arprot,
+            S01_AXI_ARQOS => slot1_arqos,
             S01_AXI_ARVALID => slot1_arvalid,
             S01_AXI_ARREADY => slot1_arready,
-            S01_AXI_RID     => slot1_rid(0 downto 0),
-            S01_AXI_RDATA   => slot1_rdata,
-            S01_AXI_RRESP   => slot1_rresp,
-            S01_AXI_RLAST   => slot1_rlast,
-            S01_AXI_RVALID  => slot1_rvalid,
-            S01_AXI_RREADY  => slot1_rready,
+            S01_AXI_RID => slot1_rid(0 downto 0),
+            S01_AXI_RDATA => slot1_rdata,
+            S01_AXI_RRESP => slot1_rresp,
+            S01_AXI_RLAST => slot1_rlast,
+            S01_AXI_RVALID => slot1_rvalid,
+            S01_AXI_RREADY => slot1_rready,
             M_AXI_AWID      => M_AXI_AWID,
             M_AXI_AWADDR    => M_AXI_AWADDR,
             M_AXI_AWLEN     => M_AXI_AWLEN,
@@ -740,32 +586,32 @@ begin
             M_AXI_AWQOS     => M_AXI_AWQOS,
             M_AXI_AWVALID   => M_AXI_AWVALID,
             M_AXI_AWREADY   => M_AXI_AWREADY,
-            M_AXI_WDATA     => M_AXI_WDATA,
-            M_AXI_WSTRB     => M_AXI_WSTRB,
-            M_AXI_WLAST     => M_AXI_WLAST,
-            M_AXI_WVALID    => M_AXI_WVALID,
-            M_AXI_WREADY    => M_AXI_WREADY,
-            M_AXI_BID       => M_AXI_BID,
-            M_AXI_BRESP     => M_AXI_BRESP,
-            M_AXI_BVALID    => M_AXI_BVALID,
-            M_AXI_BREADY    => M_AXI_BREADY,
-            M_AXI_ARID      => M_AXI_ARID,
-            M_AXI_ARADDR    => M_AXI_ARADDR,
-            M_AXI_ARLEN     => M_AXI_ARLEN,
-            M_AXI_ARSIZE    => M_AXI_ARSIZE,
-            M_AXI_ARBURST   => M_AXI_ARBURST,
-            M_AXI_ARLOCK    => M_AXI_ARLOCK,
-            M_AXI_ARCACHE   => M_AXI_ARCACHE,
-            M_AXI_ARPROT    => M_AXI_ARPROT,
-            M_AXI_ARQOS     => M_AXI_ARQOS,
-            M_AXI_ARVALID   => M_AXI_ARVALID,
-            M_AXI_ARREADY   => M_AXI_ARREADY,
-            M_AXI_RID       => M_AXI_RID,
-            M_AXI_RDATA     => M_AXI_RDATA,
-            M_AXI_RRESP     => M_AXI_RRESP,
-            M_AXI_RLAST     => M_AXI_RLAST,
-            M_AXI_RVALID    => M_AXI_RVALID,
-            M_AXI_RREADY    => M_AXI_RREADY
+            M_AXI_WDATA    => M_AXI_WDATA,
+            M_AXI_WSTRB    => M_AXI_WSTRB,
+            M_AXI_WLAST    => M_AXI_WLAST,
+            M_AXI_WVALID   => M_AXI_WVALID,
+            M_AXI_WREADY   => M_AXI_WREADY,
+            M_AXI_BID      => M_AXI_BID,
+            M_AXI_BRESP    => M_AXI_BRESP,
+            M_AXI_BVALID   => M_AXI_BVALID,
+            M_AXI_BREADY   => M_AXI_BREADY,
+            M_AXI_ARID     => M_AXI_ARID,
+            M_AXI_ARADDR   => M_AXI_ARADDR,
+            M_AXI_ARLEN    => M_AXI_ARLEN,
+            M_AXI_ARSIZE   => M_AXI_ARSIZE,
+            M_AXI_ARBURST  => M_AXI_ARBURST,
+            M_AXI_ARLOCK   => M_AXI_ARLOCK,
+            M_AXI_ARCACHE  => M_AXI_ARCACHE,
+            M_AXI_ARPROT   => M_AXI_ARPROT,
+            M_AXI_ARQOS    => M_AXI_ARQOS,
+            M_AXI_ARVALID  => M_AXI_ARVALID,
+            M_AXI_ARREADY  => M_AXI_ARREADY,
+            M_AXI_RID      => M_AXI_RID,
+            M_AXI_RDATA    => M_AXI_RDATA,  
+            M_AXI_RRESP    => M_AXI_RRESP,
+            M_AXI_RLAST    => M_AXI_RLAST,
+            M_AXI_RVALID   => M_AXI_RVALID,
+            M_AXI_RREADY   => M_AXI_RREADY
         );
-
+            
 end architecture rtl;
