@@ -399,7 +399,6 @@ begin
 
                         r_ddr_offset <= resize(resize(r_rd_address_current_column * C_COLS + r_rd_address_current_row, 29)(28 downto 3), 29);
                         fifo_din     <= std_logic_vector(resize(r_rd_address_current_column * C_COLS + r_rd_address_current_row, 3));
-
                         if w_avmm_to_axi4_rd_avmm_busy = '0' and r_avmm_to_axi4_rd_avmm_address_val = '0' then
                             r_avmm_to_axi4_rd_avmm_address     <= std_logic_vector(resize(C_base_address + r_ddr_offset * 16, 29));
                             r_avmm_to_axi4_rd_avmm_address_val <= '1';
