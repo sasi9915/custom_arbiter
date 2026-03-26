@@ -343,12 +343,14 @@ begin
                 -- Once we have 128 bits of data, store it in the burst buffer
                 when wr_idle =>
                     w_frame_tready <= '1';
-                    if frame_tvalid = '1'  then
+                    if (frame_tvalid = '1') and (w_frame_tready = '1') then
                         sr_frame_data(to_integer(r_byte_idx) * 32 + 31 downto to_integer(r_byte_idx) * 32) <= frame_tdata;
-
-                        r_byte_idx <= r_byte_idx + 1;
---                     
-                    end if; 
+                        if r_byte_idx = "11" then
+                            r_byte_idx <= (others => '0');
+                        else
+                            r_byte_idx <= r_byte_idx + 1;
+                        end if;
+                    end if;
 
                 -- Once we have 128 bits of data, store it in the burst buffer
                 when wr_store_buffer =>
@@ -497,12 +499,12 @@ begin
         end if;
     end process;
 
-    process(current_state, r_byte_idx, r_burst_cnt, w_avmm_to_axi4_wr_avmm_busy, frame_deintrlvd_tready, r_frame_deintrlvd_tvalid, r_write_ddr_address, r_bit_idx, r_write_limit)
+    process(current_state, frame_tvalid, w_frame_tready, r_byte_idx, r_burst_cnt, w_avmm_to_axi4_wr_avmm_busy, frame_deintrlvd_tready, r_frame_deintrlvd_tvalid, r_write_ddr_address, r_bit_idx, r_write_limit)
     begin
         case current_state is
 
             when wr_idle =>
-                if r_byte_idx = "11" then
+                if (frame_tvalid = '1') and (w_frame_tready = '1') and (r_byte_idx = "11") then
                     next_state <= wr_store_buffer;
                 else
                     next_state <= current_state;

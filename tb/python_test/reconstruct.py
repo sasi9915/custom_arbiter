@@ -1,5 +1,5 @@
-INPUT_FILE  = "/home/sasindu/work/custom_arbitor/custom_arbiter/misc/demod_frame_actual.txt"
-OUTPUT_FILE = "/home/sasindu/work/custom_arbitor/custom_arbiter/misc/demod_frame_actual_loopback.txt"
+INPUT_FILE  = "/home/sasindu/work/custom_arbitor/custom_arbiter/misc/demod_deintrlv_output.txt"
+OUTPUT_FILE = "/home/sasindu/work/custom_arbitor/custom_arbiter/misc/demod_exact_loopback.txt"
 
 BITS_PER_WORD = 32
 
