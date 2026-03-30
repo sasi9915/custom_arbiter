@@ -1,8 +1,8 @@
 INPUT_FILE  = "/home/sasindu/work/custom_arbitor/custom_arbiter/misc/demod_frame_actual.txt"
 OUTPUT_FILE = "/home/sasindu/work/custom_arbitor/custom_arbiter/misc/deinterleaver_expected_output.txt"
 
-ROWS = 64
-COLS = 64
+ROWS = 1024
+COLS = 1024
 TOTAL_LLRS = ROWS * COLS  # 4096
 
 

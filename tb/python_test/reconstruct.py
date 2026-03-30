@@ -1,5 +1,5 @@
-INPUT_FILE  = "/home/sasindu/work/custom_arbitor/custom_arbiter/misc/demod_deintrlv_output.txt"
-OUTPUT_FILE = "/home/sasindu/work/custom_arbitor/custom_arbiter/misc/demod_exact_loopback.txt"
+INPUT_FILE  = "/home/sasindu/work/custom_arbitor/custom_arbiter/misc/deinterleaver_expected_output.txt"
+OUTPUT_FILE = "/home/sasindu/work/custom_arbitor/custom_arbiter/misc/check_for_1024_exact.txt"
 
 BITS_PER_WORD = 32
 
@@ -13,7 +13,7 @@ def llr16_to_bit(llr_hex):
     if val & 0x8000:
         val -= 0x10000
 
-    # negative LLR -> bit 1, positive/non-negative -> bit 0
+    # negative LLR -> bit 1, positive/non-negative -> bit 0wq456
     return 0 if val < 0 else 1
 
 with open(INPUT_FILE, "r") as f:

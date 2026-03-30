@@ -121,7 +121,7 @@ module top_loop_back_tb;
 
     localparam real DDR_REF_FREQ_HZ   = 75_000_000.0; // 75 MHz
     localparam real DDR_REF_PERIOD_NS = 1e9 / DDR_REF_FREQ_HZ;
-    localparam int  NUM_INPUT_WORDS   = 128;
+    localparam int  NUM_INPUT_WORDS   = 32768;
     localparam int  RX_WORDS_PER_TX   = 16;
     localparam int  EXPECTED_RX_WORDS = NUM_INPUT_WORDS * RX_WORDS_PER_TX;
 

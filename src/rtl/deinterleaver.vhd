@@ -65,8 +65,8 @@ end entity;
 architecture arc_demod_deintrlv of demod_deintrlv is
 
     -- Constants
-    constant C_ROWS         : unsigned(12 downto 0) := to_unsigned(64, 13);
-    constant C_COLS         : unsigned(12 downto 0) := to_unsigned(64, 13);
+    constant C_ROWS         : unsigned(12 downto 0) := to_unsigned(1024, 13);
+    constant C_COLS         : unsigned(12 downto 0) := to_unsigned(1024, 13);
     constant C_base_address : unsigned(28 downto 0) := to_unsigned(1000, 29);
     constant C_BURST_LEN    : unsigned(3 downto 0)  := to_unsigned(8, 4);
 
